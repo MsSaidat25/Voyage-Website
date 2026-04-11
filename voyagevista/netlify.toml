@@ -1,0 +1,8 @@
+[build]
+  publish = "voyagevista"
+  functions = "voyagevista/netlify/functions"
+
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "https://voyage-vista-travels.netlify.app"

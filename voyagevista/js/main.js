@@ -16,8 +16,8 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // ── CHATBOT ──────────────────────────────────────
-  // ⚠️ Replace with your new OpenRouter API key
-  var VV_API_KEY = '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';
+  // API key is stored securely in Netlify as OPENROUTER_KEY env var — never in code!
+
   var VV_MODEL = 'anthropic/claude-3.5-haiku';
 
   var vvOpen = false, vvLoading = false;
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }];
 
   // Greeting
-  vvAddBot("Welcome to Voyage Vista! ✈️ I'm your personal travel concierge. Whether you're dreaming of a luxury cruise, a girls' getaway, or a family reunion trip — I'm here to help plan it perfectly. Where shall we begin?");
+  vvAddBot("Welcome to Voyage Vista! ✈️ I am your personal travel concierge. Whether you're dreaming of a luxury cruise, a girls' getaway, or a family reunion trip — I am here to help plan it perfectly. Where shall we begin?");
 
   var inp = document.getElementById('vv-input');
   if (inp) {
@@ -63,15 +63,10 @@ document.addEventListener('DOMContentLoaded', function() {
     vvAddUser(text);
     vvHistory.push({ role: 'user', content: text });
     vvShowTyping();
-    fetch('https://openrouter.ai/api/v1/chat/completions', {
+    fetch('/api/chat', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + VV_API_KEY,
-        'HTTP-Referer': 'https://www.voyagevista.ca',
-        'X-Title': 'VoyageVista Concierge'
-      },
-      body: JSON.stringify({ model: VV_MODEL, max_tokens: 400, messages: vvHistory })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: VV_MODEL, messages: vvHistory })
     })
     .then(function(r) { return r.json(); })
     .then(function(data) {
