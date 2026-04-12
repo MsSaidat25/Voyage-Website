@@ -6,12 +6,14 @@ services:
     buildCommand: npm install
     startCommand: node server.js
     envVars:
+      - key: NODE_VERSION
+        value: 20.14.0
       - key: OPENROUTER_KEY
-        sync: false          # Set this in the Render dashboard — AI chatbot API key
+        sync: false
       - key: SMTP_USER
-        sync: false          # Gmail address (or other SMTP sender) for contact form emails
+        sync: false
       - key: SMTP_PASS
-        sync: false          # Gmail App Password (not your regular password)
+        sync: false
       - key: SMTP_HOST
         value: smtp.gmail.com
       - key: SMTP_PORT
