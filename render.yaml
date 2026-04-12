@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: voyage-vista-travels
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: OPENROUTER_KEY
+        sync: false          # Set this in the Render dashboard — AI chatbot API key
+      - key: SMTP_USER
+        sync: false          # Gmail address (or other SMTP sender) for contact form emails
+      - key: SMTP_PASS
+        sync: false          # Gmail App Password (not your regular password)
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: "587"
+      - key: CONTACT_TO
+        value: hello@voyagevista.ca

@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // ── CHATBOT ──────────────────────────────────────
-  // API key is stored securely in Netlify as OPENROUTER_KEY env var — never in code!
+  // API key is stored securely as OPENROUTER_KEY environment variable — never in code!
 
   var VV_MODEL = 'anthropic/claude-3.5-haiku';
 
@@ -110,21 +110,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function vvHideTyping() { var el = document.getElementById('vv-typing'); if (el) el.remove(); }
 
-  // Contact form — submits via Netlify Forms (AJAX)
+  // Contact form — submits to /api/contact on the server
   var form = document.getElementById('contact-form');
   if (form) {
     form.addEventListener('submit', function(e) {
       e.preventDefault();
-      fetch('/', {
+      var btn = form.querySelector('.form-submit');
+      btn.disabled = true;
+      btn.textContent = 'Sending\u2026';
+      fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams(new FormData(form)).toString()
       })
-      .then(function() {
-        document.getElementById('form-success').style.display = 'block';
-        form.style.display = 'none';
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.ok) {
+          document.getElementById('form-success').style.display = 'block';
+          form.style.display = 'none';
+        } else {
+          throw new Error(data.error);
+        }
       })
       .catch(function() {
+        btn.disabled = false;
+        btn.textContent = 'Send Message \u2708';
         alert('There was an error submitting your message. Please email us directly at hello@voyagevista.ca');
       });
     });
