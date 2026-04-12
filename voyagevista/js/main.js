@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
   var vvOpen = false, vvLoading = false;
   var vvHistory = [{
     role: 'system',
-    content: 'You are the VoyageVista Concierge — a warm, knowledgeable AI travel assistant for Voyage Vista Travels (www.voyagevista.ca), a Canadian travel company based in Nepean, ON. You specialize in group travel, milestone celebrations, luxury escapes, and culturally enriching experiences. Help visitors with destinations, bookings, travel tips, and services. Keep responses concise and elegant. Phone: (343) 777-4159. For specific pricing or availability, direct them to the contact form or suggest they call.'
+    content: 'You are the VoyageVista Concierge — a warm, knowledgeable AI travel assistant for Voyage Vista Travels (www.voyagevista.ca), a Canadian travel company based in Nepean, ON. You specialize in group travel, milestone celebrations, luxury escapes, and culturally enriching experiences. Help visitors with destinations, bookings, travel tips, and services. Keep responses concise and elegant. Phone: (343) 961-3506. For specific pricing or availability, direct them to the contact form or suggest they call.'
   }];
 
   // Greeting
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
     })
     .catch(function() {
       vvHideTyping();
-      vvAddBot('Sorry, I\'m having a moment! Please call us at <a href="tel:3437774159" style="color:#c4a057;">(343) 777-4159</a> or use the contact form.');
+      vvAddBot('Sorry, I\'m having a moment! Please call us at <a href="tel:3439613506" style="color:#c4a057;">(343) 961-3506</a> or use the contact form.');
     })
     .finally(function() {
       vvLoading = false;
@@ -110,13 +110,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function vvHideTyping() { var el = document.getElementById('vv-typing'); if (el) el.remove(); }
 
-  // Contact form
+  // Contact form — submits via Netlify Forms (AJAX)
   var form = document.getElementById('contact-form');
   if (form) {
     form.addEventListener('submit', function(e) {
       e.preventDefault();
-      document.getElementById('form-success').style.display = 'block';
-      form.style.display = 'none';
+      fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(new FormData(form)).toString()
+      })
+      .then(function() {
+        document.getElementById('form-success').style.display = 'block';
+        form.style.display = 'none';
+      })
+      .catch(function() {
+        alert('There was an error submitting your message. Please email us directly at hello@voyagevista.ca');
+      });
     });
   }
 });
