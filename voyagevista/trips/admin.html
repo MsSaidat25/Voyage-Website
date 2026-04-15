@@ -10,19 +10,18 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
 .topbar{height:52px;background:#0d1b2a;display:flex;align-items:center;padding:0 20px;gap:12px;flex-shrink:0;border-bottom:1px solid rgba(196,160,87,.2);}
 .logo{font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:#c4a057;font-weight:600;margin-right:auto;}
 .trip-label{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:6px;color:#e8dcc8;font-size:13px;padding:5px 12px;min-width:180px;max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.tbtn{padding:7px 16px;border-radius:6px;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:opacity .15s;}
+.tbtn{padding:7px 16px;border-radius:6px;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;}
 .save-btn{background:linear-gradient(135deg,#c4a057,#e8c87a);color:#0d1b2a;font-weight:600;}
 .save-btn:hover{opacity:.88;}
 .outline-btn{background:rgba(255,255,255,.07);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.15);}
 .outline-btn:hover{background:rgba(255,255,255,.13);}
 .gold-btn{background:rgba(196,160,87,.15);color:#c4a057;border:1px solid rgba(196,160,87,.3);}
-.gold-btn:hover{background:rgba(196,160,87,.25);}
 .danger-btn{background:rgba(255,80,80,.08);color:#ff9999;border:1px solid rgba(255,80,80,.2);}
 .workspace{flex:1;display:flex;overflow:hidden;}
 .sidebar{width:220px;background:#0d1b2a;overflow-y:auto;flex-shrink:0;display:flex;flex-direction:column;}
 .sb-hd{padding:12px 14px 6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);}
 .sb-list{flex:1;overflow-y:auto;}
-.sb-item{padding:10px 14px;cursor:pointer;border-left:3px solid transparent;transition:all .15s;}
+.sb-item{padding:10px 14px;cursor:pointer;border-left:3px solid transparent;}
 .sb-item:hover{background:rgba(255,255,255,.05);border-left-color:rgba(196,160,87,.3);}
 .sb-item.active{background:rgba(196,160,87,.1);border-left-color:#c4a057;}
 .sb-name{font-size:12px;font-weight:500;color:#e8dcc8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
@@ -30,12 +29,12 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
 .sb-date{font-size:10px;color:rgba(196,160,87,.5);margin-top:1px;}
 .sb-empty{padding:20px 14px;font-size:11px;color:rgba(255,255,255,.25);text-align:center;line-height:1.6;}
 .sb-new{display:flex;align-items:center;gap:8px;padding:11px 14px;cursor:pointer;color:rgba(196,160,87,.7);font-size:12px;border-top:1px solid rgba(255,255,255,.06);}
-.sb-new:hover{color:#c4a057;background:rgba(196,160,87,.05);}
+.sb-new:hover{color:#c4a057;}
 .builder{flex:1;overflow-y:auto;background:#fff;}
 .btabs{display:flex;border-bottom:1px solid #eee;padding:0 20px;position:sticky;top:0;background:#fff;z-index:10;overflow-x:auto;}
 .btab{padding:11px 13px;font-size:12px;border:none;background:none;cursor:pointer;color:#aaa;border-bottom:2px solid transparent;font-family:'DM Sans',sans-serif;white-space:nowrap;}
 .btab.on{color:#c4a057;border-bottom-color:#c4a057;font-weight:500;}
-.bpane{display:none;padding:22px;max-width:680px;}
+.bpane{display:none;padding:22px;max-width:700px;}
 .bpane.on{display:block;}
 .fg{margin-bottom:15px;}
 .fg label{display:block;font-size:10px;color:#aaa;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;}
@@ -43,17 +42,17 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
 .fg input:focus,.fg textarea:focus,.fg select:focus{border-color:#c4a057;background:#fff;}
 .fg textarea{resize:vertical;min-height:75px;}
 .frow{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.frow3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
 .info-box{background:#faf7f2;border-radius:8px;padding:12px 14px;font-size:12px;color:#888;margin-bottom:16px;border-left:3px solid rgba(196,160,87,.4);}
-
-/* DAYS */
+.section-divider{border:none;border-top:1px solid #f0ebe0;margin:20px 0;}
 .day-wrap{margin-bottom:14px;border:1px solid #ede5d4;border-radius:10px;overflow:hidden;}
 .day-hd{background:#faf7f2;padding:11px 14px;display:flex;align-items:center;gap:10px;}
 .day-badge{background:#c4a057;color:#fff;font-size:10px;font-weight:600;padding:3px 9px;border-radius:8px;white-space:nowrap;}
 .day-date-lbl{font-size:11px;color:#aaa;min-width:55px;}
 .day-title-inp{flex:1;padding:6px 10px;border:1px solid #e0d8cc;border-radius:6px;font-size:12px;font-family:'DM Sans',sans-serif;background:#fff;outline:none;}
 .day-title-inp:focus{border-color:#c4a057;}
-.day-rm{padding:3px 8px;border:none;background:none;color:#ccc;cursor:pointer;font-size:11px;border-radius:4px;}
-.day-rm:hover{color:#c4a057;background:#feeee0;}
+.day-rm{padding:3px 8px;border:none;background:none;color:#ccc;cursor:pointer;font-size:11px;}
+.day-rm:hover{color:#c4a057;}
 .events-body{padding:12px 14px;}
 .ev-card{background:#fff;border:1px solid #ede5d4;border-radius:8px;padding:11px 13px;margin-bottom:8px;}
 .ev-hd{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
@@ -61,8 +60,8 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
 .tb-flight{background:#EAF3DE;color:#3B6D11;}.tb-hotel{background:#E6F1FB;color:#185FA5;}
 .tb-activity{background:#FAEEDA;color:#854F0B;}.tb-restaurant{background:#FBEAF0;color:#993556;}
 .tb-transport{background:#F1EFE8;color:#5F5E5A;}.tb-note{background:#EEEDFE;color:#534AB7;}
-.ev-rm{margin-left:auto;padding:2px 8px;border:none;background:none;color:#ccc;cursor:pointer;font-size:11px;border-radius:4px;}
-.ev-rm:hover{color:#c4a057;background:#feeee0;}
+.ev-rm{margin-left:auto;padding:2px 8px;border:none;background:none;color:#ccc;cursor:pointer;font-size:11px;}
+.ev-rm:hover{color:#c4a057;}
 .ef{margin-bottom:7px;}
 .ef label{font-size:10px;color:#bbb;display:block;margin-bottom:3px;text-transform:uppercase;}
 .ef input,.ef textarea{width:100%;padding:7px 9px;border:1px solid #e8e0d0;border-radius:6px;font-size:12px;font-family:'DM Sans',sans-serif;background:#faf7f2;outline:none;}
@@ -71,66 +70,56 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
 .ef-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .add-ev-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
 .add-ev-btn{padding:4px 11px;border-radius:14px;border:1px solid #e0d8cc;background:none;font-size:11px;font-family:'DM Sans',sans-serif;cursor:pointer;color:#999;}
-.add-ev-btn:hover{border-color:#c4a057;color:#c4a057;background:#faf7f2;}
+.add-ev-btn:hover{border-color:#c4a057;color:#c4a057;}
 .add-line-btn{width:100%;padding:9px;border:1px dashed #ddd;border-radius:8px;background:none;color:#bbb;font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:6px;}
 .add-line-btn:hover{border-color:#c4a057;color:#c4a057;}
-
-/* PHOTO UPLOAD + SWIPE PREVIEW */
 .up-zone{border:2px dashed #ddd;border-radius:10px;padding:22px;text-align:center;cursor:pointer;transition:all .2s;position:relative;margin-bottom:10px;}
 .up-zone:hover{border-color:#c4a057;background:#faf7f2;}
 .up-zone p{font-size:13px;color:#bbb;margin-top:6px;}
 .up-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0;}
-.photo-strip{display:flex;gap:8px;overflow-x:auto;padding:8px 0 12px;margin-top:8px;scroll-snap-type:x mandatory;}
+.photo-strip{display:flex;gap:8px;overflow-x:auto;padding:8px 0 12px;scroll-snap-type:x mandatory;}
 .photo-strip::-webkit-scrollbar{height:4px;}
 .photo-strip::-webkit-scrollbar-thumb{background:rgba(196,160,87,.3);border-radius:2px;}
-.ph-wrap{position:relative;flex-shrink:0;width:110px;height:110px;border-radius:8px;overflow:hidden;border:1px solid #eee;scroll-snap-align:start;cursor:grab;}
+.ph-wrap{position:relative;flex-shrink:0;width:130px;height:130px;border-radius:8px;overflow:hidden;border:1px solid #eee;scroll-snap-align:start;cursor:grab;}
 .ph-wrap img{width:100%;height:100%;object-fit:cover;}
-.ph-overlay{position:absolute;inset:0;background:rgba(0,0,0,.0);transition:background .2s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;}
+.ph-overlay{position:absolute;inset:0;background:rgba(0,0,0,0);transition:background .2s;display:flex;align-items:center;justify-content:center;gap:6px;}
 .ph-wrap:hover .ph-overlay{background:rgba(0,0,0,.45);}
-.ph-btn{width:24px;height:24px;border-radius:50%;border:none;cursor:pointer;font-size:11px;display:none;align-items:center;justify-content:center;}
+.ph-btn{width:26px;height:26px;border-radius:50%;border:none;cursor:pointer;font-size:11px;display:none;align-items:center;justify-content:center;}
 .ph-wrap:hover .ph-btn{display:flex;}
 .ph-rm{background:rgba(220,50,50,.85);color:#fff;}
-.ph-mv{background:rgba(196,160,87,.9);color:#0d1b2a;}
-.bn-preview{width:100%;height:140px;border-radius:10px;overflow:hidden;background:#1a2e45;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.3);font-size:13px;margin-top:8px;}
-.bn-preview img{width:100%;height:100%;object-fit:cover;}
-.resort-preview{width:100%;height:140px;border-radius:10px;overflow:hidden;background:#f0ebe0;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:13px;margin-top:8px;border:1px solid #ede5d4;}
-.resort-preview img{width:100%;height:100%;object-fit:cover;}
-
-/* PACKING */
+.bn-preview,.resort-preview{width:100%;height:140px;border-radius:10px;overflow:hidden;margin-top:8px;display:flex;align-items:center;justify-content:center;font-size:13px;}
+.bn-preview{background:#1a2e45;color:rgba(255,255,255,.3);}
+.resort-preview{background:#f0ebe0;color:#aaa;border:1px solid #ede5d4;}
+.bn-preview img,.resort-preview img{width:100%;height:100%;object-fit:cover;}
 .pk-row{display:flex;gap:7px;margin-bottom:7px;align-items:center;}
 .pk-row input{flex:1;padding:7px 9px;border:1px solid #e8e0d0;border-radius:6px;font-size:12px;font-family:'DM Sans',sans-serif;background:#faf7f2;outline:none;}
 .pk-row select{padding:7px 9px;border:1px solid #e8e0d0;border-radius:6px;font-size:12px;font-family:'DM Sans',sans-serif;background:#faf7f2;outline:none;width:130px;}
 .pk-row .xbtn{width:26px;height:26px;border:none;background:#faf7f2;border-radius:5px;cursor:pointer;color:#ccc;}
 .pk-row .xbtn:hover{background:#feeee0;color:#c4a057;}
-
-/* TOGGLE */
 .tog-wrap{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
 .tog{width:38px;height:22px;background:#ddd;border-radius:11px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;}
 .tog.on{background:#c4a057;}
 .tog::after{content:'';position:absolute;width:18px;height:18px;background:#fff;border-radius:50%;top:2px;left:2px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
 .tog.on::after{left:18px;}
-
-/* WEATHER WIDGET */
 .weather-box{background:#f0f8ff;border:1px solid #b8d4f0;border-radius:10px;padding:14px 18px;margin-top:12px;display:flex;align-items:center;gap:16px;}
 .weather-icon{font-size:2.2rem;}
 .weather-info{flex:1;}
 .weather-temp{font-size:1.4rem;font-weight:500;color:#1a3550;}
 .weather-desc{font-size:12px;color:#888;margin-top:2px;}
 .weather-extra{font-size:11px;color:#aaa;margin-top:4px;}
-.weather-loading{color:#aaa;font-size:12px;}
-
-/* PREVIEW */
+.color-swatch{width:36px;height:36px;border-radius:8px;border:2px solid transparent;cursor:pointer;transition:all .2s;flex-shrink:0;}
+.color-swatch.selected{border-color:#c4a057;transform:scale(1.15);}
+.color-swatches{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+.social-icon{font-size:1.1rem;width:36px;height:36px;border-radius:8px;background:#f0ebe0;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .preview-panel{width:400px;flex-shrink:0;border-left:1px solid rgba(196,160,87,.15);display:flex;flex-direction:column;background:#f5f0e8;}
 .preview-bar{padding:11px 14px;background:#fff;border-bottom:1px solid #eee;display:flex;align-items:center;gap:8px;flex-shrink:0;}
 .preview-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#aaa;}
 .preview-url{font-size:11px;color:#c4a057;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.cp-btn{padding:4px 10px;border:1px solid rgba(196,160,87,.4);border-radius:5px;background:none;color:#c4a057;font-size:11px;cursor:pointer;white-space:nowrap;}
+.cp-btn{padding:4px 10px;border:1px solid rgba(196,160,87,.4);border-radius:5px;background:none;color:#c4a057;font-size:11px;cursor:pointer;}
 .cp-btn:hover{background:rgba(196,160,87,.1);}
 #previewFrame{flex:1;border:none;background:#f5f0e8;}
-
 .toast{position:fixed;bottom:18px;right:18px;background:#0d1b2a;color:#e8c87a;padding:10px 18px;border-radius:8px;font-size:13px;border:1px solid rgba(196,160,87,.3);transform:translateY(60px);opacity:0;transition:all .3s;z-index:9999;}
 .toast.show{transform:translateY(0);opacity:1;}
-
 @media(max-width:1100px){.preview-panel{display:none;}}
 @media(max-width:750px){.sidebar{display:none;}}
 </style>
@@ -149,7 +138,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
 <div class="workspace">
   <div class="sidebar">
     <div class="sb-hd">Saved Trips</div>
-    <div class="sb-list" id="sbList"><div class="sb-empty">No trips saved yet.<br>Click "+ New" to start.</div></div>
+    <div class="sb-list" id="sbList"><div class="sb-empty">No trips yet.<br>Click "+ New" to start.</div></div>
     <div class="sb-new" onclick="newTrip()">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       New Trip Page
@@ -166,7 +155,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
       <button class="btab" onclick="tab('resort',this)">Resort Photos</button>
       <button class="btab" onclick="tab('packing',this)">Packing List</button>
       <button class="btab" onclick="tab('currency',this)">Currency</button>
-      <button class="btab" onclick="tab('booking',this)">RSVP Form</button>
+      <button class="btab" onclick="tab('booking',this)">Booking Form</button>
     </div>
 
     <!-- TRIP INFO -->
@@ -184,18 +173,72 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
         <div class="fg"><label>Number of Guests</label><input type="number" id="guestCount" placeholder="4" oninput="qp()"></div>
         <div class="fg"><label>Trip Theme</label>
           <select id="theme" onchange="qp()">
-            <option>Luxury Escape</option><option>Girls Getaway</option><option>Family Celebration</option>
-            <option>Adventure Trip</option><option>Romantic Escape</option><option>Group Tour</option><option>Cruise</option>
+            <option>Luxury Escape</option>
+            <option>Birthday Celebration</option>
+            <option>Girls Getaway</option>
+            <option>Family Celebration</option>
+            <option>Adventure Trip</option>
+            <option>Romantic Escape</option>
+            <option>Group Tour</option>
+            <option>Cruise</option>
           </select>
         </div>
       </div>
       <div class="fg"><label>Short Description</label>
         <textarea id="tripDesc" rows="3" placeholder="A luxurious 7-night celebration in paradise, curated with love by Voyage Vista Travels." oninput="qp()"></textarea>
       </div>
+
+      <hr class="section-divider">
+      <div class="fg"><label>Background Color / Theme</label>
+        <div style="font-size:11px;color:#aaa;margin-bottom:8px;">Choose a hero background color for the guest page</div>
+        <div class="color-swatches" id="colorSwatches">
+          <div class="color-swatch selected" style="background:linear-gradient(135deg,#0d1b2a,#1a3550)" data-color="navy" onclick="selectColor('navy',this)" title="Deep Navy"></div>
+          <div class="color-swatch" style="background:linear-gradient(135deg,#1a0d2e,#3d1a6e)" data-color="purple" onclick="selectColor('purple',this)" title="Royal Purple"></div>
+          <div class="color-swatch" style="background:linear-gradient(135deg,#0d2a0d,#1a5c1a)" data-color="emerald" onclick="selectColor('emerald',this)" title="Emerald"></div>
+          <div class="color-swatch" style="background:linear-gradient(135deg,#2a0d0d,#6e1a1a)" data-color="burgundy" onclick="selectColor('burgundy',this)" title="Burgundy"></div>
+          <div class="color-swatch" style="background:linear-gradient(135deg,#0d2a2a,#1a5c5c)" data-color="teal" onclick="selectColor('teal',this)" title="Deep Teal"></div>
+          <div class="color-swatch" style="background:linear-gradient(135deg,#2a1a0d,#6e4a1a)" data-color="bronze" onclick="selectColor('bronze',this)" title="Bronze"></div>
+          <div class="color-swatch" style="background:linear-gradient(135deg,#0d0d2a,#1a1a6e)" data-color="midnight" onclick="selectColor('midnight',this)" title="Midnight Blue"></div>
+          <div class="color-swatch" style="background:linear-gradient(135deg,#2a0d1a,#6e1a3d)" data-color="rose" onclick="selectColor('rose',this)" title="Deep Rose"></div>
+          <div class="color-swatch" style="background:linear-gradient(135deg,#1a1a1a,#3d3d3d)" data-color="charcoal" onclick="selectColor('charcoal',this)" title="Charcoal"></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:12px;">
+          <label style="font-size:11px;color:#aaa;text-transform:uppercase;letter-spacing:.05em;">Custom Color</label>
+          <input type="color" id="customColor" value="#0d1b2a" onchange="selectCustomColor(this.value)" style="width:40px;height:32px;border:1px solid #e8e0d0;border-radius:6px;cursor:pointer;padding:2px;">
+        </div>
+      </div>
+
+      <hr class="section-divider">
+      <div class="fg"><label>Social Links</label></div>
+      <div class="frow">
+        <div class="fg">
+          <label>Instagram URL</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <div class="social-icon">📸</div>
+            <input id="socialIG" placeholder="https://instagram.com/..." oninput="qp()" style="flex:1;">
+          </div>
+        </div>
+        <div class="fg">
+          <label>Facebook URL</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <div class="social-icon">👥</div>
+            <input id="socialFB" placeholder="https://facebook.com/..." oninput="qp()" style="flex:1;">
+          </div>
+        </div>
+      </div>
+      <div class="fg">
+        <label>WhatsApp Number</label>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <div class="social-icon">💬</div>
+          <input id="socialWA" placeholder="12345678900 (with country code, no +)" oninput="qp()" style="flex:1;">
+        </div>
+      </div>
+
+      <hr class="section-divider">
       <div class="fg"><label>Banner / Hero Photo</label>
         <div class="up-zone" onclick="document.getElementById('bannerInp').click()">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-          <p>Click to upload hero banner image</p>
+          <p>Click to upload hero banner</p>
           <input type="file" id="bannerInp" accept="image/*" onchange="handleBanner(this)" onclick="event.stopPropagation()">
         </div>
         <div class="bn-preview" id="bnPreview">No banner uploaded</div>
@@ -204,37 +247,32 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
 
     <!-- LOGISTICS -->
     <div class="bpane" id="pane-logistics">
-      <div class="fg"><label>Hotel / Resort Name</label>
-        <input id="hotel" placeholder="e.g. Secrets Akumal Riviera Maya" oninput="qp()" list="hotelSuggestions">
-        <datalist id="hotelSuggestions"></datalist>
-      </div>
+      <div class="fg"><label>Hotel / Resort Name</label><input id="hotel" placeholder="Secrets Akumal Riviera Maya" oninput="qp()"></div>
       <div class="fg"><label>Resort / Hotel Photo</label>
         <div class="up-zone" onclick="document.getElementById('resortHeroInp').click()">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-          <p>Upload a photo of the resort/hotel</p>
+          <p>Upload photo of the resort/hotel</p>
           <input type="file" id="resortHeroInp" accept="image/*" onchange="handleResortHero(this)" onclick="event.stopPropagation()">
         </div>
-        <div class="resort-preview" id="resortHeroPreview">No resort photo uploaded</div>
+        <div class="resort-preview" id="resortHeroPreview">No resort photo</div>
       </div>
       <div class="fg"><label>Hotel Address</label><input id="hotelAddr" placeholder="Riviera Maya, Mexico" oninput="qp()"></div>
       <div class="fg"><label>Check-in / Check-out</label><input id="checkin" placeholder="Apr 26 — May 1" oninput="qp()"></div>
       <div class="fg"><label>Flight Details</label><input id="flight" placeholder="Air Canada AC874 — YOW → CUN" oninput="qp()"></div>
       <div class="frow">
         <div class="fg"><label>Departure Time</label><input id="flightTime" placeholder="Apr 25 at 8:45 PM" oninput="qp()"></div>
-        <div class="fg"><label>Booking / Conf. Ref</label><input id="bookingRef" placeholder="CONF: VV-2025-8841" oninput="qp()"></div>
+        <div class="fg"><label>Confirmation Ref</label><input id="bookingRef" placeholder="CONF: VV-2025-8841" oninput="qp()"></div>
       </div>
-
-      <!-- WEATHER -->
       <div class="fg" style="margin-top:8px;">
         <label>Weather Snapshot <span style="font-size:10px;color:#c4a057;text-transform:none;letter-spacing:0;">(auto-loads from Destination)</span></label>
-        <div id="weatherBox"><div class="weather-loading">Enter a destination above to load current weather ☁️</div></div>
+        <div id="weatherBox"><div style="font-size:12px;color:#aaa;">Enter a destination to load weather ☁️</div></div>
       </div>
     </div>
 
-    <!-- MESSAGE (after Logistics) -->
+    <!-- MESSAGE -->
     <div class="bpane" id="pane-message">
       <div class="fg"><label>Personal Message to Guest</label>
-        <textarea id="message" rows="6" placeholder="Write a warm, personal note — this appears prominently on the guest page." oninput="qp()"></textarea>
+        <textarea id="message" rows="6" placeholder="Write a warm, personal note for your guest." oninput="qp()"></textarea>
       </div>
       <div class="frow">
         <div class="fg"><label>Signed From</label><input id="signedFrom" placeholder="Saheedat & the Voyage Vista Travels Team" oninput="qp()"></div>
@@ -244,14 +282,19 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
 
     <!-- ITINERARY -->
     <div class="bpane" id="pane-itinerary">
-      <div class="info-box">📎 Add a download link to your itinerary (Google Drive, Dropbox, etc.) — guests get a button to download it directly.</div>
-      <div class="fg"><label>Itinerary Download Link (Google Drive, Dropbox, OneDrive, etc.)</label>
-        <input id="itineraryLink" placeholder="https://drive.google.com/file/d/..." oninput="qp()">
+      <div class="info-box">📎 Paste a download link (Google Drive, Dropbox, etc.) — guests get a button to download it.</div>
+      <div class="frow">
+        <div class="fg"><label>Itinerary Download Link</label><input id="itineraryLink" placeholder="https://drive.google.com/file/d/..." oninput="qp()"></div>
+        <div class="fg"><label>Button Label</label><input id="itineraryLinkLabel" placeholder="Download Full Itinerary" oninput="qp()"></div>
       </div>
-      <div class="fg"><label>Link Label (shown on button)</label>
-        <input id="itineraryLinkLabel" placeholder="Download Full Itinerary PDF" oninput="qp()">
+      <div class="frow">
+        <div class="fg"><label>Booking Link URL</label><input id="bookingUrl" placeholder="https://booking.com/your-link..." oninput="qp()"></div>
+        <div class="fg"><label>Booking Button Label</label><input id="bookingUrlLabel" placeholder="Book Now" oninput="qp()"></div>
       </div>
-      <hr style="border:none;border-top:1px solid #f0ebe0;margin:16px 0;">
+      <div class="fg"><label>Booking Note (optional)</label>
+        <textarea id="bookingNote" rows="3" placeholder="Optional note about the booking e.g. 'Use code VV2026 for your discount'" oninput="qp()"></textarea>
+      </div>
+      <hr class="section-divider">
       <div class="fg"><label>Day-by-Day Plan</label></div>
       <div id="daysList"></div>
       <button class="add-line-btn" onclick="addDay()">+ Add Day</button>
@@ -259,10 +302,10 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
 
     <!-- GALLERY PHOTOS -->
     <div class="bpane" id="pane-photos">
-      <div class="info-box">📸 Upload gallery photos — drag to reorder. Guests see a swipeable gallery.</div>
+      <div class="info-box">📸 Upload gallery photos — shown as auto-moving carousel. Drag to reorder. Click × to remove.</div>
       <div class="up-zone" onclick="document.getElementById('photosInp').click()">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-        <p>Click to upload multiple photos (hold Ctrl/Cmd for multiple)</p>
+        <p>Click to upload multiple photos</p>
         <input type="file" id="photosInp" accept="image/*" multiple onchange="handlePhotos(this,'photos')" onclick="event.stopPropagation()">
       </div>
       <div class="photo-strip" id="photoStrip"></div>
@@ -270,10 +313,10 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
 
     <!-- RESORT PHOTOS -->
     <div class="bpane" id="pane-resort">
-      <div class="info-box">🏨 Upload resort/hotel photos — these appear in a dedicated "Resort Photos" gallery on the guest page with its own button.</div>
+      <div class="info-box">🏨 Resort/hotel photos — shown in a dedicated gallery page with lightbox.</div>
       <div class="up-zone" onclick="document.getElementById('resortPhotosInp').click()">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-        <p>Click to upload resort / hotel photos</p>
+        <p>Click to upload resort photos</p>
         <input type="file" id="resortPhotosInp" accept="image/*" multiple onchange="handlePhotos(this,'resortPhotos')" onclick="event.stopPropagation()">
       </div>
       <div class="photo-strip" id="resortPhotoStrip"></div>
@@ -292,22 +335,20 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
         <div class="fg"><label>Exchange Rate</label><input id="currRate" placeholder="1 CAD ≈ 14 MXN" oninput="qp()"></div>
         <div class="fg"><label>Suggested Daily Budget</label><input id="currBudget" placeholder="$50–100 CAD / person" oninput="qp()"></div>
       </div>
-      <div class="fg"><label>Money Tips</label>
-        <textarea id="currTips" rows="5" placeholder="Most resorts are all-inclusive so minimal cash needed. Bring some USD or MXN for tips and off-resort excursions." oninput="qp()"></textarea>
-      </div>
+      <div class="fg"><label>Money Tips</label><textarea id="currTips" rows="4" oninput="qp()" placeholder="e.g. Most resorts are all-inclusive so minimal cash needed."></textarea></div>
     </div>
 
-    <!-- RSVP FORM -->
+    <!-- BOOKING FORM -->
     <div class="bpane" id="pane-booking">
       <div class="tog-wrap">
         <div class="tog" id="bookTog" onclick="toggleBooking()"></div>
-        <div style="font-size:13px;color:#555;">Show RSVP / Booking Form on guest page</div>
+        <div style="font-size:13px;color:#555;">Show Booking Form on guest page</div>
       </div>
-      <div class="info-box">📧 RSVP responses are sent to <strong>Hello@voyagevista.ca</strong></div>
+      <div class="info-box">📧 Booking form submissions are sent to <strong>Hello@voyagevista.ca</strong></div>
       <div id="bookFields" style="opacity:.4;pointer-events:none;">
         <div class="fg"><label>Custom Fields (Name, Email, Phone always included)</label>
           <div id="bookFieldsList"></div>
-          <button class="add-line-btn" onclick="addBookField()" style="margin-top:6px;">+ Add Custom Field</button>
+          <button class="add-line-btn" onclick="addBookField()">+ Add Custom Field</button>
         </div>
       </div>
     </div>
@@ -320,84 +361,79 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
       <div class="preview-url" id="previewUrl">Save trip to get shareable link</div>
       <button class="cp-btn" onclick="copyLink()">Copy</button>
     </div>
-    <iframe id="previewFrame" srcdoc="<div style='display:flex;align-items:center;justify-content:center;height:100%;font-family:sans-serif;color:#aaa;font-size:14px;text-align:center;padding:40px;'>Fill in guest name &amp; occasion<br>to see preview</div>"></iframe>
+    <iframe id="previewFrame" srcdoc="<div style='display:flex;align-items:center;justify-content:center;height:100%;font-family:sans-serif;color:#aaa;font-size:14px;text-align:center;padding:40px;'>Fill in guest name &amp; occasion to preview</div>"></iframe>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-var T = { days:[], photos:[], resortPhotos:[], packingList:[], bookingFormFields:[] };
-var allTrips = [];
-var showBook = false;
-var PT = null;
-var EVTYPES = { flight:'✈ Flight', hotel:'🏨 Hotel', activity:'⭐ Activity', restaurant:'🍽 Restaurant', transport:'🚗 Transport', note:'📝 Note' };
-var EVCLS = { flight:'tb-flight', hotel:'tb-hotel', activity:'tb-activity', restaurant:'tb-restaurant', transport:'tb-transport', note:'tb-note' };
-var weatherTimer = null;
+var T={days:[],photos:[],resortPhotos:[],packingList:[],bookingFormFields:[],bgColor:'navy'};
+var showBook=false,PT=null,weatherTimer=null;
+var EVTYPES={flight:'✈ Flight',hotel:'🏨 Hotel',activity:'⭐ Activity',restaurant:'🍽 Restaurant',transport:'🚗 Transport',note:'📝 Note'};
+var EVCLS={flight:'tb-flight',hotel:'tb-hotel',activity:'tb-activity',restaurant:'tb-restaurant',transport:'tb-transport',note:'tb-note'};
+var BG_COLORS={
+  navy:'linear-gradient(135deg,#0d1b2a,#1a3550)',
+  purple:'linear-gradient(135deg,#1a0d2e,#3d1a6e)',
+  emerald:'linear-gradient(135deg,#0d2a0d,#1a5c1a)',
+  burgundy:'linear-gradient(135deg,#2a0d0d,#6e1a1a)',
+  teal:'linear-gradient(135deg,#0d2a2a,#1a5c5c)',
+  bronze:'linear-gradient(135deg,#2a1a0d,#6e4a1a)',
+  midnight:'linear-gradient(135deg,#0d0d2a,#1a1a6e)',
+  rose:'linear-gradient(135deg,#2a0d1a,#6e1a3d)',
+  charcoal:'linear-gradient(135deg,#1a1a1a,#3d3d3d)'
+};
 
-window.addEventListener('DOMContentLoaded', function(){ loadSB(); });
+window.addEventListener('DOMContentLoaded',function(){loadSB();});
 
-function tab(name, btn) {
-  document.querySelectorAll('.bpane').forEach(p=>p.classList.remove('on'));
-  document.querySelectorAll('.btab').forEach(b=>b.classList.remove('on'));
-  document.getElementById('pane-'+name).classList.add('on');
-  btn.classList.add('on');
-}
+function tab(name,btn){document.querySelectorAll('.bpane').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.btab').forEach(b=>b.classList.remove('on'));document.getElementById('pane-'+name).classList.add('on');btn.classList.add('on');}
 
-// ── SIDEBAR ──
-function loadSB() {
+function loadSB(){
   fetch('/api/trips').then(r=>r.json()).then(d=>{
-    allTrips = d.trips||[];
-    var el = document.getElementById('sbList');
-    if(!allTrips.length){ el.innerHTML='<div class="sb-empty">No trips saved yet.<br>Click "+ New" to start.</div>'; return; }
-    el.innerHTML = allTrips.map(t=>`
-      <div class="sb-item${T.id===t.id?' active':''}" onclick="loadTrip('${t.id}')">
-        <div class="sb-name">${t.guestName}</div>
-        <div class="sb-sub">${t.occasion||''}${t.destination?' · '+t.destination:''}</div>
-        <div class="sb-date">${t.departDate||'Date TBD'}</div>
-      </div>`).join('');
+    var el=document.getElementById('sbList');
+    if(!(d.trips&&d.trips.length)){el.innerHTML='<div class="sb-empty">No trips yet.</div>';return;}
+    el.innerHTML=d.trips.map(t=>`<div class="sb-item${T.id===t.id?' active':''}" onclick="loadTrip('${t.id}')"><div class="sb-name">${t.guestName}</div><div class="sb-sub">${t.occasion||''}${t.destination?' · '+t.destination:''}</div><div class="sb-date">${t.departDate||'Date TBD'}</div></div>`).join('');
   }).catch(()=>{});
 }
 
-// ── NEW / LOAD ──
-function newTrip() {
-  T = { days:[], photos:[], resortPhotos:[], packingList:[], bookingFormFields:[] };
-  showBook = false;
-  clearFields();
-  renderDays(); renderPacking(); renderBookFields();
-  renderPhotoStrip('photos','photoStrip');
-  renderPhotoStrip('resortPhotos','resortPhotoStrip');
-  document.getElementById('tripLabel').textContent = 'New Trip Page';
-  document.getElementById('previewUrl').textContent = 'Save trip to get shareable link';
-  document.getElementById('previewFrame').srcdoc = '<div style="display:flex;align-items:center;justify-content:center;height:100%;font-family:sans-serif;color:#aaa;font-size:14px;text-align:center;padding:40px;">Fill in guest name &amp; occasion to preview</div>';
-  document.getElementById('bnPreview').innerHTML = 'No banner uploaded';
-  document.getElementById('resortHeroPreview').innerHTML = 'No resort photo uploaded';
-  document.getElementById('weatherBox').innerHTML = '<div class="weather-loading">Enter a destination above to load current weather ☁️</div>';
+function newTrip(){
+  T={days:[],photos:[],resortPhotos:[],packingList:[],bookingFormFields:[],bgColor:'navy'};
+  showBook=false; clearFields(); renderDays(); renderPacking(); renderBookFields();
+  renderPhotoStrip('photos','photoStrip'); renderPhotoStrip('resortPhotos','resortPhotoStrip');
+  document.getElementById('tripLabel').textContent='New Trip Page';
+  document.getElementById('previewUrl').textContent='Save trip to get shareable link';
+  document.getElementById('previewFrame').srcdoc='<div style="display:flex;align-items:center;justify-content:center;height:100%;font-family:sans-serif;color:#aaa;font-size:14px;text-align:center;padding:40px;">Fill in guest name &amp; occasion to preview</div>';
+  document.getElementById('bnPreview').innerHTML='No banner uploaded';
+  document.getElementById('resortHeroPreview').innerHTML='No resort photo';
+  document.getElementById('weatherBox').innerHTML='<div style="font-size:12px;color:#aaa;">Enter a destination to load weather ☁️</div>';
   document.getElementById('bookTog').classList.remove('on');
-  document.getElementById('bookFields').style.opacity = '.4';
-  document.getElementById('bookFields').style.pointerEvents = 'none';
+  document.getElementById('bookFields').style.opacity='.4';
+  document.getElementById('bookFields').style.pointerEvents='none';
+  selectColor('navy',document.querySelector('[data-color="navy"]'));
   loadSB();
 }
 
-function clearFields() {
+function clearFields(){
   ['guestName','occasion','destination','departDate','returnDate','guestCount','tripDesc',
    'flight','flightTime','hotel','hotelAddr','checkin','bookingRef','itineraryLink','itineraryLinkLabel',
-   'currLocal','currRate','currBudget','currTips','message','signedFrom','advisorPhone'
+   'bookingUrl','bookingUrlLabel','bookingNote','currLocal','currRate','currBudget','currTips',
+   'message','signedFrom','advisorPhone','socialIG','socialFB','socialWA'
   ].forEach(id=>{var el=document.getElementById(id);if(el)el.value='';});
   document.getElementById('theme').value='Luxury Escape';
 }
 
-function loadTrip(slug) {
+function loadTrip(slug){
   fetch('/api/trips/'+slug).then(r=>r.json()).then(t=>{
     T=t; showBook=t.showBookingForm||false;
     var map={guestName:t.guestName,occasion:t.occasion,destination:t.destination,
       departDate:t.departDate,returnDate:t.returnDate,guestCount:t.guestCount,tripDesc:t.tripDesc,
       flight:t.flight,flightTime:t.flightTime,hotel:t.hotel,hotelAddr:t.hotelAddr,
       checkin:t.checkin,bookingRef:t.bookingRef,itineraryLink:t.itineraryLink,
-      itineraryLinkLabel:t.itineraryLinkLabel,message:t.message,signedFrom:t.signedFrom,
-      advisorPhone:t.advisorPhone,currLocal:t.currency&&t.currency.localCurrency,
-      currRate:t.currency&&t.currency.exchangeRate,currBudget:t.currency&&t.currency.dailyBudget,
-      currTips:t.currency&&t.currency.tips};
+      itineraryLinkLabel:t.itineraryLinkLabel,bookingUrl:t.bookingUrl,bookingUrlLabel:t.bookingUrlLabel,
+      bookingNote:t.bookingNote,message:t.message,signedFrom:t.signedFrom,advisorPhone:t.advisorPhone,
+      socialIG:t.socialIG,socialFB:t.socialFB,socialWA:t.socialWA,
+      currLocal:t.currency&&t.currency.localCurrency,currRate:t.currency&&t.currency.exchangeRate,
+      currBudget:t.currency&&t.currency.dailyBudget,currTips:t.currency&&t.currency.tips};
     Object.entries(map).forEach(([k,v])=>{var el=document.getElementById(k);if(el&&v)el.value=v;});
     if(t.theme) document.getElementById('theme').value=t.theme;
     document.getElementById('tripLabel').textContent=t.guestName+"'s "+t.occasion;
@@ -405,19 +441,21 @@ function loadTrip(slug) {
     document.getElementById('bookFields').style.opacity=showBook?'1':'.4';
     document.getElementById('bookFields').style.pointerEvents=showBook?'':'none';
     if(t.bannerPhoto) document.getElementById('bnPreview').innerHTML='<img src="'+t.bannerPhoto+'">';
-    else document.getElementById('bnPreview').innerHTML='No banner uploaded';
     if(t.resortHeroPhoto) document.getElementById('resortHeroPreview').innerHTML='<img src="'+t.resortHeroPhoto+'">';
-    else document.getElementById('resortHeroPreview').innerHTML='No resort photo uploaded';
-    T.photos=t.photos||[];T.resortPhotos=t.resortPhotos||[];
+    T.photos=t.photos||[]; T.resortPhotos=t.resortPhotos||[];
     renderDays(); renderPacking(); renderBookFields();
-    renderPhotoStrip('photos','photoStrip');
-    renderPhotoStrip('resortPhotos','resortPhotoStrip');
+    renderPhotoStrip('photos','photoStrip'); renderPhotoStrip('resortPhotos','resortPhotoStrip');
+    var bgColor=t.bgColor||'navy';
+    T.bgColor=bgColor;
+    var sw=document.querySelector('[data-color="'+bgColor+'"]');
+    if(sw) selectColor(bgColor,sw);
+    else if(bgColor.startsWith('#')){ document.getElementById('customColor').value=bgColor; document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('selected')); }
     setUrl(slug); qp(); loadSB();
     if(t.destination) fetchWeather();
   }).catch(()=>toast('Failed to load trip'));
 }
 
-function collect() {
+function collect(){
   T.guestName=document.getElementById('guestName').value.trim();
   T.occasion=document.getElementById('occasion').value.trim();
   T.destination=document.getElementById('destination').value.trim();
@@ -434,19 +472,20 @@ function collect() {
   T.bookingRef=document.getElementById('bookingRef').value.trim();
   T.itineraryLink=document.getElementById('itineraryLink').value.trim();
   T.itineraryLinkLabel=document.getElementById('itineraryLinkLabel').value.trim()||'Download Full Itinerary';
+  T.bookingUrl=document.getElementById('bookingUrl').value.trim();
+  T.bookingUrlLabel=document.getElementById('bookingUrlLabel').value.trim()||'Book Now';
+  T.bookingNote=document.getElementById('bookingNote').value.trim();
   T.message=document.getElementById('message').value.trim();
   T.signedFrom=document.getElementById('signedFrom').value.trim();
   T.advisorPhone=document.getElementById('advisorPhone').value.trim();
+  T.socialIG=document.getElementById('socialIG').value.trim();
+  T.socialFB=document.getElementById('socialFB').value.trim();
+  T.socialWA=document.getElementById('socialWA').value.trim();
   T.showBookingForm=showBook;
-  T.currency={
-    localCurrency:document.getElementById('currLocal').value.trim(),
-    exchangeRate:document.getElementById('currRate').value.trim(),
-    dailyBudget:document.getElementById('currBudget').value.trim(),
-    tips:document.getElementById('currTips').value.trim()
-  };
+  T.currency={localCurrency:document.getElementById('currLocal').value.trim(),exchangeRate:document.getElementById('currRate').value.trim(),dailyBudget:document.getElementById('currBudget').value.trim(),tips:document.getElementById('currTips').value.trim()};
 }
 
-function saveTrip() {
+function saveTrip(){
   collect();
   if(!T.guestName||!T.occasion){toast('Enter guest name and occasion');return;}
   fetch('/api/trips',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(T)})
@@ -455,142 +494,93 @@ function saveTrip() {
       else toast('Error: '+(d.error||'Save failed'));
     }).catch(()=>toast('Save failed'));
 }
+function deleteTrip(){if(!T.id||!confirm('Delete this trip?'))return;fetch('/api/trips/'+T.id,{method:'DELETE'}).then(()=>{toast('Deleted');newTrip();loadSB();});}
 
-function deleteTrip() {
-  if(!T.id||!confirm('Delete this trip page permanently?'))return;
-  fetch('/api/trips/'+T.id,{method:'DELETE'}).then(()=>{toast('Deleted');newTrip();loadSB();});
+function selectColor(name,el){
+  T.bgColor=name;
+  document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('selected'));
+  if(el)el.classList.add('selected');
+  qp();
+}
+function selectCustomColor(hex){
+  T.bgColor=hex;
+  document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('selected'));
+  qp();
 }
 
-// ── WEATHER ──
-function fetchWeather() {
+function fetchWeather(){
   clearTimeout(weatherTimer);
-  weatherTimer = setTimeout(function(){
-    var dest = document.getElementById('destination').value.trim();
-    if(!dest){ document.getElementById('weatherBox').innerHTML='<div class="weather-loading">Enter a destination above to load current weather ☁️</div>'; return; }
-    document.getElementById('weatherBox').innerHTML='<div class="weather-loading">Loading weather for '+dest+'...</div>';
+  weatherTimer=setTimeout(function(){
+    var dest=document.getElementById('destination').value.trim();
+    if(!dest){document.getElementById('weatherBox').innerHTML='<div style="font-size:12px;color:#aaa;">Enter a destination to load weather ☁️</div>';return;}
+    document.getElementById('weatherBox').innerHTML='<div style="font-size:12px;color:#aaa;">Loading weather for '+dest+'...</div>';
     fetch('https://wttr.in/'+encodeURIComponent(dest)+'?format=j1')
       .then(r=>r.json()).then(data=>{
         var cur=data.current_condition[0];
-        var desc=cur.weatherDesc[0].value;
-        var tempC=cur.temp_C;
-        var tempF=cur.temp_F;
-        var feels=cur.FeelsLikeC;
-        var humidity=cur.humidity;
+        var desc=cur.weatherDesc[0].value,tempC=cur.temp_C,tempF=cur.temp_F,feels=cur.FeelsLikeC,humidity=cur.humidity;
         var icons={'Sunny':'☀️','Clear':'🌙','Cloudy':'☁️','Overcast':'☁️','Mist':'🌫️','Rain':'🌧️','Snow':'❄️','Thunder':'⛈️','Fog':'🌫️','Partly':'⛅'};
-        var icon='🌤️';
-        Object.entries(icons).forEach(([k,v])=>{ if(desc.includes(k)) icon=v; });
-        document.getElementById('weatherBox').innerHTML=`
-          <div class="weather-box">
-            <div class="weather-icon">${icon}</div>
-            <div class="weather-info">
-              <div class="weather-temp">${tempC}°C / ${tempF}°F</div>
-              <div class="weather-desc">${desc} in ${dest}</div>
-              <div class="weather-extra">Feels like ${feels}°C · Humidity ${humidity}%</div>
-            </div>
-          </div>`;
+        var icon='🌤️';Object.entries(icons).forEach(([k,v])=>{if(desc.includes(k))icon=v;});
+        document.getElementById('weatherBox').innerHTML=`<div class="weather-box"><div class="weather-icon">${icon}</div><div class="weather-info"><div class="weather-temp">${tempC}°C / ${tempF}°F</div><div class="weather-desc">${desc} in ${dest}</div><div class="weather-extra">Feels like ${feels}°C · Humidity ${humidity}%</div></div></div>`;
         T.weatherSnapshot={icon,desc,tempC,tempF,feels,humidity,dest};
-      }).catch(()=>{
-        document.getElementById('weatherBox').innerHTML='<div class="weather-loading" style="color:#e8a87c;">Weather unavailable for this location</div>';
-      });
-  }, 800);
+      }).catch(()=>{document.getElementById('weatherBox').innerHTML='<div style="font-size:12px;color:#e8a87c;">Weather unavailable</div>';});
+  },800);
 }
 
-// ── DAYS ──
-function addDay() {
-  var idx=T.days.length,date='';
-  if(T.departDate){var d=new Date(T.departDate+'T12:00:00');d.setDate(d.getDate()+idx);date=d.toLocaleDateString('en-CA',{weekday:'short',month:'short',day:'numeric'});}
-  T.days.push({label:'Day '+(idx+1),date:date,title:'',events:[]});
-  renderDays();qp();
-}
+function addDay(){var idx=T.days.length,date='';if(T.departDate){var d=new Date(T.departDate+'T12:00:00');d.setDate(d.getDate()+idx);date=d.toLocaleDateString('en-CA',{weekday:'short',month:'short',day:'numeric'});}T.days.push({label:'Day '+(idx+1),date:date,title:'',events:[]});renderDays();qp();}
 function addEvent(di,type){T.days[di].events=T.days[di].events||[];T.days[di].events.push({type:type,title:'',time:'',notes:'',flightNum:'',route:'',address:''});renderDays();}
 function rmDay(i){T.days.splice(i,1);T.days.forEach((d,j)=>d.label='Day '+(j+1));renderDays();qp();}
 function rmEvent(di,ei){T.days[di].events.splice(ei,1);renderDays();qp();}
 function renderDays(){
   document.getElementById('daysList').innerHTML=T.days.map((day,di)=>`
-    <div class="day-wrap">
-      <div class="day-hd">
-        <span class="day-badge">${day.label}</span>
-        <span class="day-date-lbl">${day.date||''}</span>
-        <input class="day-title-inp" value="${(day.title||'').replace(/"/g,'&quot;')}" placeholder="Day title" oninput="T.days[${di}].title=this.value;qp()">
-        <button class="day-rm" onclick="rmDay(${di})">Remove</button>
-      </div>
-      <div class="events-body">
-        ${(day.events||[]).map((ev,ei)=>renderEv(di,ei,ev)).join('')}
-        <div class="add-ev-row">${Object.keys(EVTYPES).map(t=>`<button class="add-ev-btn" onclick="addEvent(${di},'${t}')">${EVTYPES[t]}</button>`).join('')}</div>
-      </div>
-    </div>`).join('');
+    <div class="day-wrap"><div class="day-hd"><span class="day-badge">${day.label}</span><span class="day-date-lbl">${day.date||''}</span><input class="day-title-inp" value="${(day.title||'').replace(/"/g,'&quot;')}" placeholder="Day title" oninput="T.days[${di}].title=this.value;qp()"><button class="day-rm" onclick="rmDay(${di})">Remove</button></div>
+    <div class="events-body">${(day.events||[]).map((ev,ei)=>renderEv(di,ei,ev)).join('')}<div class="add-ev-row">${Object.keys(EVTYPES).map(t=>`<button class="add-ev-btn" onclick="addEvent(${di},'${t}')">${EVTYPES[t]}</button>`).join('')}</div></div></div>`).join('');
 }
 function renderEv(di,ei,ev){
   var extra='';
   if(ev.type==='flight') extra=`<div class="ef-row"><div class="ef"><label>Flight No.</label><input value="${(ev.flightNum||'').replace(/"/g,'&quot;')}" placeholder="AC874" oninput="T.days[${di}].events[${ei}].flightNum=this.value;qp()"></div><div class="ef"><label>Route</label><input value="${(ev.route||'').replace(/"/g,'&quot;')}" placeholder="YOW → CUN" oninput="T.days[${di}].events[${ei}].route=this.value;qp()"></div></div>`;
-  else if(['hotel','restaurant'].includes(ev.type)) extra=`<div class="ef"><label>Address / Location</label><input value="${(ev.address||'').replace(/"/g,'&quot;')}" placeholder="Address" oninput="T.days[${di}].events[${ei}].address=this.value;qp()"></div>`;
-  return `<div class="ev-card"><div class="ev-hd"><span class="ev-badge ${EVCLS[ev.type]}">${EVTYPES[ev.type]}</span><button class="ev-rm" onclick="rmEvent(${di},${ei})">✕ Remove</button></div>
+  else if(['hotel','restaurant'].includes(ev.type)) extra=`<div class="ef"><label>Address</label><input value="${(ev.address||'').replace(/"/g,'&quot;')}" placeholder="Address" oninput="T.days[${di}].events[${ei}].address=this.value;qp()"></div>`;
+  return `<div class="ev-card"><div class="ev-hd"><span class="ev-badge ${EVCLS[ev.type]}">${EVTYPES[ev.type]}</span><button class="ev-rm" onclick="rmEvent(${di},${ei})">✕</button></div>
     <div class="ef-row"><div class="ef"><label>Title</label><input value="${(ev.title||'').replace(/"/g,'&quot;')}" placeholder="e.g. Check in" oninput="T.days[${di}].events[${ei}].title=this.value;qp()"></div><div class="ef"><label>Time</label><input value="${(ev.time||'').replace(/"/g,'&quot;')}" placeholder="3:00 PM" oninput="T.days[${di}].events[${ei}].time=this.value;qp()"></div></div>
-    ${extra}<div class="ef"><label>Notes</label><textarea rows="2" oninput="T.days[${di}].events[${ei}].notes=this.value;qp()">${ev.notes||''}</textarea></div>
-  </div>`;
+    ${extra}<div class="ef"><label>Notes</label><textarea rows="2" oninput="T.days[${di}].events[${ei}].notes=this.value;qp()">${ev.notes||''}</textarea></div></div>`;
 }
 
-// ── PHOTOS ──
-function handleBanner(inp){var f=inp.files[0];if(!f)return;var r=new FileReader();r.onload=function(e){T.bannerPhoto=e.target.result;document.getElementById('bnPreview').innerHTML='<img src="'+e.target.result+'">';qp();};r.readAsDataURL(f);}
-function handleResortHero(inp){var f=inp.files[0];if(!f)return;var r=new FileReader();r.onload=function(e){T.resortHeroPhoto=e.target.result;document.getElementById('resortHeroPreview').innerHTML='<img src="'+e.target.result+'">';qp();};r.readAsDataURL(f);}
-function handlePhotos(inp,key){
-  T[key]=T[key]||[];
-  var promises=Array.from(inp.files).map(f=>new Promise(res=>{var r=new FileReader();r.onload=e=>res(e.target.result);r.readAsDataURL(f);}));
-  Promise.all(promises).then(results=>{T[key].push(...results);renderPhotoStrip(key,key==='photos'?'photoStrip':'resortPhotoStrip');qp();});
-}
-function renderPhotoStrip(key,stripId){
-  document.getElementById(stripId).innerHTML=(T[key]||[]).map((p,i)=>`
-    <div class="ph-wrap" draggable="true" ondragstart="dragStart(event,${i},'${key}')" ondragover="event.preventDefault()" ondrop="dragDrop(event,${i},'${key}','${stripId}')">
-      <img src="${p}">
-      <div class="ph-overlay">
-        <button class="ph-btn ph-rm" onclick="T['${key}'].splice(${i},1);renderPhotoStrip('${key}','${stripId}');qp()">✕</button>
-      </div>
-    </div>`).join('');
-}
-var dragIdx=null,dragKey=null;
-function dragStart(e,i,key){dragIdx=i;dragKey=key;}
-function dragDrop(e,i,key,stripId){
-  if(dragIdx===null||dragKey!==key)return;
-  var arr=T[key],item=arr.splice(dragIdx,1)[0];arr.splice(i,0,item);
-  renderPhotoStrip(key,stripId);qp();dragIdx=null;
-}
-
-// ── PACKING ──
 function addPackItem(){T.packingList.push({item:'',category:'Clothing'});renderPacking();}
 function renderPacking(){
   var cats=['Clothing','Documents','Toiletries','Electronics','Medications','Entertainment','Other'];
-  document.getElementById('packingList').innerHTML=T.packingList.map((p,i)=>`
-    <div class="pk-row">
-      <input value="${(p.item||'').replace(/"/g,'&quot;')}" placeholder="e.g. Passport" oninput="T.packingList[${i}].item=this.value;qp()">
-      <select onchange="T.packingList[${i}].category=this.value;qp()">${cats.map(c=>`<option${p.category===c?' selected':''}>${c}</option>`).join('')}</select>
-      <button class="xbtn" onclick="T.packingList.splice(${i},1);renderPacking();qp()">✕</button>
-    </div>`).join('');
+  document.getElementById('packingList').innerHTML=T.packingList.map((p,i)=>`<div class="pk-row"><input value="${(p.item||'').replace(/"/g,'&quot;')}" placeholder="e.g. Passport" oninput="T.packingList[${i}].item=this.value;qp()"><select onchange="T.packingList[${i}].category=this.value;qp()">${cats.map(c=>`<option${p.category===c?' selected':''}>${c}</option>`).join('')}</select><button class="xbtn" onclick="T.packingList.splice(${i},1);renderPacking();qp()">✕</button></div>`).join('');
 }
 
-// ── BOOKING ──
 function toggleBooking(){showBook=!showBook;document.getElementById('bookTog').classList.toggle('on',showBook);document.getElementById('bookFields').style.opacity=showBook?'1':'.4';document.getElementById('bookFields').style.pointerEvents=showBook?'':'none';qp();}
 function addBookField(){T.bookingFormFields=T.bookingFormFields||[];T.bookingFormFields.push('');renderBookFields();}
-function renderBookFields(){
-  document.getElementById('bookFieldsList').innerHTML=(T.bookingFormFields||[]).map((f,i)=>`
-    <div class="pk-row">
-      <input value="${f.replace(/"/g,'&quot;')}" placeholder="e.g. Dietary Requirements" oninput="T.bookingFormFields[${i}]=this.value" style="width:auto;flex:1;">
-      <button class="xbtn" style="width:auto;padding:0 10px;" onclick="T.bookingFormFields.splice(${i},1);renderBookFields()">✕</button>
-    </div>`).join('');
-}
+function renderBookFields(){document.getElementById('bookFieldsList').innerHTML=(T.bookingFormFields||[]).map((f,i)=>`<div class="pk-row"><input value="${f.replace(/"/g,'&quot;')}" placeholder="e.g. Dietary Requirements" oninput="T.bookingFormFields[${i}]=this.value" style="flex:1;"><button class="xbtn" style="width:auto;padding:0 10px;" onclick="T.bookingFormFields.splice(${i},1);renderBookFields()">✕</button></div>`).join('');}
 
-// ── PREVIEW ──
+function handleBanner(inp){var f=inp.files[0];if(!f)return;var r=new FileReader();r.onload=function(e){T.bannerPhoto=e.target.result;document.getElementById('bnPreview').innerHTML='<img src="'+e.target.result+'">';qp();};r.readAsDataURL(f);}
+function handleResortHero(inp){var f=inp.files[0];if(!f)return;var r=new FileReader();r.onload=function(e){T.resortHeroPhoto=e.target.result;document.getElementById('resortHeroPreview').innerHTML='<img src="'+e.target.result+'">';qp();};r.readAsDataURL(f);}
+function handlePhotos(inp,key){T[key]=T[key]||[];var promises=Array.from(inp.files).map(f=>new Promise(res=>{var r=new FileReader();r.onload=e=>res(e.target.result);r.readAsDataURL(f);}));Promise.all(promises).then(results=>{T[key].push(...results);renderPhotoStrip(key,key==='photos'?'photoStrip':'resortPhotoStrip');qp();});}
+function renderPhotoStrip(key,stripId){document.getElementById(stripId).innerHTML=(T[key]||[]).map((p,i)=>`<div class="ph-wrap" draggable="true" ondragstart="dragStart(event,${i},'${key}')" ondragover="event.preventDefault()" ondrop="dragDrop(event,${i},'${key}','${stripId}')"><img src="${p}"><div class="ph-overlay"><button class="ph-btn ph-rm" onclick="T['${key}'].splice(${i},1);renderPhotoStrip('${key}','${stripId}');qp()">✕</button></div></div>`).join('');}
+var dragIdx=null,dragKey=null;
+function dragStart(e,i,key){dragIdx=i;dragKey=key;}
+function dragDrop(e,i,key,stripId){if(dragIdx===null||dragKey!==key)return;var arr=T[key],item=arr.splice(dragIdx,1)[0];arr.splice(i,0,item);renderPhotoStrip(key,stripId);qp();dragIdx=null;}
+
 function qp(){clearTimeout(PT);PT=setTimeout(doPreview,1000);}
 function doPreview(){
   collect();T.showBookingForm=showBook;
   if(!T.guestName||!T.occasion)return;
   fetch('/api/trips',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(T)})
     .then(r=>r.json()).then(d=>{
-      if(d.slug){if(!T.id)T.id=d.slug;setUrl(d.slug);fetch('/trips/'+d.slug).then(r=>r.text()).then(html=>document.getElementById('previewFrame').srcdoc=html);}
+      if(d.slug){if(!T.id)T.id=d.slug;setUrl(d.slug);loadPreviewWithRetry('/trips/'+d.slug,0);}
     }).catch(()=>{});
 }
+function loadPreviewWithRetry(url,attempt){
+  if(attempt===0) document.getElementById('previewFrame').srcdoc='<div style="display:flex;align-items:center;justify-content:center;height:100%;font-family:sans-serif;color:#888;font-size:14px;flex-direction:column;gap:12px;"><div style="font-size:2rem;">⏳</div><div>Loading preview...</div></div>';
+  fetch(url).then(r=>{
+    if(!r.ok&&attempt<5){document.getElementById('previewFrame').srcdoc='<div style="display:flex;align-items:center;justify-content:center;height:100%;font-family:sans-serif;color:#888;font-size:13px;flex-direction:column;gap:12px;"><div style="font-size:2rem;">☕</div><div>Server waking up...</div><div style="font-size:11px;color:#bbb;">Retry '+(attempt+1)+'/5</div></div>';setTimeout(()=>loadPreviewWithRetry(url,attempt+1),10000);return;}
+    return r.text();
+  }).then(html=>{if(html)document.getElementById('previewFrame').srcdoc=html;}).catch(()=>{if(attempt<5)setTimeout(()=>loadPreviewWithRetry(url,attempt+1),10000);});
+}
 function setUrl(slug){document.getElementById('previewUrl').textContent=window.location.origin+'/trips/'+slug;}
-function openPreview(){if(!T.id){toast('Save the trip first');return;}window.open('/trips/'+T.id,'_blank');}
-function copyLink(){if(!T.id){toast('Save the trip first');return;}navigator.clipboard.writeText(window.location.origin+'/trips/'+T.id).then(()=>toast('✅ Link copied!')).catch(()=>toast('Copy failed'));}
+function openPreview(){if(!T.id){toast('Save first');return;}window.open('/trips/'+T.id,'_blank');}
+function copyLink(){if(!T.id){toast('Save first');return;}navigator.clipboard.writeText(window.location.origin+'/trips/'+T.id).then(()=>toast('✅ Link copied!')).catch(()=>toast('Copy failed'));}
 function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3200);}
 </script>
 </body>
