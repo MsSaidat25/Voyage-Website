@@ -127,19 +127,15 @@ const BG_MAP = {
   navy:      'linear-gradient(135deg,#0d1b2a,#1a3550)'
 };
 
-function getBgStyle(t) {
-  if (t.bannerPhoto) {
-    return `linear-gradient(160deg,rgba(0,0,0,0.6) 0%,rgba(0,0,0,0.35) 100%),url('${t.bannerPhoto}') center/cover no-repeat`;
-  }
+function getBg(t) {
   const color = t.bgColor || 'sunset';
-  return color.startsWith('#')
-    ? `linear-gradient(135deg,${color},${color}bb)`
-    : (BG_MAP[color] || BG_MAP.sunset);
+  if (color.startsWith('#')) return `linear-gradient(135deg,${color},${color}bb)`;
+  return BG_MAP[color] || BG_MAP.sunset;
 }
 
 function renderResortPage(t) {
   const photos = t.resortPhotos || [];
-  const bg = getBgStyle(t);
+  const bg = getBg(t);
   return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>${t.hotel||'Resort'} Photos — Voyage Vista Travels</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -194,15 +190,43 @@ function renderTripPage(t) {
   const nights = (t.departDate&&t.returnDate)?Math.max(0,Math.ceil((new Date(t.returnDate)-new Date(t.departDate))/86400000)):null;
   const countdown = t.departDate?Math.ceil((new Date(t.departDate)-new Date())/86400000):null;
   const fmt = d=>d?new Date(d+'T12:00:00').toLocaleDateString('en-CA',{month:'long',day:'numeric',year:'numeric'}):'';
-  const heroBg = getBgStyle(t);
   const photoCount = (t.photos||[]).length;
+  const bg = getBg(t);
 
-  let cdHtml='';
-  if(countdown!==null){
-    if(countdown>0) cdHtml=`<div class="cd-wrap"><div class="cd-sp">✨ 🎉 ✨</div><div class="cd-num">${countdown}</div><div class="cd-lbl">days until your adventure begins!</div><div class="cd-sp">🌟 🎊 🌟</div></div>`;
-    else if(countdown===0) cdHtml=`<div class="cd-wrap"><div class="cd-sp">🎉 🥂 🎉</div><div class="cd-num">Today!</div><div class="cd-lbl">Your adventure starts now!</div></div>`;
-    else cdHtml=`<div class="cd-wrap"><div class="cd-sp">🌴 ✈️ 🌴</div><div class="cd-num">You're There!</div><div class="cd-lbl">Enjoy every moment!</div></div>`;
-  }
+  // HERO: banner photo uses img tag for perfect centering, color uses gradient background
+  const heroSection = t.bannerPhoto ? `
+  <div class="hero-banner">
+    <img class="hero-banner-img" src="${t.bannerPhoto}" alt="Trip banner">
+    <div class="hero-banner-overlay"></div>
+    <div class="hero-content">
+      <div class="h-badge">✈ Voyage Vista Travels · ${t.theme||'Special Occasion'}</div>
+      <div class="conf">🎉 🌟 🎊 🌴 🎈</div>
+      <div class="h1">Happy <em>${t.occasion}</em>,<br>${t.guestName}!</div>
+      ${t.destination?`<div class="h-dest">📍 ${t.destination}</div>`:''}
+      ${t.tripDesc?`<div class="h-desc">${t.tripDesc}</div>`:''}
+      <div class="h-stats">
+        ${nights?`<div class="stat-box"><div class="s-num">${nights}</div><div class="s-lbl">Nights</div></div>`:''}
+        ${t.guestCount?`<div class="stat-box"><div class="s-num">${t.guestCount}</div><div class="s-lbl">Guests</div></div>`:''}
+        ${t.departDate?`<div class="stat-box"><div class="s-num">${fmt(t.departDate)}</div><div class="s-lbl">Departure</div></div>`:''}
+      </div>
+      ${countdownHtml(countdown)}
+    </div>
+  </div>` : `
+  <div class="hero-color" style="background:${bg};">
+    <div class="hero-content">
+      <div class="h-badge">✈ Voyage Vista Travels · ${t.theme||'Special Occasion'}</div>
+      <div class="conf">🎉 🌟 🎊 🌴 🎈</div>
+      <div class="h1">Happy <em>${t.occasion}</em>,<br>${t.guestName}!</div>
+      ${t.destination?`<div class="h-dest">📍 ${t.destination}</div>`:''}
+      ${t.tripDesc?`<div class="h-desc">${t.tripDesc}</div>`:''}
+      <div class="h-stats">
+        ${nights?`<div class="stat-box"><div class="s-num">${nights}</div><div class="s-lbl">Nights</div></div>`:''}
+        ${t.guestCount?`<div class="stat-box"><div class="s-num">${t.guestCount}</div><div class="s-lbl">Guests</div></div>`:''}
+        ${t.departDate?`<div class="stat-box"><div class="s-num">${fmt(t.departDate)}</div><div class="s-lbl">Departure</div></div>`:''}
+      </div>
+      ${countdownHtml(countdown)}
+    </div>
+  </div>`;
 
   const autoCarousel = photoCount > 0 ? `
   <section class="sec">
@@ -319,9 +343,8 @@ function renderTripPage(t) {
     <a href="mailto:Hello@voyagevista.ca" class="adv-email">Hello@voyagevista.ca</a>
   </div></section>` : '';
 
-  // FIX: strip all non-digits from WhatsApp number
-  const waNum = (t.socialWA||'').replace(/\D/g,'');
-  const socialLinks=(t.socialIG||t.socialFB||t.socialWA)?`
+  const waNum=(t.socialWA||'').replace(/\D/g,'');
+  const socialLinks=(t.socialIG||t.socialFB||waNum)?`
   <div class="social-bar">
     ${t.socialIG?`<a href="${t.socialIG}" target="_blank" rel="noopener" class="social-link" title="Instagram"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>`:''}
     ${t.socialFB?`<a href="${t.socialFB}" target="_blank" rel="noopener" class="social-link" title="Facebook"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>`:''}
@@ -337,41 +360,79 @@ function renderTripPage(t) {
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'DM Sans',sans-serif;background:#f5f0e8;color:#2c2c2c;line-height:1.6;}
-.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:80px 24px 60px;position:relative;overflow:hidden;}
-.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.15),transparent 60%);pointer-events:none;}
-.hi{position:relative;z-index:1;max-width:720px;margin:0 auto;}
-.h-badge{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#fff;border:1px solid rgba(255,255,255,.5);border-radius:20px;padding:6px 20px;margin-bottom:20px;background:rgba(255,255,255,.15);}
-.conf{font-size:1.6rem;letter-spacing:6px;margin-bottom:14px;opacity:.9;}
-.h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2.6rem,8vw,5.8rem);color:#fff;font-weight:600;line-height:1.1;margin-bottom:12px;text-shadow:0 2px 32px rgba(0,0,0,.2);}
-.h1 em{font-style:italic;text-shadow:0 0 40px rgba(255,255,255,.5);}
-.h-dest{font-size:1.1rem;color:rgba(255,255,255,.85);margin-bottom:12px;}
-.h-desc{font-size:.95rem;color:rgba(255,255,255,.7);max-width:500px;margin:0 auto 28px;line-height:1.7;}
-.h-stats{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-bottom:32px;}
-.stat-box{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:14px;padding:14px 24px;backdrop-filter:blur(8px);}
-.s-num{font-family:'Cormorant Garamond',serif;font-size:1.9rem;color:#fff;font-weight:600;}
+
+/* ── HERO — BANNER PHOTO VERSION ─────────────────────── */
+.hero-banner{position:relative;width:100%;height:520px;overflow:hidden;}
+@media(max-width:600px){.hero-banner{height:420px;}}
+.hero-banner-img{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;
+  object-position:center center;
+}
+.hero-banner-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.55) 60%, rgba(0,0,0,0.75) 100%);
+}
+
+/* ── HERO — COLOR VERSION ─────────────────────────────── */
+.hero-color{
+  width:100%;
+  min-height:520px;
+  display:flex;align-items:center;justify-content:center;
+  text-align:center;padding:80px 24px 60px;
+  position:relative;overflow:hidden;
+}
+.hero-color::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.18),transparent 60%);
+  pointer-events:none;
+}
+
+/* ── HERO CONTENT (shared) ───────────────────────────── */
+.hero-content{
+  position:relative;z-index:2;
+  width:100%;max-width:720px;
+  margin:0 auto;
+  display:flex;flex-direction:column;align-items:center;
+  text-align:center;padding:40px 24px;
+}
+.h-badge{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#fff;border:1px solid rgba(255,255,255,.5);border-radius:20px;padding:6px 20px;margin-bottom:16px;background:rgba(255,255,255,.15);}
+.conf{font-size:1.5rem;letter-spacing:5px;margin-bottom:12px;opacity:.9;}
+.h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2.4rem,7vw,5rem);color:#fff;font-weight:600;line-height:1.1;margin-bottom:10px;text-shadow:0 2px 20px rgba(0,0,0,.3);}
+.h1 em{font-style:italic;color:#fff;}
+.h-dest{font-size:1rem;color:rgba(255,255,255,.85);margin-bottom:10px;}
+.h-desc{font-size:.9rem;color:rgba(255,255,255,.7);max-width:480px;margin:0 auto 22px;line-height:1.7;}
+.h-stats{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-bottom:24px;}
+.stat-box{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:12px;padding:12px 20px;backdrop-filter:blur(8px);}
+.s-num{font-family:'Cormorant Garamond',serif;font-size:1.7rem;color:#fff;font-weight:600;}
 .s-lbl{font-size:10px;color:rgba(255,255,255,.7);letter-spacing:.08em;text-transform:uppercase;margin-top:2px;}
-.cd-wrap{display:inline-block;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.45);border-radius:24px;padding:24px 52px;margin-top:8px;backdrop-filter:blur(8px);}
-.cd-sp{font-size:1.5rem;letter-spacing:6px;margin-bottom:8px;animation:sp 2s ease-in-out infinite;}
+.cd-wrap{display:inline-block;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.4);border-radius:20px;padding:20px 44px;backdrop-filter:blur(8px);}
+.cd-sp{font-size:1.4rem;letter-spacing:5px;margin-bottom:6px;animation:sp 2s ease-in-out infinite;}
 @keyframes sp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.7;transform:scale(1.06)}}
-.cd-num{font-family:'Cormorant Garamond',serif;font-size:clamp(4.5rem,14vw,9rem);color:#fff;font-weight:600;line-height:1;text-shadow:0 0 60px rgba(255,255,255,.5);animation:cdp 3s ease-in-out infinite;}
-@keyframes cdp{0%,100%{text-shadow:0 0 60px rgba(255,255,255,.4)}50%{text-shadow:0 0 100px rgba(255,255,255,.9)}}
-.cd-lbl{font-size:.88rem;color:rgba(255,255,255,.8);margin-top:6px;letter-spacing:.06em;text-transform:uppercase;}
+.cd-num{font-family:'Cormorant Garamond',serif;font-size:clamp(4rem,12vw,8rem);color:#fff;font-weight:600;line-height:1;text-shadow:0 0 50px rgba(255,255,255,.5);animation:cdp 3s ease-in-out infinite;}
+@keyframes cdp{0%,100%{text-shadow:0 0 50px rgba(255,255,255,.4)}50%{text-shadow:0 0 90px rgba(255,255,255,.9)}}
+.cd-lbl{font-size:.85rem;color:rgba(255,255,255,.8);margin-top:4px;letter-spacing:.05em;text-transform:uppercase;}
+
+/* ── SECTIONS ─────────────────────────────────────────── */
 .sec{padding:36px 20px;max-width:760px;margin:0 auto;}
 .sec-label{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#c4a057;font-weight:500;margin-bottom:16px;}
-.doc-heading{font-size:14px;font-weight:600;color:#2c2c2c;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #f0ebe0;}
+.doc-heading{font-size:15px;font-weight:600;color:#2c2c2c;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #f0ebe0;}
 .div{border:none;border-top:1px solid rgba(196,160,87,.12);margin:0 20px;}
-.car-outer{position:relative;display:flex;align-items:center;gap:0;}
-.car-viewport{flex:1;overflow:hidden;border-radius:18px;background:#111;}
+
+/* ── CAROUSEL ─────────────────────────────────────────── */
+.car-outer{position:relative;display:flex;align-items:center;}
+.car-viewport{flex:1;overflow:hidden;border-radius:16px;background:#111;}
 .car-track{display:flex;transition:transform .45s cubic-bezier(.25,.46,.45,.94);}
-.car-slide{flex-shrink:0;width:100%;aspect-ratio:16/9;overflow:hidden;background:#111;}
-.car-slide img{width:100%;height:100%;object-fit:contain;cursor:pointer;transition:transform .3s;}
-.car-slide img:hover{transform:scale(1.01);}
-.car-arrow{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.92);border:none;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#2c2c2c;box-shadow:0 2px 12px rgba(0,0,0,.15);transition:all .2s;z-index:2;}
+.car-slide{flex-shrink:0;width:100%;aspect-ratio:4/3;overflow:hidden;background:#111;display:flex;align-items:center;justify-content:center;}
+.car-slide img{width:100%;height:100%;object-fit:contain;cursor:pointer;}
+.car-arrow{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.95);border:none;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#2c2c2c;box-shadow:0 2px 12px rgba(0,0,0,.15);transition:all .2s;}
 .car-arrow:hover{background:#fff;transform:scale(1.08);}
-.car-prev{margin-right:8px;}.car-next{margin-left:8px;}
+.car-prev{margin-right:10px;}.car-next{margin-left:10px;}
 .car-dots{display:flex;justify-content:center;gap:6px;padding:12px 0 4px;}
 .car-dot{width:8px;height:8px;border-radius:50%;background:rgba(196,160,87,.3);cursor:pointer;transition:all .2s;}
 .car-dot.on{background:#c4a057;width:22px;border-radius:4px;}
+
 .resort-btn{display:inline-flex;align-items:center;gap:12px;padding:16px 32px;background:linear-gradient(135deg,#0d1b2a,#1a3550);border:2px solid rgba(196,160,87,.4);border-radius:14px;color:#e8c87a;font-size:15px;font-weight:500;text-decoration:none;transition:all .25s;}
 .resort-btn:hover{border-color:#c4a057;transform:translateY(-2px);}
 .r-count{background:rgba(196,160,87,.2);color:#c4a057;font-size:11px;padding:3px 10px;border-radius:10px;}
@@ -438,19 +499,8 @@ body{font-family:'DM Sans',sans-serif;background:#f5f0e8;color:#2c2c2c;line-heig
 </style>
 </head>
 <body>
-<div class="hero" style="background:${heroBg};"><div class="hi">
-  <div class="h-badge">✈ Voyage Vista Travels · ${t.theme||'Special Occasion'}</div>
-  <div class="conf">🎉 🌟 🎊 🌴 🎈</div>
-  <div class="h1">Happy <em>${t.occasion}</em>,<br>${t.guestName}!</div>
-  ${t.destination?`<div class="h-dest">📍 ${t.destination}</div>`:''}
-  ${t.tripDesc?`<div class="h-desc">${t.tripDesc}</div>`:''}
-  <div class="h-stats">
-    ${nights?`<div class="stat-box"><div class="s-num">${nights}</div><div class="s-lbl">Nights</div></div>`:''}
-    ${t.guestCount?`<div class="stat-box"><div class="s-num">${t.guestCount}</div><div class="s-lbl">Guests</div></div>`:''}
-    ${t.departDate?`<div class="stat-box"><div class="s-num">${fmt(t.departDate)}</div><div class="s-lbl">Departure</div></div>`:''}
-  </div>
-  ${cdHtml}
-</div></div>
+
+${heroSection}
 
 ${autoCarousel}${resortBtn}${logistics}${itin}${docSection}${msgSec}${weatherSec}${packSec}${currSec}${bookSec}${contactSec}
 ${socialLinks}
@@ -482,8 +532,6 @@ if(carTotal>1){
     track.parentElement.addEventListener('mouseenter',function(){clearInterval(carAuto);});
     track.parentElement.addEventListener('mouseleave',function(){carAuto=setInterval(function(){carGo((carIdx+1)%carTotal);},4000);});
   }
-}
-if(track&&carTotal>1){
   var csx=0;
   track.addEventListener('touchstart',function(e){csx=e.touches[0].clientX;},{passive:true});
   track.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-csx;if(dx<-40)carNav(1);else if(dx>40)carNav(-1);});
@@ -501,6 +549,13 @@ if(form)form.addEventListener('submit',function(e){
 });
 <\/script>
 </body></html>`;
+}
+
+function countdownHtml(countdown) {
+  if(countdown === null) return '';
+  if(countdown > 0) return `<div class="cd-wrap"><div class="cd-sp">✨ 🎉 ✨</div><div class="cd-num">${countdown}</div><div class="cd-lbl">days until your adventure begins!</div><div class="cd-sp">🌟 🎊 🌟</div></div>`;
+  if(countdown === 0) return `<div class="cd-wrap"><div class="cd-sp">🎉 🥂 🎉</div><div class="cd-num">Today!</div><div class="cd-lbl">Your adventure starts now!</div></div>`;
+  return `<div class="cd-wrap"><div class="cd-sp">🌴 ✈️ 🌴</div><div class="cd-num">You're There!</div><div class="cd-lbl">Enjoy every moment!</div></div>`;
 }
 
 const PORT = process.env.PORT || 3000;
