@@ -10,7 +10,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
 .topbar{height:52px;background:#0d1b2a;display:flex;align-items:center;padding:0 20px;gap:10px;flex-shrink:0;border-bottom:1px solid rgba(196,160,87,.2);}
 .logo{font-family:'Cormorant Garamond',serif;font-size:1.05rem;color:#c4a057;font-weight:600;margin-right:auto;}
 .trip-label{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:6px;color:#e8dcc8;font-size:12px;padding:5px 12px;min-width:160px;max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.tbtn{padding:7px 14px;border-radius:6px;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:opacity .15s;}
+.tbtn{padding:7px 14px;border-radius:6px;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;}
 .save-btn{background:rgba(255,255,255,.12);color:#e8dcc8;border:1px solid rgba(255,255,255,.2);}
 .save-btn:hover{background:rgba(255,255,255,.2);}
 .publish-btn{background:linear-gradient(135deg,#c4a057,#e8c87a);color:#0d1b2a;font-weight:600;}
@@ -74,28 +74,25 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
 .add-line-btn{width:100%;padding:9px;border:1px dashed #ddd;border-radius:8px;background:none;color:#bbb;font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:6px;}
 .add-line-btn:hover{border-color:#c4a057;color:#c4a057;}
 
-/* PHOTO STRIP */
+/* PHOTO UPLOAD */
 .up-zone{border:2px dashed #ddd;border-radius:10px;padding:22px;text-align:center;cursor:pointer;transition:all .2s;position:relative;margin-bottom:10px;}
 .up-zone:hover{border-color:#c4a057;background:#faf7f2;}
 .up-zone p{font-size:13px;color:#bbb;margin-top:6px;}
+.up-zone span{font-size:11px;color:rgba(196,160,87,.7);display:block;margin-top:4px;}
 .up-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0;}
 .photo-strip{display:flex;gap:8px;overflow-x:auto;padding:8px 0 12px;scroll-snap-type:x mandatory;}
 .photo-strip::-webkit-scrollbar{height:4px;}
 .photo-strip::-webkit-scrollbar-thumb{background:rgba(196,160,87,.3);border-radius:2px;}
 .ph-wrap{position:relative;flex-shrink:0;width:160px;height:120px;border-radius:8px;overflow:hidden;border:2px solid #eee;scroll-snap-align:start;cursor:grab;}
 .ph-wrap img{width:100%;height:100%;object-fit:cover;}
-.ph-overlay{position:absolute;inset:0;background:rgba(0,0,0,0);transition:background .2s;display:flex;align-items:center;justify-content:center;gap:6px;}
-.ph-wrap:hover .ph-overlay{background:rgba(0,0,0,.5);}
-.ph-btn{width:28px;height:28px;border-radius:50%;border:none;cursor:pointer;font-size:12px;display:none;align-items:center;justify-content:center;}
-.ph-wrap:hover .ph-btn{display:flex;}
-.ph-rm{background:rgba(220,50,50,.9);color:#fff;}
-.ph-crop-btn{background:rgba(196,160,87,.9);color:#0d1b2a;}
-.bn-preview,.resort-preview{width:100%;height:150px;border-radius:10px;overflow:hidden;margin-top:8px;display:flex;align-items:center;justify-content:center;font-size:13px;position:relative;}
-.bn-preview{background:#1a2e45;color:rgba(255,255,255,.3);}
-.resort-preview{background:#f0ebe0;color:#aaa;border:1px solid #ede5d4;}
-.bn-preview img,.resort-preview img{width:100%;height:100%;object-fit:cover;}
-.bn-crop-btn{position:absolute;bottom:8px;right:8px;padding:5px 12px;border:none;border-radius:6px;background:rgba(196,160,87,.9);color:#0d1b2a;font-size:11px;cursor:pointer;font-weight:500;display:none;}
-.bn-preview:hover .bn-crop-btn,.resort-preview:hover .bn-crop-btn{display:block;}
+.ph-overlay{position:absolute;inset:0;background:rgba(0,0,0,0);transition:background .2s;display:flex;align-items:center;justify-content:center;}
+.ph-wrap:hover .ph-overlay{background:rgba(0,0,0,.45);}
+.ph-rm{width:28px;height:28px;border-radius:50%;border:none;cursor:pointer;font-size:13px;display:none;align-items:center;justify-content:center;background:rgba(220,50,50,.9);color:#fff;}
+.ph-wrap:hover .ph-rm{display:flex;}
+.img-preview{width:100%;border-radius:10px;overflow:hidden;margin-top:8px;position:relative;}
+.img-preview img{width:100%;height:180px;object-fit:cover;border-radius:10px;display:block;}
+.img-preview .rm-btn{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;border:none;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;}
+.img-placeholder{width:100%;height:100px;background:#faf7f2;border:1px solid #ede5d4;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#bbb;font-size:13px;margin-top:8px;}
 
 /* PACKING */
 .pk-row{display:flex;gap:7px;margin-bottom:7px;align-items:center;}
@@ -111,30 +108,11 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
 .tog::after{content:'';position:absolute;width:18px;height:18px;background:#fff;border-radius:50%;top:2px;left:2px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
 .tog.on::after{left:18px;}
 
-/* VIBRANT COLOR SWATCHES */
+/* COLOR SWATCHES */
 .color-swatches{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;}
-.color-swatch{width:44px;height:44px;border-radius:10px;border:3px solid transparent;cursor:pointer;transition:all .2s;position:relative;}
-.color-swatch.selected{border-color:#c4a057;transform:scale(1.18);box-shadow:0 0 0 2px #fff,0 0 0 4px #c4a057;}
+.color-swatch{width:44px;height:44px;border-radius:10px;border:3px solid transparent;cursor:pointer;transition:all .2s;}
+.color-swatch.selected{border-color:#fff;outline:3px solid #c4a057;transform:scale(1.15);}
 .color-swatch:hover{transform:scale(1.1);}
-
-/* CROP MODAL */
-.crop-modal{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;display:flex;align-items:center;justify-content:center;display:none;}
-.crop-modal.open{display:flex;}
-.crop-box{background:#fff;border-radius:16px;padding:24px;width:min(520px,95vw);max-height:90vh;overflow-y:auto;}
-.crop-title{font-size:15px;font-weight:500;color:#2c2c2c;margin-bottom:16px;}
-.crop-viewport{width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:10px;background:#111;position:relative;cursor:move;user-select:none;}
-.crop-viewport.square{aspect-ratio:1;}
-.crop-viewport img{position:absolute;transform-origin:0 0;pointer-events:none;}
-.crop-overlay{position:absolute;inset:0;border:3px solid rgba(196,160,87,.9);border-radius:6px;pointer-events:none;box-shadow:0 0 0 9999px rgba(0,0,0,.4);}
-.crop-controls{margin-top:14px;}
-.crop-controls label{font-size:11px;color:#aaa;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em;}
-.crop-controls input[type=range]{width:100%;}
-.crop-ratio-btns{display:flex;gap:8px;margin-top:10px;}
-.ratio-btn{padding:5px 14px;border-radius:6px;border:1px solid #e0d8cc;background:none;font-size:11px;cursor:pointer;color:#888;font-family:'DM Sans',sans-serif;}
-.ratio-btn.on{border-color:#c4a057;color:#c4a057;background:#faf7f2;}
-.crop-actions{display:flex;gap:8px;margin-top:16px;}
-.crop-cancel{flex:1;padding:10px;border:1px solid #ddd;border-radius:8px;background:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;}
-.crop-apply{flex:2;padding:10px;border:none;border-radius:8px;background:linear-gradient(135deg,#c4a057,#e8c87a);color:#0d1b2a;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;}
 
 /* WEATHER */
 .weather-box{background:#f0f8ff;border:1px solid #b8d4f0;border-radius:10px;padding:14px 18px;margin-top:12px;display:flex;align-items:center;gap:16px;}
@@ -151,7 +129,6 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
 .cp-btn{padding:4px 10px;border:1px solid rgba(196,160,87,.4);border-radius:5px;background:none;color:#c4a057;font-size:11px;cursor:pointer;}
 .cp-btn:hover{background:rgba(196,160,87,.1);}
 #previewFrame{flex:1;border:none;background:#f5f0e8;}
-
 .toast{position:fixed;bottom:18px;right:18px;background:#0d1b2a;color:#e8c87a;padding:10px 18px;border-radius:8px;font-size:13px;border:1px solid rgba(196,160,87,.3);transform:translateY(60px);opacity:0;transition:all .3s;z-index:99999;}
 .toast.show{transform:translateY(0);opacity:1;}
 @media(max-width:1100px){.preview-panel{display:none;}}
@@ -159,30 +136,6 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
 </style>
 </head>
 <body>
-
-<!-- CROP MODAL -->
-<div class="crop-modal" id="cropModal">
-  <div class="crop-box">
-    <div class="crop-title">✂️ Crop Photo</div>
-    <div class="crop-viewport" id="cropViewport">
-      <img id="cropImg">
-      <div class="crop-overlay" id="cropOverlay"></div>
-    </div>
-    <div class="crop-controls">
-      <label>Zoom</label>
-      <input type="range" id="cropZoom" min="100" max="400" value="100" oninput="updateCropZoom()">
-      <div class="crop-ratio-btns">
-        <button class="ratio-btn" onclick="setCropRatio('16/9',this)">16:9 Landscape</button>
-        <button class="ratio-btn on" onclick="setCropRatio('4/3',this)">4:3 Standard</button>
-        <button class="ratio-btn" onclick="setCropRatio('1',this)">1:1 Square</button>
-      </div>
-    </div>
-    <div class="crop-actions">
-      <button class="crop-cancel" onclick="closeCrop()">Cancel</button>
-      <button class="crop-apply" onclick="applyCrop()">✓ Apply Crop</button>
-    </div>
-  </div>
-</div>
 
 <div class="topbar">
   <div class="logo">✈ Voyage Vista Travels</div>
@@ -248,16 +201,16 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
       <hr class="sdiv">
       <div class="fg">
         <label>Background Color Theme</label>
-        <div style="font-size:11px;color:#aaa;margin-bottom:10px;">Choose a vibrant hero color for the guest page</div>
+        <div style="font-size:11px;color:#aaa;margin-bottom:10px;">Choose a vibrant hero background color</div>
         <div class="color-swatches" id="colorSwatches">
-          <div class="color-swatch selected" style="background:linear-gradient(135deg,#FF6B35,#F7C59F)" data-color="sunset" onclick="selectColor('sunset',this)" title="Sunset Orange"></div>
+          <div class="color-swatch selected" style="background:linear-gradient(135deg,#FF6B35,#F7931E)" data-color="sunset" onclick="selectColor('sunset',this)" title="Sunset Orange"></div>
           <div class="color-swatch" style="background:linear-gradient(135deg,#E91E8C,#FF6B9D)" data-color="hotpink" onclick="selectColor('hotpink',this)" title="Hot Pink"></div>
-          <div class="color-swatch" style="background:linear-gradient(135deg,#00BCD4,#0097A7)" data-color="caribbean" onclick="selectColor('caribbean',this)" title="Caribbean Teal"></div>
-          <div class="color-swatch" style="background:linear-gradient(135deg,#8E24AA,#CE93D8)" data-color="purple" onclick="selectColor('purple',this)" title="Vibrant Purple"></div>
-          <div class="color-swatch" style="background:linear-gradient(135deg,#F44336,#FF8A65)" data-color="coral" onclick="selectColor('coral',this)" title="Coral Red"></div>
-          <div class="color-swatch" style="background:linear-gradient(135deg,#2196F3,#64B5F6)" data-color="ocean" onclick="selectColor('ocean',this)" title="Ocean Blue"></div>
-          <div class="color-swatch" style="background:linear-gradient(135deg,#4CAF50,#A5D6A7)" data-color="tropical" onclick="selectColor('tropical',this)" title="Tropical Green"></div>
-          <div class="color-swatch" style="background:linear-gradient(135deg,#FF9800,#FFD54F)" data-color="gold" onclick="selectColor('gold',this)" title="Golden"></div>
+          <div class="color-swatch" style="background:linear-gradient(135deg,#00838F,#00BCD4)" data-color="caribbean" onclick="selectColor('caribbean',this)" title="Caribbean Teal"></div>
+          <div class="color-swatch" style="background:linear-gradient(135deg,#6A1B9A,#CE93D8)" data-color="purple" onclick="selectColor('purple',this)" title="Vibrant Purple"></div>
+          <div class="color-swatch" style="background:linear-gradient(135deg,#D32F2F,#FF7043)" data-color="coral" onclick="selectColor('coral',this)" title="Coral Red"></div>
+          <div class="color-swatch" style="background:linear-gradient(135deg,#1565C0,#42A5F5)" data-color="ocean" onclick="selectColor('ocean',this)" title="Ocean Blue"></div>
+          <div class="color-swatch" style="background:linear-gradient(135deg,#2E7D32,#66BB6A)" data-color="tropical" onclick="selectColor('tropical',this)" title="Tropical Green"></div>
+          <div class="color-swatch" style="background:linear-gradient(135deg,#E65100,#FFA000)" data-color="gold" onclick="selectColor('gold',this)" title="Golden"></div>
           <div class="color-swatch" style="background:linear-gradient(135deg,#0d1b2a,#1a3550)" data-color="navy" onclick="selectColor('navy',this)" title="Deep Navy"></div>
         </div>
         <div style="display:flex;align-items:center;gap:10px;margin-top:12px;">
@@ -272,37 +225,43 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
         <div class="fg"><label>Instagram URL</label><input id="socialIG" placeholder="https://instagram.com/..." oninput="markDirty()"></div>
         <div class="fg"><label>Facebook URL</label><input id="socialFB" placeholder="https://facebook.com/..." oninput="markDirty()"></div>
       </div>
-      <div class="fg"><label>WhatsApp Number (with country code, no +)</label><input id="socialWA" placeholder="12345678900" oninput="markDirty()"></div>
+      <div class="fg"><label>WhatsApp Number (digits only, with country code)</label><input id="socialWA" placeholder="13439613506" oninput="markDirty()"></div>
 
       <hr class="sdiv">
-      <div class="fg"><label>Banner / Hero Photo</label>
+      <div class="fg">
+        <label>Banner / Hero Photo</label>
+        <div class="info-box" style="margin-bottom:8px;">📐 Best size: <strong>1920 × 600px</strong> (wide landscape). The banner spans full width and is cropped to ~600px tall — use a wide landscape photo with the subject centered.</div>
         <div class="up-zone" onclick="document.getElementById('bannerInp').click()">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-          <p>Click to upload hero banner</p>
-          <input type="file" id="bannerInp" accept="image/*" onchange="openCropForBanner(this)" onclick="event.stopPropagation()">
+          <p>Click to upload banner image</p>
+          <span>Recommended: 1920×600px wide landscape</span>
+          <input type="file" id="bannerInp" accept="image/*" onchange="handleSinglePhoto(this,'bannerPhoto','bnPreview','bnPlaceholder')" onclick="event.stopPropagation()">
         </div>
-        <div class="bn-preview" id="bnPreview" style="position:relative;">
-          <span id="bnPlaceholder">No banner uploaded</span>
-          <img id="bnImg" style="display:none;width:100%;height:100%;object-fit:cover;">
-          <button class="bn-crop-btn" onclick="reCropBanner()">✂️ Recrop</button>
+        <div class="img-preview" id="bnPreview" style="display:none;">
+          <img id="bnImg">
+          <button class="rm-btn" onclick="removePhoto('bannerPhoto','bnPreview','bnPlaceholder')">✕</button>
         </div>
+        <div class="img-placeholder" id="bnPlaceholder">No banner uploaded</div>
       </div>
     </div>
 
     <!-- LOGISTICS -->
     <div class="bpane" id="pane-logistics">
       <div class="fg"><label>Hotel / Resort Name</label><input id="hotel" placeholder="Secrets Akumal Riviera Maya" oninput="markDirty()"></div>
-      <div class="fg"><label>Resort / Hotel Photo</label>
+      <div class="fg">
+        <label>Resort / Hotel Photo</label>
+        <div class="info-box" style="margin-bottom:8px;">📐 Best size: <strong>1200 × 600px</strong> (landscape). Shown as a wide card on the logistics section.</div>
         <div class="up-zone" onclick="document.getElementById('resortHeroInp').click()">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
           <p>Upload photo of the resort/hotel</p>
-          <input type="file" id="resortHeroInp" accept="image/*" onchange="openCropForResortHero(this)" onclick="event.stopPropagation()">
+          <span>Recommended: 1200×600px landscape</span>
+          <input type="file" id="resortHeroInp" accept="image/*" onchange="handleSinglePhoto(this,'resortHeroPhoto','rhPreview','rhPlaceholder')" onclick="event.stopPropagation()">
         </div>
-        <div class="resort-preview" id="resortHeroPreview" style="position:relative;">
-          <span id="rhPlaceholder">No resort photo</span>
-          <img id="rhImg" style="display:none;width:100%;height:100%;object-fit:cover;">
-          <button class="bn-crop-btn" onclick="reCropResortHero()">✂️ Recrop</button>
+        <div class="img-preview" id="rhPreview" style="display:none;">
+          <img id="rhImg">
+          <button class="rm-btn" onclick="removePhoto('resortHeroPhoto','rhPreview','rhPlaceholder')">✕</button>
         </div>
+        <div class="img-placeholder" id="rhPlaceholder">No resort photo</div>
       </div>
       <div class="fg"><label>Hotel Address</label><input id="hotelAddr" placeholder="Riviera Maya, Mexico" oninput="markDirty()"></div>
       <div class="fg"><label>Check-in / Check-out</label><input id="checkin" placeholder="Apr 26 — May 1" oninput="markDirty()"></div>
@@ -324,7 +283,6 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
         <div class="fg"><label>Download Link (Google Drive, Dropbox…)</label><input id="itineraryLink" placeholder="https://drive.google.com/..." oninput="markDirty()"></div>
         <div class="fg"><label>Button Label</label><input id="itineraryLinkLabel" placeholder="Download Full Itinerary" oninput="markDirty()"></div>
       </div>
-
       <div style="font-size:14px;font-weight:500;color:#2c2c2c;margin:18px 0 14px;padding-bottom:10px;border-bottom:1px solid #f0ebe0;">🔗 Booking Link</div>
       <div class="frow">
         <div class="fg"><label>Booking URL</label><input id="bookingUrl" placeholder="https://booking.com/your-link..." oninput="markDirty()"></div>
@@ -333,7 +291,6 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
       <div class="fg"><label>Booking Note (optional)</label>
         <textarea id="bookingNote" rows="2" placeholder="e.g. Use code VV2026 for your group discount" oninput="markDirty()"></textarea>
       </div>
-
       <div style="font-size:14px;font-weight:500;color:#2c2c2c;margin:18px 0 14px;padding-bottom:10px;border-bottom:1px solid #f0ebe0;">🗓 Day-by-Day Itinerary</div>
       <div id="daysList"></div>
       <button class="add-line-btn" onclick="addDay()">+ Add Day</button>
@@ -341,22 +298,27 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
 
     <!-- GALLERY PHOTOS -->
     <div class="bpane" id="pane-photos">
-      <div class="info-box">📸 Upload gallery photos — auto-moving carousel with arrows on guest page. Click thumbnail to crop. Drag to reorder.</div>
+      <div class="info-box">
+        📸 <strong>Best size: 1200 × 900px</strong> (4:3 ratio) or <strong>1280 × 720px</strong> (16:9).<br>
+        Photos show full image (shrink to fit). Use landscape photos for best results. Drag to reorder.
+      </div>
       <div class="up-zone" onclick="document.getElementById('photosInp').click()">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
         <p>Click to upload multiple photos</p>
-        <input type="file" id="photosInp" accept="image/*" multiple onchange="handlePhotos(this,'photos')" onclick="event.stopPropagation()">
+        <span>Landscape photos work best · 1200×900px recommended</span>
+        <input type="file" id="photosInp" accept="image/*" multiple onchange="handleMultiPhoto(this,'photos')" onclick="event.stopPropagation()">
       </div>
       <div class="photo-strip" id="photoStrip"></div>
     </div>
 
     <!-- RESORT PHOTOS -->
     <div class="bpane" id="pane-resort">
-      <div class="info-box">🏨 Resort photos — shown in separate dedicated gallery page.</div>
+      <div class="info-box">🏨 <strong>Best size: 1200 × 900px</strong>. These appear in the dedicated Resort Gallery page with lightbox.</div>
       <div class="up-zone" onclick="document.getElementById('resortPhotosInp').click()">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
         <p>Click to upload resort photos</p>
-        <input type="file" id="resortPhotosInp" accept="image/*" multiple onchange="handlePhotos(this,'resortPhotos')" onclick="event.stopPropagation()">
+        <span>1200×900px recommended</span>
+        <input type="file" id="resortPhotosInp" accept="image/*" multiple onchange="handleMultiPhoto(this,'resortPhotos')" onclick="event.stopPropagation()">
       </div>
       <div class="photo-strip" id="resortPhotoStrip"></div>
     </div>
@@ -392,9 +354,9 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
       </div>
     </div>
 
-    <!-- MESSAGE (tab is last but section renders after docs in live page) -->
+    <!-- MESSAGE -->
     <div class="bpane" id="pane-message">
-      <div class="info-box">💬 Message displays on the guest page <strong>after</strong> the Documents & Booking section.</div>
+      <div class="info-box">💬 This message appears on the guest page <strong>after</strong> the Documents & Booking section.</div>
       <div class="fg"><label>Personal Message to Guest</label>
         <textarea id="message" rows="6" placeholder="Write a warm, personal note for your guest." oninput="markDirty()"></textarea>
       </div>
@@ -424,14 +386,20 @@ var showBook=false,isDirty=false,PT=null,weatherTimer=null;
 var EVTYPES={flight:'✈ Flight',hotel:'🏨 Hotel',activity:'⭐ Activity',restaurant:'🍽 Restaurant',transport:'🚗 Transport',note:'📝 Note'};
 var EVCLS={flight:'tb-flight',hotel:'tb-hotel',activity:'tb-activity',restaurant:'tb-restaurant',transport:'tb-transport',note:'tb-note'};
 
-// Crop state
-var cropCallback=null,cropRawSrc=null,cropRatio='4/3',cropScale=1,cropX=0,cropY=0,cropDragging=false,cropDragStart={x:0,y:0,ox:0,oy:0};
+window.addEventListener('DOMContentLoaded',function(){loadSB();});
 
-window.addEventListener('DOMContentLoaded',function(){loadSB();setupCropDrag();});
+function tab(name,btn){
+  document.querySelectorAll('.bpane').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.btab').forEach(b=>b.classList.remove('on'));
+  document.getElementById('pane-'+name).classList.add('on');
+  btn.classList.add('on');
+}
 
-function tab(name,btn){document.querySelectorAll('.bpane').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.btab').forEach(b=>b.classList.remove('on'));document.getElementById('pane-'+name).classList.add('on');btn.classList.add('on');}
-
-function markDirty(){isDirty=true;document.getElementById('saveBtn').textContent='Save *';clearTimeout(PT);PT=setTimeout(doAutoPreview,1200);}
+function markDirty(){
+  isDirty=true;
+  document.getElementById('saveBtn').textContent='Save *';
+  clearTimeout(PT);PT=setTimeout(doAutoPreview,1400);
+}
 
 function loadSB(){
   fetch('/api/trips').then(r=>r.json()).then(d=>{
@@ -449,11 +417,11 @@ function newTrip(){
   document.getElementById('saveBtn').textContent='Save';
   document.getElementById('previewUrl').textContent='Save trip to get link';
   document.getElementById('previewFrame').srcdoc='<div style="display:flex;align-items:center;justify-content:center;height:100%;font-family:sans-serif;color:#aaa;font-size:14px;text-align:center;padding:40px;">Fill in details to preview</div>';
-  document.getElementById('bnImg').style.display='none';document.getElementById('bnPlaceholder').style.display='';
-  document.getElementById('rhImg').style.display='none';document.getElementById('rhPlaceholder').style.display='';
+  showBannerPreview(null);showResortHeroPreview(null);
   document.getElementById('weatherBox').innerHTML='<div style="font-size:12px;color:#aaa;padding:10px 0;">Enter a destination to load weather ☁️</div>';
   document.getElementById('bookTog').classList.remove('on');
-  document.getElementById('bookFields').style.opacity='.4';document.getElementById('bookFields').style.pointerEvents='none';
+  document.getElementById('bookFields').style.opacity='.4';
+  document.getElementById('bookFields').style.pointerEvents='none';
   selectColor('sunset',document.querySelector('[data-color="sunset"]'));
   loadSB();
 }
@@ -467,6 +435,72 @@ function clearFields(){
   document.getElementById('theme').value='Birthday Celebration';
   T.bannerPhoto=null;T.resortHeroPhoto=null;
 }
+
+function showBannerPreview(src){
+  if(src){
+    document.getElementById('bnImg').src=src;
+    document.getElementById('bnPreview').style.display='block';
+    document.getElementById('bnPlaceholder').style.display='none';
+  } else {
+    document.getElementById('bnPreview').style.display='none';
+    document.getElementById('bnPlaceholder').style.display='flex';
+  }
+}
+function showResortHeroPreview(src){
+  if(src){
+    document.getElementById('rhImg').src=src;
+    document.getElementById('rhPreview').style.display='block';
+    document.getElementById('rhPlaceholder').style.display='none';
+  } else {
+    document.getElementById('rhPreview').style.display='none';
+    document.getElementById('rhPlaceholder').style.display='flex';
+  }
+}
+
+function handleSinglePhoto(inp,key,previewId,placeholderId){
+  var f=inp.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(e){
+    T[key]=e.target.result;
+    if(key==='bannerPhoto') showBannerPreview(e.target.result);
+    else showResortHeroPreview(e.target.result);
+    markDirty();
+  };
+  r.readAsDataURL(f);
+}
+
+function removePhoto(key,previewId,placeholderId){
+  T[key]=null;
+  if(key==='bannerPhoto') showBannerPreview(null);
+  else showResortHeroPreview(null);
+  markDirty();
+}
+
+function handleMultiPhoto(inp,key){
+  T[key]=T[key]||[];
+  var promises=Array.from(inp.files).map(f=>new Promise(res=>{
+    var r=new FileReader();r.onload=e=>res(e.target.result);r.readAsDataURL(f);
+  }));
+  Promise.all(promises).then(results=>{
+    T[key].push(...results);
+    renderPhotoStrip(key,key==='photos'?'photoStrip':'resortPhotoStrip');
+    markDirty();
+  });
+}
+
+function renderPhotoStrip(key,stripId){
+  document.getElementById(stripId).innerHTML=(T[key]||[]).map((p,i)=>`
+    <div class="ph-wrap" draggable="true" ondragstart="dragStart(event,${i},'${key}')" ondragover="event.preventDefault()" ondrop="dragDrop(event,${i},'${key}','${stripId}')">
+      <img src="${p}">
+      <div class="ph-overlay">
+        <button class="ph-rm" onclick="T['${key}'].splice(${i},1);renderPhotoStrip('${key}','${stripId}');markDirty()">✕</button>
+      </div>
+    </div>`).join('');
+}
+
+var dragIdx=null,dragKey=null;
+function dragStart(e,i,key){dragIdx=i;dragKey=key;}
+function dragDrop(e,i,key,stripId){if(dragIdx===null||dragKey!==key)return;var arr=T[key],item=arr.splice(dragIdx,1)[0];arr.splice(i,0,item);renderPhotoStrip(key,stripId);markDirty();dragIdx=null;}
 
 function loadTrip(slug){
   fetch('/api/trips/'+slug).then(r=>r.json()).then(t=>{
@@ -487,10 +521,8 @@ function loadTrip(slug){
     document.getElementById('bookTog').classList.toggle('on',showBook);
     document.getElementById('bookFields').style.opacity=showBook?'1':'.4';
     document.getElementById('bookFields').style.pointerEvents=showBook?'':'none';
-    // Banner
-    if(t.bannerPhoto){document.getElementById('bnImg').src=t.bannerPhoto;document.getElementById('bnImg').style.display='block';document.getElementById('bnPlaceholder').style.display='none';}
-    // Resort hero
-    if(t.resortHeroPhoto){document.getElementById('rhImg').src=t.resortHeroPhoto;document.getElementById('rhImg').style.display='block';document.getElementById('rhPlaceholder').style.display='none';}
+    showBannerPreview(t.bannerPhoto||null);
+    showResortHeroPreview(t.resortHeroPhoto||null);
     T.photos=t.photos||[];T.resortPhotos=t.resortPhotos||[];
     renderDays();renderPacking();renderBookFields();
     renderPhotoStrip('photos','photoStrip');renderPhotoStrip('resortPhotos','resortPhotoStrip');
@@ -528,7 +560,7 @@ function collect(){
   T.advisorPhone=document.getElementById('advisorPhone').value.trim();
   T.socialIG=document.getElementById('socialIG').value.trim();
   T.socialFB=document.getElementById('socialFB').value.trim();
-  T.socialWA=document.getElementById('socialWA').value.trim();
+  T.socialWA=document.getElementById('socialWA').value.trim().replace(/\D/g,'');
   T.showBookingForm=showBook;
   T.currency={localCurrency:document.getElementById('currLocal').value.trim(),exchangeRate:document.getElementById('currRate').value.trim(),dailyBudget:document.getElementById('currBudget').value.trim(),tips:document.getElementById('currTips').value.trim()};
 }
@@ -549,9 +581,7 @@ function publishTrip(){
   if(!T.guestName||!T.occasion){toast('Enter guest name and occasion first');return;}
   fetch('/api/trips',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(T)})
     .then(r=>r.json()).then(d=>{
-      if(d.success){T.id=d.slug;isDirty=false;document.getElementById('saveBtn').textContent='Save';document.getElementById('tripLabel').textContent=T.guestName+"'s "+T.occasion;setUrl(d.slug);loadSB();
-      toast('✅ Published! Opening link...');
-      setTimeout(()=>window.open('/trips/'+d.slug,'_blank'),800);}
+      if(d.success){T.id=d.slug;isDirty=false;document.getElementById('saveBtn').textContent='Save';document.getElementById('tripLabel').textContent=T.guestName+"'s "+T.occasion;setUrl(d.slug);loadSB();toast('✅ Published! Opening link...');setTimeout(()=>window.open('/trips/'+d.slug,'_blank'),800);}
       else toast('Error: '+(d.error||'Save failed'));
     }).catch(()=>toast('Publish failed'));
 }
@@ -578,126 +608,6 @@ function fetchWeather(){
   },800);
 }
 
-/* ── CROP ── */
-function openCropModal(src,ratio,callback){
-  cropCallback=callback;cropRawSrc=src;cropRatio=ratio||'4/3';cropScale=1;cropX=0;cropY=0;
-  var vp=document.getElementById('cropViewport');
-  vp.style.aspectRatio=cropRatio;
-  var img=document.getElementById('cropImg');
-  img.src=src;
-  img.onload=function(){
-    var vw=vp.offsetWidth,vh=vp.offsetHeight;
-    var natW=img.naturalWidth,natH=img.naturalHeight;
-    var scale=Math.max(vw/natW,vh/natH);
-    cropScale=scale*100;
-    document.getElementById('cropZoom').value=cropScale;
-    cropX=(vw-natW*scale)/2;cropY=(vh-natH*scale)/2;
-    img.style.width=natW*scale+'px';img.style.height=natH*scale+'px';
-    img.style.left=cropX+'px';img.style.top=cropY+'px';
-  };
-  document.getElementById('cropModal').classList.add('open');
-}
-
-function updateCropZoom(){
-  var z=parseInt(document.getElementById('cropZoom').value)/100;
-  var img=document.getElementById('cropImg');
-  var vp=document.getElementById('cropViewport');
-  var vw=vp.offsetWidth,vh=vp.offsetHeight;
-  img.style.width=(img.naturalWidth*z)+'px';img.style.height=(img.naturalHeight*z)+'px';
-  cropX=Math.min(0,Math.max(vw-img.naturalWidth*z,cropX));
-  cropY=Math.min(0,Math.max(vh-img.naturalHeight*z,cropY));
-  img.style.left=cropX+'px';img.style.top=cropY+'px';
-  cropScale=z*100;
-}
-
-function setCropRatio(ratio,btn){
-  cropRatio=ratio;
-  document.querySelectorAll('.ratio-btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
-  document.getElementById('cropViewport').style.aspectRatio=ratio;
-  updateCropZoom();
-}
-
-function setupCropDrag(){
-  var vp=document.getElementById('cropViewport'),img=document.getElementById('cropImg');
-  vp.addEventListener('mousedown',function(e){cropDragging=true;cropDragStart={x:e.clientX,y:e.clientY,ox:cropX,oy:cropY};});
-  document.addEventListener('mousemove',function(e){
-    if(!cropDragging)return;
-    var z=parseInt(document.getElementById('cropZoom').value)/100;
-    var vw=vp.offsetWidth,vh=vp.offsetHeight;
-    cropX=Math.min(0,Math.max(vw-img.naturalWidth*z,cropDragStart.ox+(e.clientX-cropDragStart.x)));
-    cropY=Math.min(0,Math.max(vh-img.naturalHeight*z,cropDragStart.oy+(e.clientY-cropDragStart.y)));
-    img.style.left=cropX+'px';img.style.top=cropY+'px';
-  });
-  document.addEventListener('mouseup',function(){cropDragging=false;});
-  vp.addEventListener('touchstart',function(e){cropDragging=true;cropDragStart={x:e.touches[0].clientX,y:e.touches[0].clientY,ox:cropX,oy:cropY};},{passive:true});
-  vp.addEventListener('touchmove',function(e){
-    if(!cropDragging)return;
-    var z=parseInt(document.getElementById('cropZoom').value)/100;
-    var vw=vp.offsetWidth,vh=vp.offsetHeight;
-    cropX=Math.min(0,Math.max(vw-img.naturalWidth*z,cropDragStart.ox+(e.touches[0].clientX-cropDragStart.x)));
-    cropY=Math.min(0,Math.max(vh-img.naturalHeight*z,cropDragStart.oy+(e.touches[0].clientY-cropDragStart.y)));
-    img.style.left=cropX+'px';img.style.top=cropY+'px';
-  },{passive:true});
-}
-
-function applyCrop(){
-  var vp=document.getElementById('cropViewport'),img=document.getElementById('cropImg');
-  var z=parseInt(document.getElementById('cropZoom').value)/100;
-  var vw=vp.offsetWidth,vh=vp.offsetHeight;
-  var canvas=document.createElement('canvas');
-  var scale=2;
-  canvas.width=vw*scale;canvas.height=vh*scale;
-  var ctx=canvas.getContext('2d');
-  ctx.drawImage(img,-cropX*scale,-cropY*scale,img.naturalWidth*z*scale,img.naturalHeight*z*scale);
-  var result=canvas.toDataURL('image/jpeg',0.9);
-  closeCrop();
-  if(cropCallback)cropCallback(result);
-}
-
-function closeCrop(){document.getElementById('cropModal').classList.remove('open');}
-
-function openCropForBanner(inp){
-  var f=inp.files[0];if(!f)return;
-  var r=new FileReader();r.onload=function(e){openCropModal(e.target.result,'16/9',function(result){T.bannerPhoto=result;document.getElementById('bnImg').src=result;document.getElementById('bnImg').style.display='block';document.getElementById('bnPlaceholder').style.display='none';markDirty();});};r.readAsDataURL(f);
-}
-function reCropBanner(){if(T.bannerPhoto)openCropModal(T.bannerPhoto,'16/9',function(result){T.bannerPhoto=result;document.getElementById('bnImg').src=result;markDirty();});}
-
-function openCropForResortHero(inp){
-  var f=inp.files[0];if(!f)return;
-  var r=new FileReader();r.onload=function(e){openCropModal(e.target.result,'16/9',function(result){T.resortHeroPhoto=result;document.getElementById('rhImg').src=result;document.getElementById('rhImg').style.display='block';document.getElementById('rhPlaceholder').style.display='none';markDirty();});};r.readAsDataURL(f);
-}
-function reCropResortHero(){if(T.resortHeroPhoto)openCropModal(T.resortHeroPhoto,'16/9',function(result){T.resortHeroPhoto=result;document.getElementById('rhImg').src=result;markDirty();});}
-
-function handlePhotos(inp,key){
-  T[key]=T[key]||[];
-  var files=Array.from(inp.files);
-  var idx=0;
-  function processNext(){
-    if(idx>=files.length){renderPhotoStrip(key,key==='photos'?'photoStrip':'resortPhotoStrip');markDirty();return;}
-    var f=files[idx++];
-    var r=new FileReader();
-    r.onload=function(e){
-      openCropModal(e.target.result,'4/3',function(result){T[key].push(result);processNext();});
-    };r.readAsDataURL(f);
-  }
-  processNext();
-}
-
-function renderPhotoStrip(key,stripId){
-  document.getElementById(stripId).innerHTML=(T[key]||[]).map((p,i)=>`
-    <div class="ph-wrap" draggable="true" ondragstart="dragStart(event,${i},'${key}')" ondragover="event.preventDefault()" ondrop="dragDrop(event,${i},'${key}','${stripId}')">
-      <img src="${p}">
-      <div class="ph-overlay">
-        <button class="ph-btn ph-crop-btn" onclick="cropExistingPhoto(${i},'${key}','${stripId}')">✂️</button>
-        <button class="ph-btn ph-rm" onclick="T['${key}'].splice(${i},1);renderPhotoStrip('${key}','${stripId}');markDirty()">✕</button>
-      </div>
-    </div>`).join('');
-}
-function cropExistingPhoto(i,key,stripId){openCropModal(T[key][i],'4/3',function(result){T[key][i]=result;renderPhotoStrip(key,stripId);markDirty();});}
-var dragIdx=null,dragKey=null;
-function dragStart(e,i,key){dragIdx=i;dragKey=key;}
-function dragDrop(e,i,key,stripId){if(dragIdx===null||dragKey!==key)return;var arr=T[key],item=arr.splice(dragIdx,1)[0];arr.splice(i,0,item);renderPhotoStrip(key,stripId);markDirty();dragIdx=null;}
-
 function addDay(){var idx=T.days.length,date='';if(T.departDate){var d=new Date(T.departDate+'T12:00:00');d.setDate(d.getDate()+idx);date=d.toLocaleDateString('en-CA',{weekday:'short',month:'short',day:'numeric'});}T.days.push({label:'Day '+(idx+1),date:date,title:'',events:[]});renderDays();markDirty();}
 function addEvent(di,type){T.days[di].events=T.days[di].events||[];T.days[di].events.push({type:type,title:'',time:'',notes:'',flightNum:'',route:'',address:''});renderDays();}
 function rmDay(i){T.days.splice(i,1);T.days.forEach((d,j)=>d.label='Day '+(j+1));renderDays();markDirty();}
@@ -717,7 +627,10 @@ function renderEv(di,ei,ev){
 }
 
 function addPackItem(){T.packingList.push({item:'',category:'Clothing'});renderPacking();}
-function renderPacking(){var cats=['Clothing','Documents','Toiletries','Electronics','Medications','Entertainment','Other'];document.getElementById('packingList').innerHTML=T.packingList.map((p,i)=>`<div class="pk-row"><input value="${(p.item||'').replace(/"/g,'&quot;')}" placeholder="e.g. Passport" oninput="T.packingList[${i}].item=this.value;markDirty()"><select onchange="T.packingList[${i}].category=this.value;markDirty()">${cats.map(c=>`<option${p.category===c?' selected':''}>${c}</option>`).join('')}</select><button class="xbtn" onclick="T.packingList.splice(${i},1);renderPacking();markDirty()">✕</button></div>`).join('');}
+function renderPacking(){
+  var cats=['Clothing','Documents','Toiletries','Electronics','Medications','Entertainment','Other'];
+  document.getElementById('packingList').innerHTML=T.packingList.map((p,i)=>`<div class="pk-row"><input value="${(p.item||'').replace(/"/g,'&quot;')}" placeholder="e.g. Passport" oninput="T.packingList[${i}].item=this.value;markDirty()"><select onchange="T.packingList[${i}].category=this.value;markDirty()">${cats.map(c=>`<option${p.category===c?' selected':''}>${c}</option>`).join('')}</select><button class="xbtn" onclick="T.packingList.splice(${i},1);renderPacking();markDirty()">✕</button></div>`).join('');
+}
 
 function toggleBooking(){showBook=!showBook;document.getElementById('bookTog').classList.toggle('on',showBook);document.getElementById('bookFields').style.opacity=showBook?'1':'.4';document.getElementById('bookFields').style.pointerEvents=showBook?'':'none';markDirty();}
 function addBookField(){T.bookingFormFields=T.bookingFormFields||[];T.bookingFormFields.push('');renderBookFields();}
