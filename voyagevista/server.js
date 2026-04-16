@@ -129,23 +129,22 @@ const BG_MAP = {
 
 function getBgStyle(t) {
   if (t.bannerPhoto) {
-    return `background:linear-gradient(160deg,rgba(0,0,0,0.6) 0%,rgba(0,0,0,0.35) 100%),url('${t.bannerPhoto}') center/cover no-repeat;`;
+    return `linear-gradient(160deg,rgba(0,0,0,0.6) 0%,rgba(0,0,0,0.35) 100%),url('${t.bannerPhoto}') center/cover no-repeat`;
   }
   const color = t.bgColor || 'sunset';
-  const bg = color.startsWith('#')
+  return color.startsWith('#')
     ? `linear-gradient(135deg,${color},${color}bb)`
     : (BG_MAP[color] || BG_MAP.sunset);
-  return `background:${bg};`;
 }
 
 function renderResortPage(t) {
   const photos = t.resortPhotos || [];
-  const heroBg = getBgStyle(t);
+  const bg = getBgStyle(t);
   return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>${t.hotel||'Resort'} Photos — Voyage Vista Travels</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'DM Sans',sans-serif;background:#0d1b2a;color:#e8dcc8;}
-.hero{${heroBg}padding:60px 24px 40px;text-align:center;}
+.hero{background:${bg};padding:60px 24px 40px;text-align:center;}
 .badge{display:inline-block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:5px 18px;margin-bottom:14px;}
 h1{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,5vw,3rem);color:#fff;font-weight:600;margin-bottom:8px;}
 .sub{color:rgba(255,255,255,.6);}
@@ -161,10 +160,8 @@ h1{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,5vw,3rem);color
 .lb-close{position:absolute;top:16px;right:20px;font-size:28px;color:rgba(255,255,255,.7);cursor:pointer;background:none;border:none;}
 .lb-prev,.lb-next{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.1);border:none;color:#fff;font-size:28px;padding:12px 18px;cursor:pointer;border-radius:6px;}
 .lb-prev{left:12px;}.lb-next{right:12px;}
-.lb-prev:hover,.lb-next:hover{background:rgba(255,255,255,.2);}
 .footer{text-align:center;padding:32px 20px;color:rgba(255,255,255,.25);font-size:12px;}
-.footer strong{color:#c4a057;}
-</style></head><body>
+.footer strong{color:#c4a057;}</style></head><body>
 <div class="hero">
   <div class="badge">Voyage Vista Travels · Resort Gallery</div>
   <h1>${t.hotel||'Resort'} Photos</h1>
@@ -252,20 +249,20 @@ function renderTripPage(t) {
     </div>`).join('')}
   </section><hr class="div">` : '';
 
-  const docSection = (t.itineraryLink||t.bookingUrl) ? `
+  const docSection=(t.itineraryLink||t.bookingUrl)?`
   <section class="sec">
     <div class="doc-cols">
-      ${t.itineraryLink ? `
+      ${t.itineraryLink?`
       <div class="doc-col">
         <div class="doc-heading">📄 Itinerary Document</div>
         <a href="${t.itineraryLink}" target="_blank" rel="noopener" class="doc-btn itinerary-btn">⬇ ${t.itineraryLinkLabel||'Download Itinerary'}</a>
-      </div>` : ''}
-      ${t.bookingUrl ? `
+      </div>`:''}
+      ${t.bookingUrl?`
       <div class="doc-col">
         <div class="doc-heading">🔗 Booking Link</div>
         <a href="${t.bookingUrl}" target="_blank" rel="noopener" class="doc-btn booking-url-btn">→ ${t.bookingUrlLabel||'Book Now'}</a>
         ${t.bookingNote?`<div class="booking-note">💡 ${t.bookingNote}</div>`:''}
-      </div>` : ''}
+      </div>`:''}
     </div>
   </section><hr class="div">` : '';
 
@@ -322,11 +319,13 @@ function renderTripPage(t) {
     <a href="mailto:Hello@voyagevista.ca" class="adv-email">Hello@voyagevista.ca</a>
   </div></section>` : '';
 
+  // FIX: strip all non-digits from WhatsApp number
+  const waNum = (t.socialWA||'').replace(/\D/g,'');
   const socialLinks=(t.socialIG||t.socialFB||t.socialWA)?`
   <div class="social-bar">
     ${t.socialIG?`<a href="${t.socialIG}" target="_blank" rel="noopener" class="social-link" title="Instagram"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>`:''}
     ${t.socialFB?`<a href="${t.socialFB}" target="_blank" rel="noopener" class="social-link" title="Facebook"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>`:''}
-    ${t.socialWA?`<a href="https://wa.me/${(t.socialWA||'').replace(/\D/g,'')}" target="_blank" rel="noopener" class="social-link" title="WhatsApp"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></a>`:''}
+    ${waNum?`<a href="https://wa.me/${waNum}" target="_blank" rel="noopener" class="social-link" title="WhatsApp"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></a>`:''}
   </div>` : '';
 
   return `<!DOCTYPE html>
@@ -338,7 +337,7 @@ function renderTripPage(t) {
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'DM Sans',sans-serif;background:#f5f0e8;color:#2c2c2c;line-height:1.6;}
-.hero{min-height:100vh;${heroBg}display:flex;align-items:center;justify-content:center;text-align:center;padding:80px 24px 60px;position:relative;overflow:hidden;}
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:80px 24px 60px;position:relative;overflow:hidden;}
 .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.15),transparent 60%);pointer-events:none;}
 .hi{position:relative;z-index:1;max-width:720px;margin:0 auto;}
 .h-badge{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#fff;border:1px solid rgba(255,255,255,.5);border-radius:20px;padding:6px 20px;margin-bottom:20px;background:rgba(255,255,255,.15);}
@@ -355,27 +354,24 @@ body{font-family:'DM Sans',sans-serif;background:#f5f0e8;color:#2c2c2c;line-heig
 .cd-sp{font-size:1.5rem;letter-spacing:6px;margin-bottom:8px;animation:sp 2s ease-in-out infinite;}
 @keyframes sp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.7;transform:scale(1.06)}}
 .cd-num{font-family:'Cormorant Garamond',serif;font-size:clamp(4.5rem,14vw,9rem);color:#fff;font-weight:600;line-height:1;text-shadow:0 0 60px rgba(255,255,255,.5);animation:cdp 3s ease-in-out infinite;}
-@keyframes cdp{0%,100%{text-shadow:0 0 60px rgba(255,255,255,.4)}50%{text-shadow:0 0 100px rgba(255,255,255,.9),0 0 40px rgba(255,255,255,.5)}}
+@keyframes cdp{0%,100%{text-shadow:0 0 60px rgba(255,255,255,.4)}50%{text-shadow:0 0 100px rgba(255,255,255,.9)}}
 .cd-lbl{font-size:.88rem;color:rgba(255,255,255,.8);margin-top:6px;letter-spacing:.06em;text-transform:uppercase;}
 .sec{padding:36px 20px;max-width:760px;margin:0 auto;}
 .sec-label{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#c4a057;font-weight:500;margin-bottom:16px;}
 .doc-heading{font-size:14px;font-weight:600;color:#2c2c2c;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #f0ebe0;}
 .div{border:none;border-top:1px solid rgba(196,160,87,.12);margin:0 20px;}
-
-/* CAROUSEL — large, with arrows */
 .car-outer{position:relative;display:flex;align-items:center;gap:0;}
 .car-viewport{flex:1;overflow:hidden;border-radius:18px;background:#111;}
 .car-track{display:flex;transition:transform .45s cubic-bezier(.25,.46,.45,.94);}
-.car-slide{flex-shrink:0;width:100%;aspect-ratio:16/9;overflow:hidden;}
-.car-slide img{width:100%;height:100%;object-fit:cover;cursor:pointer;transition:transform .3s;}
-.car-slide img:hover{transform:scale(1.02);}
-.car-arrow{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.9);border:none;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#2c2c2c;box-shadow:0 2px 12px rgba(0,0,0,.15);transition:all .2s;z-index:2;}
+.car-slide{flex-shrink:0;width:100%;aspect-ratio:16/9;overflow:hidden;background:#111;}
+.car-slide img{width:100%;height:100%;object-fit:contain;cursor:pointer;transition:transform .3s;}
+.car-slide img:hover{transform:scale(1.01);}
+.car-arrow{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.92);border:none;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#2c2c2c;box-shadow:0 2px 12px rgba(0,0,0,.15);transition:all .2s;z-index:2;}
 .car-arrow:hover{background:#fff;transform:scale(1.08);}
 .car-prev{margin-right:8px;}.car-next{margin-left:8px;}
 .car-dots{display:flex;justify-content:center;gap:6px;padding:12px 0 4px;}
 .car-dot{width:8px;height:8px;border-radius:50%;background:rgba(196,160,87,.3);cursor:pointer;transition:all .2s;}
 .car-dot.on{background:#c4a057;width:22px;border-radius:4px;}
-
 .resort-btn{display:inline-flex;align-items:center;gap:12px;padding:16px 32px;background:linear-gradient(135deg,#0d1b2a,#1a3550);border:2px solid rgba(196,160,87,.4);border-radius:14px;color:#e8c87a;font-size:15px;font-weight:500;text-decoration:none;transition:all .25s;}
 .resort-btn:hover{border-color:#c4a057;transform:translateY(-2px);}
 .r-count{background:rgba(196,160,87,.2);color:#c4a057;font-size:11px;padding:3px 10px;border-radius:10px;}
@@ -396,7 +392,6 @@ body{font-family:'DM Sans',sans-serif;background:#f5f0e8;color:#2c2c2c;line-heig
 .ev-note{font-size:12px;color:#777;margin-top:3px;line-height:1.5;}
 .doc-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
 @media(max-width:500px){.doc-cols{grid-template-columns:1fr;}}
-.doc-col{}
 .doc-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 20px;border-radius:12px;font-weight:600;font-size:14px;text-decoration:none;transition:all .2s;font-family:'DM Sans',sans-serif;width:100%;}
 .itinerary-btn{border:2px solid #c4a057;color:#c4a057;background:#fff;}
 .itinerary-btn:hover{background:#c4a057;color:#fff;}
@@ -423,7 +418,6 @@ body{font-family:'DM Sans',sans-serif;background:#f5f0e8;color:#2c2c2c;line-heig
 .book-form input,.book-form textarea{width:100%;padding:12px 14px;border:1px solid #e0d8cc;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;background:#faf7f2;outline:none;margin-bottom:12px;}
 .book-form input:focus,.book-form textarea:focus{border-color:#c4a057;}
 .sub-btn{width:100%;padding:14px;border:none;border-radius:10px;background:linear-gradient(135deg,#c4a057,#e8c87a);color:#0d1b2a;font-weight:600;font-size:15px;font-family:'DM Sans',sans-serif;cursor:pointer;}
-.sub-btn:hover{opacity:.92;}
 .adv-card{background:#0d1b2a;border-radius:14px;padding:24px 32px;border:1px solid rgba(196,160,87,.2);display:inline-block;min-width:260px;}
 .adv-lbl{font-size:12px;color:rgba(255,255,255,.4);margin-bottom:8px;}
 .adv-phone{font-size:22px;font-weight:500;color:#c4a057;display:block;text-decoration:none;margin-bottom:4px;}
@@ -444,7 +438,7 @@ body{font-family:'DM Sans',sans-serif;background:#f5f0e8;color:#2c2c2c;line-heig
 </style>
 </head>
 <body>
-<div class="hero"><div class="hi">
+<div class="hero" style="background:${heroBg};"><div class="hi">
   <div class="h-badge">✈ Voyage Vista Travels · ${t.theme||'Special Occasion'}</div>
   <div class="conf">🎉 🌟 🎊 🌴 🎈</div>
   <div class="h1">Happy <em>${t.occasion}</em>,<br>${t.guestName}!</div>
@@ -474,8 +468,6 @@ ${socialLinks}
 
 <script>
 var photos=${JSON.stringify(t.photos||[])},lbIdx=0,carIdx=0,carTotal=${photoCount},carAuto;
-
-// CAROUSEL
 var track=document.getElementById('carTrack');
 var dots=document.querySelectorAll('.car-dot');
 function carGo(i){
@@ -484,7 +476,6 @@ function carGo(i){
   dots.forEach(function(d,j){d.classList.toggle('on',j===carIdx);});
 }
 function carNav(d){carGo(carIdx+d);}
-// Auto-advance every 4 seconds
 if(carTotal>1){
   carAuto=setInterval(function(){carGo((carIdx+1)%carTotal);},4000);
   if(track){
@@ -492,21 +483,16 @@ if(carTotal>1){
     track.parentElement.addEventListener('mouseleave',function(){carAuto=setInterval(function(){carGo((carIdx+1)%carTotal);},4000);});
   }
 }
-// Touch swipe on carousel
 if(track&&carTotal>1){
   var csx=0;
   track.addEventListener('touchstart',function(e){csx=e.touches[0].clientX;},{passive:true});
   track.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-csx;if(dx<-40)carNav(1);else if(dx>40)carNav(-1);});
 }
-
-// LIGHTBOX
 function openLB(i){lbIdx=i;document.getElementById('lbImg').src=photos[i];document.getElementById('lb').classList.add('open');}
 function closeLB(){document.getElementById('lb').classList.remove('open');}
 function navLB(d){lbIdx=(lbIdx+d+photos.length)%photos.length;document.getElementById('lbImg').src=photos[lbIdx];}
 document.getElementById('lb').addEventListener('click',function(e){if(e.target===this)closeLB();});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeLB();if(e.key==='ArrowRight')navLB(1);if(e.key==='ArrowLeft')navLB(-1);});
-
-// BOOKING FORM
 var form=document.getElementById('rsvpForm');
 if(form)form.addEventListener('submit',function(e){
   e.preventDefault();
