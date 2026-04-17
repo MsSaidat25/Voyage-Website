@@ -133,6 +133,13 @@ function getBg(t) {
   return BG_MAP[color] || BG_MAP.sunset;
 }
 
+function countdownHtml(countdown) {
+  if (countdown === null || countdown === undefined) return '';
+  if (countdown > 0) return `<div class="cd-wrap"><div class="cd-sp">✨ 🎉 ✨</div><div class="cd-num">${countdown}</div><div class="cd-lbl">days until your adventure begins!</div><div class="cd-sp">🌟 🎊 🌟</div></div>`;
+  if (countdown === 0) return `<div class="cd-wrap"><div class="cd-sp">🎉 🥂 🎉</div><div class="cd-num">Today!</div><div class="cd-lbl">Your adventure starts now!</div></div>`;
+  return `<div class="cd-wrap"><div class="cd-sp">🌴 ✈️ 🌴</div><div class="cd-num">You're There!</div><div class="cd-lbl">Enjoy every moment!</div></div>`;
+}
+
 function renderResortPage(t) {
   const photos = t.resortPhotos || [];
   const bg = getBg(t);
@@ -188,45 +195,33 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeLB();if
 
 function renderTripPage(t) {
   const nights = (t.departDate&&t.returnDate)?Math.max(0,Math.ceil((new Date(t.returnDate)-new Date(t.departDate))/86400000)):null;
-  const countdown = t.departDate?Math.ceil((new Date(t.departDate)-new Date())/86400000):null;
+  const countdown = t.departDate ? Math.ceil((new Date(t.departDate+' 12:00:00') - new Date()) / 86400000) : null;
   const fmt = d=>d?new Date(d+'T12:00:00').toLocaleDateString('en-CA',{month:'long',day:'numeric',year:'numeric'}):'';
   const photoCount = (t.photos||[]).length;
   const bg = getBg(t);
 
-  // HERO: banner photo uses img tag for perfect centering, color uses gradient background
-  const heroSection = t.bannerPhoto ? `
-  <div class="hero-banner">
-    <img class="hero-banner-img" src="${t.bannerPhoto}" alt="Trip banner">
-    <div class="hero-banner-overlay"></div>
-    <div class="hero-content">
-      <div class="h-badge">✈ Voyage Vista Travels · ${t.theme||'Special Occasion'}</div>
-      <div class="conf">🎉 🌟 🎊 🌴 🎈</div>
-      <div class="h1">Happy <em>${t.occasion}</em>,<br>${t.guestName}!</div>
-      ${t.destination?`<div class="h-dest">📍 ${t.destination}</div>`:''}
-      ${t.tripDesc?`<div class="h-desc">${t.tripDesc}</div>`:''}
-      <div class="h-stats">
-        ${nights?`<div class="stat-box"><div class="s-num">${nights}</div><div class="s-lbl">Nights</div></div>`:''}
-        ${t.guestCount?`<div class="stat-box"><div class="s-num">${t.guestCount}</div><div class="s-lbl">Guests</div></div>`:''}
-        ${t.departDate?`<div class="stat-box"><div class="s-num">${fmt(t.departDate)}</div><div class="s-lbl">Departure</div></div>`:''}
-      </div>
-      ${countdownHtml(countdown)}
+  const heroInner = `
+    <div class="h-badge">✈ Voyage Vista Travels · ${t.theme||'Special Occasion'}</div>
+    <div class="conf">🎉 🌟 🎊 🌴 🎈</div>
+    <div class="h1">Happy <em>${t.occasion}</em>,<br>${t.guestName}!</div>
+    ${t.destination?`<div class="h-dest">📍 ${t.destination}</div>`:''}
+    ${t.tripDesc?`<div class="h-desc">${t.tripDesc}</div>`:''}
+    <div class="h-stats">
+      ${nights?`<div class="stat-box"><div class="s-num">${nights}</div><div class="s-lbl">Nights</div></div>`:''}
+      ${t.guestCount?`<div class="stat-box"><div class="s-num">${t.guestCount}</div><div class="s-lbl">Guests</div></div>`:''}
+      ${t.departDate?`<div class="stat-box"><div class="s-num">${fmt(t.departDate)}</div><div class="s-lbl">Departure</div></div>`:''}
     </div>
-  </div>` : `
-  <div class="hero-color" style="background:${bg};">
-    <div class="hero-content">
-      <div class="h-badge">✈ Voyage Vista Travels · ${t.theme||'Special Occasion'}</div>
-      <div class="conf">🎉 🌟 🎊 🌴 🎈</div>
-      <div class="h1">Happy <em>${t.occasion}</em>,<br>${t.guestName}!</div>
-      ${t.destination?`<div class="h-dest">📍 ${t.destination}</div>`:''}
-      ${t.tripDesc?`<div class="h-desc">${t.tripDesc}</div>`:''}
-      <div class="h-stats">
-        ${nights?`<div class="stat-box"><div class="s-num">${nights}</div><div class="s-lbl">Nights</div></div>`:''}
-        ${t.guestCount?`<div class="stat-box"><div class="s-num">${t.guestCount}</div><div class="s-lbl">Guests</div></div>`:''}
-        ${t.departDate?`<div class="stat-box"><div class="s-num">${fmt(t.departDate)}</div><div class="s-lbl">Departure</div></div>`:''}
-      </div>
-      ${countdownHtml(countdown)}
-    </div>
-  </div>`;
+    ${countdownHtml(countdown)}`;
+
+  const heroSection = t.bannerPhoto
+    ? `<div class="hero-banner">
+        <img class="hero-banner-img" src="${t.bannerPhoto}" alt="Trip banner">
+        <div class="hero-banner-overlay"></div>
+        <div class="hero-content">${heroInner}</div>
+       </div>`
+    : `<div class="hero-color" style="background:${bg};">
+        <div class="hero-content">${heroInner}</div>
+       </div>`;
 
   const autoCarousel = photoCount > 0 ? `
   <section class="sec">
@@ -245,20 +240,20 @@ function renderTripPage(t) {
     </div>
   </section><hr class="div">` : '';
 
-  const resortBtn=(t.resortPhotos&&t.resortPhotos.length)?`
+  const resortBtn = (t.resortPhotos&&t.resortPhotos.length) ? `
   <section class="sec" style="text-align:center;">
     <a href="/trips/${t.id}/resort" class="resort-btn">🏨 View ${t.hotel||'Resort'} Photos <span class="r-count">${t.resortPhotos.length} photos</span></a>
   </section><hr class="div">` : '';
 
-  const resortHero=t.resortHeroPhoto?`<div class="resort-img"><img src="${t.resortHeroPhoto}" alt="${t.hotel||'Resort'}"></div>`:'';
+  const resortHero = t.resortHeroPhoto ? `<div class="resort-img"><img src="${t.resortHeroPhoto}" alt="${t.hotel||'Resort'}"></div>` : '';
 
-  const logistics=(t.flight||t.hotel)?`
+  const logistics = (t.flight||t.hotel) ? `
   <section class="sec"><div class="sec-label">Booking Details</div>
-  ${t.hotel?`<div class="card"><div class="ci hotel-i">🏨</div><div class="cb"><div class="ct">${t.hotel}</div><div class="cs">${t.hotelAddr?t.hotelAddr+'<br>':''}${t.checkin||''}</div></div></div>${resortHero}`:''} 
+  ${t.hotel?`<div class="card"><div class="ci hotel-i">🏨</div><div class="cb"><div class="ct">${t.hotel}</div><div class="cs">${t.hotelAddr?t.hotelAddr+'<br>':''}${t.checkin||''}</div></div></div>${resortHero}`:''}
   ${t.flight?`<div class="card"><div class="ci flight-i">✈</div><div class="cb"><div class="ct">${t.flight}</div><div class="cs">${t.flightTime||''}${t.bookingRef?' · '+t.bookingRef:''}</div></div></div>`:''}
   </section><hr class="div">` : '';
 
-  const itin=(t.days&&t.days.some(d=>d.title||(d.events&&d.events.length)))?`
+  const itin = (t.days&&t.days.some(d=>d.title||(d.events&&d.events.length))) ? `
   <section class="sec">
     <div class="doc-heading">🗓 Itinerary</div>
     ${t.days.filter(d=>d.title||(d.events&&d.events.length)).map(d=>`
@@ -273,7 +268,7 @@ function renderTripPage(t) {
     </div>`).join('')}
   </section><hr class="div">` : '';
 
-  const docSection=(t.itineraryLink||t.bookingUrl)?`
+  const docSection = (t.itineraryLink||t.bookingUrl) ? `
   <section class="sec">
     <div class="doc-cols">
       ${t.itineraryLink?`
@@ -290,28 +285,30 @@ function renderTripPage(t) {
     </div>
   </section><hr class="div">` : '';
 
-  const msgSec=t.message?`
+  const msgSec = t.message ? `
   <section class="sec"><div class="sec-label">A message for you</div>
   <div class="msg-card"><div class="msg-txt">"${t.message}"</div>
   <div class="msg-from">— ${t.signedFrom||'Voyage Vista Travels'}</div></div>
   </section><hr class="div">` : '';
 
-  const weatherSec=t.weatherSnapshot?`
+  const weatherSec = t.weatherSnapshot ? `
   <section class="sec"><div class="sec-label">Weather in ${t.weatherSnapshot.dest||t.destination||''}</div>
   <div class="weather-card">
     <div class="w-icon">${t.weatherSnapshot.icon||'🌤️'}</div>
-    <div><div class="w-temp">${t.weatherSnapshot.tempC}°C / ${t.weatherSnapshot.tempF}°F</div>
-    <div class="w-desc">${t.weatherSnapshot.desc}</div>
-    <div class="w-extra">Feels like ${t.weatherSnapshot.feels}°C · Humidity ${t.weatherSnapshot.humidity}%</div></div>
+    <div>
+      <div class="w-temp">${t.weatherSnapshot.tempC}°C / ${t.weatherSnapshot.tempF}°F</div>
+      <div class="w-desc">${t.weatherSnapshot.desc}</div>
+      <div class="w-extra">Feels like ${t.weatherSnapshot.feels}°C · Humidity ${t.weatherSnapshot.humidity}%</div>
+    </div>
   </div></section><hr class="div">` : '';
 
-  const packCats=t.packingList&&t.packingList.length?t.packingList.reduce((a,i)=>{(a[i.category||'General']=a[i.category||'General']||[]).push(i.item);return a;},{}):null;
-  const packSec=packCats?`
+  const packCats = t.packingList&&t.packingList.length ? t.packingList.reduce((a,i)=>{(a[i.category||'General']=a[i.category||'General']||[]).push(i.item);return a;},{}) : null;
+  const packSec = packCats ? `
   <section class="sec"><div class="sec-label">Packing List</div>
   <div class="pack-grid">${Object.entries(packCats).map(([c,items])=>`<div class="pack-cat"><div class="pack-ttl">${c}</div>${items.map(i=>`<div class="pack-item">✓ ${i}</div>`).join('')}</div>`).join('')}</div>
   </section><hr class="div">` : '';
 
-  const currSec=t.currency&&(t.currency.localCurrency||t.currency.tips)?`
+  const currSec = t.currency&&(t.currency.localCurrency||t.currency.tips) ? `
   <section class="sec"><div class="sec-label">Currency & Money Tips</div>
   <div class="curr-card">
     ${t.currency.localCurrency?`<div class="curr-row"><span class="curr-lbl">Local Currency</span><span class="curr-val">${t.currency.localCurrency}</span></div>`:''}
@@ -320,7 +317,7 @@ function renderTripPage(t) {
     ${t.currency.tips?`<div class="curr-tips">${t.currency.tips}</div>`:''}
   </div></section><hr class="div">` : '';
 
-  const bookSec=t.showBookingForm?`
+  const bookSec = t.showBookingForm ? `
   <section class="sec"><div class="sec-label">Booking Form</div>
   <div class="book-form">
     <form id="rsvpForm">
@@ -335,7 +332,7 @@ function renderTripPage(t) {
     </div>
   </div></section><hr class="div">` : '';
 
-  const contactSec=t.advisorPhone?`
+  const contactSec = t.advisorPhone ? `
   <section class="sec" style="text-align:center;">
   <div class="adv-card">
     <div class="adv-lbl">Your travel advisor is available 24/7</div>
@@ -343,8 +340,8 @@ function renderTripPage(t) {
     <a href="mailto:Hello@voyagevista.ca" class="adv-email">Hello@voyagevista.ca</a>
   </div></section>` : '';
 
-  const waNum=(t.socialWA||'').replace(/\D/g,'');
-  const socialLinks=(t.socialIG||t.socialFB||waNum)?`
+  const waNum = (t.socialWA||'').replace(/\D/g,'');
+  const socialLinks = (t.socialIG||t.socialFB||waNum) ? `
   <div class="social-bar">
     ${t.socialIG?`<a href="${t.socialIG}" target="_blank" rel="noopener" class="social-link" title="Instagram"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>`:''}
     ${t.socialFB?`<a href="${t.socialFB}" target="_blank" rel="noopener" class="social-link" title="Facebook"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>`:''}
@@ -361,66 +358,89 @@ function renderTripPage(t) {
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'DM Sans',sans-serif;background:#f5f0e8;color:#2c2c2c;line-height:1.6;}
 
-/* ── HERO — BANNER PHOTO VERSION ─────────────────────── */
-.hero-banner{position:relative;width:100%;height:520px;overflow:hidden;}
-@media(max-width:600px){.hero-banner{height:420px;}}
+/* ── HERO BANNER (photo version) ── */
+.hero-banner{
+  position:relative;
+  width:100%;
+  min-height:100vh;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
 .hero-banner-img{
-  position:absolute;inset:0;
-  width:100%;height:100%;
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
   object-fit:cover;
-  object-position:center center;
+  object-position:center top;
 }
 .hero-banner-overlay{
-  position:absolute;inset:0;
-  background:linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.55) 60%, rgba(0,0,0,0.75) 100%);
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.20) 0%,
+    rgba(0,0,0,0.50) 50%,
+    rgba(0,0,0,0.72) 100%
+  );
 }
 
-/* ── HERO — COLOR VERSION ─────────────────────────────── */
+/* ── HERO COLOR (no photo) ── */
 .hero-color{
+  position:relative;
   width:100%;
-  min-height:520px;
-  display:flex;align-items:center;justify-content:center;
-  text-align:center;padding:80px 24px 60px;
-  position:relative;overflow:hidden;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
 }
 .hero-color::before{
-  content:'';position:absolute;inset:0;
+  content:'';
+  position:absolute;inset:0;
   background:radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.18),transparent 60%);
   pointer-events:none;
 }
 
-/* ── HERO CONTENT (shared) ───────────────────────────── */
+/* ── HERO CONTENT (shared) ── */
 .hero-content{
-  position:relative;z-index:2;
-  width:100%;max-width:720px;
+  position:relative;
+  z-index:2;
+  width:100%;
+  max-width:760px;
   margin:0 auto;
-  display:flex;flex-direction:column;align-items:center;
-  text-align:center;padding:40px 24px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  padding:80px 24px 60px;
 }
-.h-badge{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#fff;border:1px solid rgba(255,255,255,.5);border-radius:20px;padding:6px 20px;margin-bottom:16px;background:rgba(255,255,255,.15);}
+.h-badge{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#fff;border:1px solid rgba(255,255,255,.5);border-radius:20px;padding:6px 20px;margin-bottom:18px;background:rgba(255,255,255,.15);}
 .conf{font-size:1.5rem;letter-spacing:5px;margin-bottom:12px;opacity:.9;}
-.h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2.4rem,7vw,5rem);color:#fff;font-weight:600;line-height:1.1;margin-bottom:10px;text-shadow:0 2px 20px rgba(0,0,0,.3);}
-.h1 em{font-style:italic;color:#fff;}
-.h-dest{font-size:1rem;color:rgba(255,255,255,.85);margin-bottom:10px;}
-.h-desc{font-size:.9rem;color:rgba(255,255,255,.7);max-width:480px;margin:0 auto 22px;line-height:1.7;}
-.h-stats{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-bottom:24px;}
-.stat-box{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:12px;padding:12px 20px;backdrop-filter:blur(8px);}
+.h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2.4rem,7vw,5.2rem);color:#fff;font-weight:600;line-height:1.1;margin-bottom:10px;text-shadow:0 2px 24px rgba(0,0,0,.3);}
+.h1 em{font-style:italic;}
+.h-dest{font-size:1rem;color:rgba(255,255,255,.88);margin-bottom:10px;}
+.h-desc{font-size:.92rem;color:rgba(255,255,255,.72);max-width:500px;margin:0 auto 24px;line-height:1.75;}
+.h-stats{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:28px;}
+.stat-box{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:12px;padding:12px 22px;backdrop-filter:blur(8px);}
 .s-num{font-family:'Cormorant Garamond',serif;font-size:1.7rem;color:#fff;font-weight:600;}
 .s-lbl{font-size:10px;color:rgba(255,255,255,.7);letter-spacing:.08em;text-transform:uppercase;margin-top:2px;}
-.cd-wrap{display:inline-block;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.4);border-radius:20px;padding:20px 44px;backdrop-filter:blur(8px);}
+.cd-wrap{display:inline-block;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.45);border-radius:22px;padding:22px 48px;backdrop-filter:blur(8px);}
 .cd-sp{font-size:1.4rem;letter-spacing:5px;margin-bottom:6px;animation:sp 2s ease-in-out infinite;}
 @keyframes sp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.7;transform:scale(1.06)}}
-.cd-num{font-family:'Cormorant Garamond',serif;font-size:clamp(4rem,12vw,8rem);color:#fff;font-weight:600;line-height:1;text-shadow:0 0 50px rgba(255,255,255,.5);animation:cdp 3s ease-in-out infinite;}
-@keyframes cdp{0%,100%{text-shadow:0 0 50px rgba(255,255,255,.4)}50%{text-shadow:0 0 90px rgba(255,255,255,.9)}}
-.cd-lbl{font-size:.85rem;color:rgba(255,255,255,.8);margin-top:4px;letter-spacing:.05em;text-transform:uppercase;}
+.cd-num{font-family:'Cormorant Garamond',serif;font-size:clamp(4.5rem,13vw,9rem);color:#fff;font-weight:600;line-height:1;text-shadow:0 0 60px rgba(255,255,255,.55);animation:cdp 3s ease-in-out infinite;}
+@keyframes cdp{0%,100%{text-shadow:0 0 60px rgba(255,255,255,.4)}50%{text-shadow:0 0 100px rgba(255,255,255,.95)}}
+.cd-lbl{font-size:.88rem;color:rgba(255,255,255,.82);margin-top:5px;letter-spacing:.05em;text-transform:uppercase;}
 
-/* ── SECTIONS ─────────────────────────────────────────── */
+/* ── SECTIONS ── */
 .sec{padding:36px 20px;max-width:760px;margin:0 auto;}
 .sec-label{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#c4a057;font-weight:500;margin-bottom:16px;}
 .doc-heading{font-size:15px;font-weight:600;color:#2c2c2c;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #f0ebe0;}
 .div{border:none;border-top:1px solid rgba(196,160,87,.12);margin:0 20px;}
 
-/* ── CAROUSEL ─────────────────────────────────────────── */
+/* ── CAROUSEL ── */
 .car-outer{position:relative;display:flex;align-items:center;}
 .car-viewport{flex:1;overflow:hidden;border-radius:16px;background:#111;}
 .car-track{display:flex;transition:transform .45s cubic-bezier(.25,.46,.45,.94);}
@@ -549,13 +569,6 @@ if(form)form.addEventListener('submit',function(e){
 });
 <\/script>
 </body></html>`;
-}
-
-function countdownHtml(countdown) {
-  if(countdown === null) return '';
-  if(countdown > 0) return `<div class="cd-wrap"><div class="cd-sp">✨ 🎉 ✨</div><div class="cd-num">${countdown}</div><div class="cd-lbl">days until your adventure begins!</div><div class="cd-sp">🌟 🎊 🌟</div></div>`;
-  if(countdown === 0) return `<div class="cd-wrap"><div class="cd-sp">🎉 🥂 🎉</div><div class="cd-num">Today!</div><div class="cd-lbl">Your adventure starts now!</div></div>`;
-  return `<div class="cd-wrap"><div class="cd-sp">🌴 ✈️ 🌴</div><div class="cd-num">You're There!</div><div class="cd-lbl">Enjoy every moment!</div></div>`;
 }
 
 const PORT = process.env.PORT || 3000;
