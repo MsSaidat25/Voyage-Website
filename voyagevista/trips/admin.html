@@ -43,8 +43,6 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
 .frow{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .info-box{background:#faf7f2;border-radius:8px;padding:11px 14px;font-size:12px;color:#888;margin-bottom:14px;border-left:3px solid rgba(196,160,87,.4);}
 .sdiv{border:none;border-top:1px solid #f0ebe0;margin:18px 0;}
-
-/* DAYS */
 .day-wrap{margin-bottom:12px;border:1px solid #ede5d4;border-radius:10px;overflow:hidden;}
 .day-hd{background:#faf7f2;padding:10px 14px;display:flex;align-items:center;gap:10px;}
 .day-badge{background:#c4a057;color:#fff;font-size:10px;font-weight:600;padding:3px 9px;border-radius:8px;white-space:nowrap;}
@@ -73,8 +71,6 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
 .add-ev-btn:hover{border-color:#c4a057;color:#c4a057;}
 .add-line-btn{width:100%;padding:9px;border:1px dashed #ddd;border-radius:8px;background:none;color:#bbb;font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:6px;}
 .add-line-btn:hover{border-color:#c4a057;color:#c4a057;}
-
-/* PHOTO UPLOAD */
 .up-zone{border:2px dashed #ddd;border-radius:10px;padding:22px;text-align:center;cursor:pointer;transition:all .2s;position:relative;margin-bottom:10px;}
 .up-zone:hover{border-color:#c4a057;background:#faf7f2;}
 .up-zone p{font-size:13px;color:#bbb;margin-top:6px;}
@@ -93,35 +89,24 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
 .img-preview img{width:100%;height:180px;object-fit:cover;border-radius:10px;display:block;}
 .img-preview .rm-btn{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;border:none;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;}
 .img-placeholder{width:100%;height:100px;background:#faf7f2;border:1px solid #ede5d4;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#bbb;font-size:13px;margin-top:8px;}
-
-/* PACKING */
 .pk-row{display:flex;gap:7px;margin-bottom:7px;align-items:center;}
 .pk-row input{flex:1;padding:7px 9px;border:1px solid #e8e0d0;border-radius:6px;font-size:12px;font-family:'DM Sans',sans-serif;background:#faf7f2;outline:none;}
 .pk-row select{padding:7px 9px;border:1px solid #e8e0d0;border-radius:6px;font-size:12px;font-family:'DM Sans',sans-serif;background:#faf7f2;outline:none;width:130px;}
 .pk-row .xbtn{width:26px;height:26px;border:none;background:#faf7f2;border-radius:5px;cursor:pointer;color:#ccc;}
 .pk-row .xbtn:hover{background:#feeee0;color:#c4a057;}
-
-/* TOGGLE */
 .tog-wrap{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
 .tog{width:38px;height:22px;background:#ddd;border-radius:11px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;}
 .tog.on{background:#c4a057;}
 .tog::after{content:'';position:absolute;width:18px;height:18px;background:#fff;border-radius:50%;top:2px;left:2px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
 .tog.on::after{left:18px;}
-
-/* COLOR SWATCHES */
 .color-swatches{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;}
 .color-swatch{width:44px;height:44px;border-radius:10px;border:3px solid transparent;cursor:pointer;transition:all .2s;}
 .color-swatch.selected{border-color:#fff;outline:3px solid #c4a057;transform:scale(1.15);}
 .color-swatch:hover{transform:scale(1.1);}
-
-/* WEATHER */
 .weather-box{background:#f0f8ff;border:1px solid #b8d4f0;border-radius:10px;padding:14px 18px;margin-top:12px;display:flex;align-items:center;gap:16px;}
-.weather-icon{font-size:2rem;}
-.weather-info{flex:1;}
+.weather-icon{font-size:2rem;}.weather-info{flex:1;}
 .weather-temp{font-size:1.3rem;font-weight:500;color:#1a3550;}
 .weather-desc{font-size:12px;color:#888;margin-top:2px;}
-
-/* PREVIEW */
 .preview-panel{width:390px;flex-shrink:0;border-left:1px solid rgba(196,160,87,.15);display:flex;flex-direction:column;background:#f5f0e8;}
 .preview-bar{padding:10px 14px;background:#fff;border-bottom:1px solid #eee;display:flex;align-items:center;gap:8px;flex-shrink:0;}
 .preview-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#aaa;}
@@ -129,6 +114,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
 .cp-btn{padding:4px 10px;border:1px solid rgba(196,160,87,.4);border-radius:5px;background:none;color:#c4a057;font-size:11px;cursor:pointer;}
 .cp-btn:hover{background:rgba(196,160,87,.1);}
 #previewFrame{flex:1;border:none;background:#f5f0e8;}
+.compress-badge{background:rgba(46,160,80,.15);color:#2ea050;border:1px solid rgba(46,160,80,.3);border-radius:6px;padding:3px 10px;font-size:11px;margin-left:4px;}
 .toast{position:fixed;bottom:18px;right:18px;background:#0d1b2a;color:#e8c87a;padding:10px 18px;border-radius:8px;font-size:13px;border:1px solid rgba(196,160,87,.3);transform:translateY(60px);opacity:0;transition:all .3s;z-index:99999;}
 .toast.show{transform:translateY(0);opacity:1;}
 @media(max-width:1100px){.preview-panel{display:none;}}
@@ -140,6 +126,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
 <div class="topbar">
   <div class="logo">✈ Voyage Vista Travels</div>
   <div class="trip-label" id="tripLabel">New Trip Page</div>
+  <span class="compress-badge">⚡ Auto-compress ON</span>
   <button class="tbtn save-btn" id="saveBtn" onclick="saveTrip()">Save</button>
   <button class="tbtn publish-btn" onclick="publishTrip()">Publish & Open ↗</button>
   <button class="tbtn danger-btn" onclick="deleteTrip()">Delete</button>
@@ -172,7 +159,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
     <div class="bpane on" id="pane-basics">
       <div class="frow">
         <div class="fg"><label>Guest Name *</label><input id="guestName" placeholder="Amara Johnson" oninput="markDirty()"></div>
-        <div class="fg"><label>Occasion *</label><input id="occasion" placeholder="40th Birthday" oninput="markDirty()"></div>
+        <div class="fg"><label>Occasion *</label><input id="occasion" placeholder="50th Birthday" oninput="markDirty()"></div>
       </div>
       <div class="fg"><label>Destination</label><input id="destination" placeholder="Cancun, Mexico" oninput="markDirty();fetchWeather()"></div>
       <div class="frow">
@@ -180,7 +167,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
         <div class="fg"><label>Return Date</label><input type="date" id="returnDate" oninput="markDirty()"></div>
       </div>
       <div class="frow">
-        <div class="fg"><label>Number of Guests</label><input type="number" id="guestCount" placeholder="4" oninput="markDirty()"></div>
+        <div class="fg"><label>Number of Guests</label><input type="number" id="guestCount" placeholder="10" oninput="markDirty()"></div>
         <div class="fg"><label>Trip Theme</label>
           <select id="theme" onchange="markDirty()">
             <option>Birthday Celebration</option>
@@ -195,7 +182,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
         </div>
       </div>
       <div class="fg"><label>Short Description</label>
-        <textarea id="tripDesc" rows="3" placeholder="A luxurious 7-night celebration in paradise, curated with love by Voyage Vista Travels." oninput="markDirty()"></textarea>
+        <textarea id="tripDesc" rows="3" placeholder="A golden jubilee celebration curated with love by Voyage Vista Travels." oninput="markDirty()"></textarea>
       </div>
 
       <hr class="sdiv">
@@ -230,16 +217,15 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
       <hr class="sdiv">
       <div class="fg">
         <label>Banner / Hero Photo</label>
-        <div class="info-box" style="margin-bottom:8px;">📐 Best size: <strong>1920 × 600px</strong> (wide landscape). The banner spans full width and is cropped to ~600px tall — use a wide landscape photo with the subject centered.</div>
+        <div class="info-box" style="margin-bottom:8px;">📐 Best: <strong>1920×800px wide landscape</strong>. Photos auto-compressed to reduce lag.</div>
         <div class="up-zone" onclick="document.getElementById('bannerInp').click()">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
           <p>Click to upload banner image</p>
-          <span>Recommended: 1920×600px wide landscape</span>
-          <input type="file" id="bannerInp" accept="image/*" onchange="handleSinglePhoto(this,'bannerPhoto','bnPreview','bnPlaceholder')" onclick="event.stopPropagation()">
+          <span>Auto-compressed · Landscape recommended</span>
+          <input type="file" id="bannerInp" accept="image/*" onchange="handleSinglePhoto(this,'bannerPhoto','bnPreview','bnImg','bnPlaceholder',1920,600)" onclick="event.stopPropagation()">
         </div>
         <div class="img-preview" id="bnPreview" style="display:none;">
-          <img id="bnImg">
-          <button class="rm-btn" onclick="removePhoto('bannerPhoto','bnPreview','bnPlaceholder')">✕</button>
+          <img id="bnImg"><button class="rm-btn" onclick="removePhoto('bannerPhoto','bnPreview','bnPlaceholder')">✕</button>
         </div>
         <div class="img-placeholder" id="bnPlaceholder">No banner uploaded</div>
       </div>
@@ -250,25 +236,24 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
       <div class="fg"><label>Hotel / Resort Name</label><input id="hotel" placeholder="Secrets Akumal Riviera Maya" oninput="markDirty()"></div>
       <div class="fg">
         <label>Resort / Hotel Photo</label>
-        <div class="info-box" style="margin-bottom:8px;">📐 Best size: <strong>1200 × 600px</strong> (landscape). Shown as a wide card on the logistics section.</div>
+        <div class="info-box" style="margin-bottom:8px;">📐 Best: <strong>1200×600px landscape</strong>. Auto-compressed.</div>
         <div class="up-zone" onclick="document.getElementById('resortHeroInp').click()">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
           <p>Upload photo of the resort/hotel</p>
-          <span>Recommended: 1200×600px landscape</span>
-          <input type="file" id="resortHeroInp" accept="image/*" onchange="handleSinglePhoto(this,'resortHeroPhoto','rhPreview','rhPlaceholder')" onclick="event.stopPropagation()">
+          <span>1200×600px · Auto-compressed</span>
+          <input type="file" id="resortHeroInp" accept="image/*" onchange="handleSinglePhoto(this,'resortHeroPhoto','rhPreview','rhImg','rhPlaceholder',1200,600)" onclick="event.stopPropagation()">
         </div>
         <div class="img-preview" id="rhPreview" style="display:none;">
-          <img id="rhImg">
-          <button class="rm-btn" onclick="removePhoto('resortHeroPhoto','rhPreview','rhPlaceholder')">✕</button>
+          <img id="rhImg"><button class="rm-btn" onclick="removePhoto('resortHeroPhoto','rhPreview','rhPlaceholder')">✕</button>
         </div>
         <div class="img-placeholder" id="rhPlaceholder">No resort photo</div>
       </div>
       <div class="fg"><label>Hotel Address</label><input id="hotelAddr" placeholder="Riviera Maya, Mexico" oninput="markDirty()"></div>
-      <div class="fg"><label>Check-in / Check-out</label><input id="checkin" placeholder="Apr 26 — May 1" oninput="markDirty()"></div>
+      <div class="fg"><label>Check-in / Check-out</label><input id="checkin" placeholder="Oct 7 — Oct 12" oninput="markDirty()"></div>
       <div class="fg"><label>Flight Details</label><input id="flight" placeholder="Air Canada AC874 — YOW → CUN" oninput="markDirty()"></div>
       <div class="frow">
-        <div class="fg"><label>Departure Time</label><input id="flightTime" placeholder="Apr 25 at 8:45 PM" oninput="markDirty()"></div>
-        <div class="fg"><label>Confirmation Ref</label><input id="bookingRef" placeholder="CONF: VV-2025-8841" oninput="markDirty()"></div>
+        <div class="fg"><label>Departure Time</label><input id="flightTime" placeholder="Oct 7 at 8:45 AM" oninput="markDirty()"></div>
+        <div class="fg"><label>Confirmation Ref</label><input id="bookingRef" placeholder="CONF: VV-2026-001" oninput="markDirty()"></div>
       </div>
       <div class="fg" style="margin-top:6px;">
         <label>Weather Snapshot <span style="font-size:10px;color:#c4a057;text-transform:none;letter-spacing:0;">(auto from Destination)</span></label>
@@ -298,28 +283,27 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
 
     <!-- GALLERY PHOTOS -->
     <div class="bpane" id="pane-photos">
-      <div class="info-box">
-        📸 <strong>Best size: 1200 × 900px</strong> (4:3 ratio) or <strong>1280 × 720px</strong> (16:9).<br>
-        Photos show full image (shrink to fit). Use landscape photos for best results. Drag to reorder.
-      </div>
+      <div class="info-box">📸 Photos are <strong>auto-compressed to 1200px max</strong> before saving — this is the main fix for page lag. Drag to reorder.</div>
       <div class="up-zone" onclick="document.getElementById('photosInp').click()">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
         <p>Click to upload multiple photos</p>
-        <span>Landscape photos work best · 1200×900px recommended</span>
+        <span>Auto-compressed · Landscape recommended</span>
         <input type="file" id="photosInp" accept="image/*" multiple onchange="handleMultiPhoto(this,'photos')" onclick="event.stopPropagation()">
       </div>
+      <div id="photosCount" style="font-size:12px;color:#888;margin-bottom:6px;"></div>
       <div class="photo-strip" id="photoStrip"></div>
     </div>
 
     <!-- RESORT PHOTOS -->
     <div class="bpane" id="pane-resort">
-      <div class="info-box">🏨 <strong>Best size: 1200 × 900px</strong>. These appear in the dedicated Resort Gallery page with lightbox.</div>
+      <div class="info-box">🏨 Resort photos auto-compressed. Shown in dedicated gallery page with lightbox.</div>
       <div class="up-zone" onclick="document.getElementById('resortPhotosInp').click()">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
         <p>Click to upload resort photos</p>
-        <span>1200×900px recommended</span>
+        <span>Auto-compressed</span>
         <input type="file" id="resortPhotosInp" accept="image/*" multiple onchange="handleMultiPhoto(this,'resortPhotos')" onclick="event.stopPropagation()">
       </div>
+      <div id="resortCount" style="font-size:12px;color:#888;margin-bottom:6px;"></div>
       <div class="photo-strip" id="resortPhotoStrip"></div>
     </div>
 
@@ -356,7 +340,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
 
     <!-- MESSAGE -->
     <div class="bpane" id="pane-message">
-      <div class="info-box">💬 This message appears on the guest page <strong>after</strong> the Documents & Booking section.</div>
+      <div class="info-box">💬 This message appears <strong>after</strong> the Documents & Booking section on the guest page.</div>
       <div class="fg"><label>Personal Message to Guest</label>
         <textarea id="message" rows="6" placeholder="Write a warm, personal note for your guest." oninput="markDirty()"></textarea>
       </div>
@@ -386,6 +370,38 @@ var showBook=false,isDirty=false,PT=null,weatherTimer=null;
 var EVTYPES={flight:'✈ Flight',hotel:'🏨 Hotel',activity:'⭐ Activity',restaurant:'🍽 Restaurant',transport:'🚗 Transport',note:'📝 Note'};
 var EVCLS={flight:'tb-flight',hotel:'tb-hotel',activity:'tb-activity',restaurant:'tb-restaurant',transport:'tb-transport',note:'tb-note'};
 
+// ── IMAGE COMPRESSION ──────────────────────────────────
+// This is the KEY fix for page lag.
+// All photos are compressed to max 1200px wide and 0.75 JPEG quality
+// before being stored. This reduces each photo from ~3-5MB base64 to ~80-150KB.
+function compressImage(file, maxW, maxH, quality) {
+  return new Promise(function(resolve) {
+    var mw = maxW || 1200;
+    var mh = maxH || 900;
+    var q = quality || 0.75;
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var img = new Image();
+      img.onload = function() {
+        var w = img.width, h = img.height;
+        // Scale down proportionally
+        if (w > mw || h > mh) {
+          var ratio = Math.min(mw/w, mh/h);
+          w = Math.round(w * ratio);
+          h = Math.round(h * ratio);
+        }
+        var canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', q));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
 window.addEventListener('DOMContentLoaded',function(){loadSB();});
 
 function tab(name,btn){
@@ -398,7 +414,7 @@ function tab(name,btn){
 function markDirty(){
   isDirty=true;
   document.getElementById('saveBtn').textContent='Save *';
-  clearTimeout(PT);PT=setTimeout(doAutoPreview,1400);
+  clearTimeout(PT);PT=setTimeout(doAutoPreview,1600);
 }
 
 function loadSB(){
@@ -417,7 +433,10 @@ function newTrip(){
   document.getElementById('saveBtn').textContent='Save';
   document.getElementById('previewUrl').textContent='Save trip to get link';
   document.getElementById('previewFrame').srcdoc='<div style="display:flex;align-items:center;justify-content:center;height:100%;font-family:sans-serif;color:#aaa;font-size:14px;text-align:center;padding:40px;">Fill in details to preview</div>';
-  showBannerPreview(null);showResortHeroPreview(null);
+  showSinglePreview(null,'bnPreview','bnImg','bnPlaceholder');
+  showSinglePreview(null,'rhPreview','rhImg','rhPlaceholder');
+  document.getElementById('photosCount').textContent='';
+  document.getElementById('resortCount').textContent='';
   document.getElementById('weatherBox').innerHTML='<div style="font-size:12px;color:#aaa;padding:10px 0;">Enter a destination to load weather ☁️</div>';
   document.getElementById('bookTog').classList.remove('on');
   document.getElementById('bookFields').style.opacity='.4';
@@ -436,56 +455,52 @@ function clearFields(){
   T.bannerPhoto=null;T.resortHeroPhoto=null;
 }
 
-function showBannerPreview(src){
+function showSinglePreview(src,previewId,imgId,placeholderId){
   if(src){
-    document.getElementById('bnImg').src=src;
-    document.getElementById('bnPreview').style.display='block';
-    document.getElementById('bnPlaceholder').style.display='none';
+    document.getElementById(imgId).src=src;
+    document.getElementById(previewId).style.display='block';
+    document.getElementById(placeholderId).style.display='none';
   } else {
-    document.getElementById('bnPreview').style.display='none';
-    document.getElementById('bnPlaceholder').style.display='flex';
-  }
-}
-function showResortHeroPreview(src){
-  if(src){
-    document.getElementById('rhImg').src=src;
-    document.getElementById('rhPreview').style.display='block';
-    document.getElementById('rhPlaceholder').style.display='none';
-  } else {
-    document.getElementById('rhPreview').style.display='none';
-    document.getElementById('rhPlaceholder').style.display='flex';
+    document.getElementById(previewId).style.display='none';
+    document.getElementById(placeholderId).style.display='flex';
   }
 }
 
-function handleSinglePhoto(inp,key,previewId,placeholderId){
+function handleSinglePhoto(inp,key,previewId,imgId,placeholderId,maxW,maxH){
   var f=inp.files[0];if(!f)return;
-  var r=new FileReader();
-  r.onload=function(e){
-    T[key]=e.target.result;
-    if(key==='bannerPhoto') showBannerPreview(e.target.result);
-    else showResortHeroPreview(e.target.result);
+  document.getElementById(placeholderId).textContent='Compressing...';
+  compressImage(f,maxW,maxH,0.82).then(function(result){
+    T[key]=result;
+    showSinglePreview(result,previewId,imgId,placeholderId);
     markDirty();
-  };
-  r.readAsDataURL(f);
+  });
 }
 
 function removePhoto(key,previewId,placeholderId){
   T[key]=null;
-  if(key==='bannerPhoto') showBannerPreview(null);
-  else showResortHeroPreview(null);
+  if(key==='bannerPhoto') showSinglePreview(null,'bnPreview','bnImg','bnPlaceholder');
+  else showSinglePreview(null,'rhPreview','rhImg','rhPlaceholder');
   markDirty();
 }
 
 function handleMultiPhoto(inp,key){
+  var countId = key==='photos'?'photosCount':'resortCount';
+  var stripId = key==='photos'?'photoStrip':'resortPhotoStrip';
   T[key]=T[key]||[];
-  var promises=Array.from(inp.files).map(f=>new Promise(res=>{
-    var r=new FileReader();r.onload=e=>res(e.target.result);r.readAsDataURL(f);
-  }));
-  Promise.all(promises).then(results=>{
-    T[key].push(...results);
-    renderPhotoStrip(key,key==='photos'?'photoStrip':'resortPhotoStrip');
-    markDirty();
-  });
+  document.getElementById(countId).textContent='Compressing '+inp.files.length+' photo(s)...';
+  var files=Array.from(inp.files);
+  var idx=0;
+  function processNext(){
+    if(idx>=files.length){
+      renderPhotoStrip(key,stripId);
+      document.getElementById(countId).textContent=T[key].length+' photo(s) · compressed ✓';
+      markDirty();return;
+    }
+    compressImage(files[idx++],1200,900,0.75).then(function(result){
+      T[key].push(result);processNext();
+    });
+  }
+  processNext();
 }
 
 function renderPhotoStrip(key,stripId){
@@ -521,11 +536,13 @@ function loadTrip(slug){
     document.getElementById('bookTog').classList.toggle('on',showBook);
     document.getElementById('bookFields').style.opacity=showBook?'1':'.4';
     document.getElementById('bookFields').style.pointerEvents=showBook?'':'none';
-    showBannerPreview(t.bannerPhoto||null);
-    showResortHeroPreview(t.resortHeroPhoto||null);
+    showSinglePreview(t.bannerPhoto||null,'bnPreview','bnImg','bnPlaceholder');
+    showSinglePreview(t.resortHeroPhoto||null,'rhPreview','rhImg','rhPlaceholder');
     T.photos=t.photos||[];T.resortPhotos=t.resortPhotos||[];
     renderDays();renderPacking();renderBookFields();
     renderPhotoStrip('photos','photoStrip');renderPhotoStrip('resortPhotos','resortPhotoStrip');
+    document.getElementById('photosCount').textContent=T.photos.length?T.photos.length+' photo(s)':'';
+    document.getElementById('resortCount').textContent=T.resortPhotos.length?T.resortPhotos.length+' photo(s)':'';
     var bg=t.bgColor||'sunset';T.bgColor=bg;
     var sw=document.querySelector('[data-color="'+bg+'"]');
     if(sw)selectColor(bg,sw);
