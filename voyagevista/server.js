@@ -14,6 +14,9 @@ if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 console.log('✅ Supabase connected:', process.env.SUPABASE_URL);
 
+// Logo embedded as base64 (240px, ~14KB — lightweight)
+const LOGO_B64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPAAAADwCAIAAACxN37FAAABCGlDQ1BJQ0MgUHJvZmlsZQAAeJxjYGA8wQAELAYMDLl5JUVB7k4KEZFRCuwPGBiBEAwSk4sLGHADoKpv1yBqL+viUYcLcKakFicD6Q9ArFIEtBxopAiQLZIOYWuA2EkQtg2IXV5SUAJkB4DYRSFBzkB2CpCtkY7ETkJiJxcUgdT3ANk2uTmlyQh3M/Ck5oUGA2kOIJZhKGYIYnBncAL5H6IkfxEDg8VXBgbmCQixpJkMDNtbGRgkbiHEVBYwMPC3MDBsO48QQ4RJQWJRIliIBYiZ0tIYGD4tZ2DgjWRgEL7AwMAVDQsIHG5TALvNnSEfCNMZchhSgSKeDHkMyQx6QJYRgwGDIYMZAKbWPz9HbOBQAAAA';
+
 function generateSlug(name, occ) {
   return (name + '-' + occ).toLowerCase()
     .replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-').substring(0,60);
@@ -135,9 +138,11 @@ function getBg(t) {
 
 function countdownHtml(countdown) {
   if (countdown === null || countdown === undefined) return '';
-  if (countdown > 0) return `<div class="cd-wrap"><div class="cd-sp">✨ 🎉 ✨</div><div class="cd-num">${countdown}</div><div class="cd-lbl">days until your adventure begins!</div><div class="cd-sp">🌟 🎊 🌟</div></div>`;
-  if (countdown === 0) return `<div class="cd-wrap"><div class="cd-sp">🎉 🥂 🎉</div><div class="cd-num">Today!</div><div class="cd-lbl">Your adventure starts now!</div></div>`;
-  return `<div class="cd-wrap"><div class="cd-sp">🌴 ✈️ 🌴</div><div class="cd-num">You're There!</div><div class="cd-lbl">Enjoy every moment!</div></div>`;
+  let icon = '🎉', num = '', label = '';
+  if (countdown > 0)       { icon='🎉'; num=countdown; label='days to go!'; }
+  else if (countdown === 0){ icon='🥂'; num='Today!'; label='Adventure starts now!'; }
+  else                     { icon='🌴'; num="You're There!"; label='Enjoy every moment!'; }
+  return `<div class="cd-pill">${icon} <span class="cd-n">${num}</span> ${label} ${icon}</div>`;
 }
 
 function renderResortPage(t) {
@@ -147,13 +152,13 @@ function renderResortPage(t) {
 <title>${t.hotel||'Resort'} Photos — Voyage Vista Travels</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'DM Sans',sans-serif;background:#0d1b2a;color:#e8dcc8;}
-.hero{background:${bg};padding:60px 24px 40px;text-align:center;}
-.badge{display:inline-block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:5px 18px;margin-bottom:14px;}
+.hero{background:${bg};padding:40px 24px 32px;text-align:center;}
+.logo-wrap{margin-bottom:16px;}.logo-img{height:48px;width:auto;}
 h1{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,5vw,3rem);color:#fff;font-weight:600;margin-bottom:8px;}
 .sub{color:rgba(255,255,255,.6);}
-.back-btn{display:inline-block;margin-top:20px;padding:10px 24px;border:1px solid rgba(255,255,255,.4);border-radius:8px;color:#fff;text-decoration:none;font-size:13px;}
+.back-btn{display:inline-block;margin-top:16px;padding:10px 24px;border:1px solid rgba(255,255,255,.4);border-radius:8px;color:#fff;text-decoration:none;font-size:13px;}
 .back-btn:hover{background:rgba(255,255,255,.1);}
-.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:6px;padding:24px;}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:6px;padding:24px;}
 .gitem{overflow:hidden;border-radius:6px;aspect-ratio:4/3;cursor:pointer;}
 .gitem img{width:100%;height:100%;object-fit:cover;transition:transform .3s;}
 .gitem:hover img{transform:scale(1.04);}
@@ -166,7 +171,7 @@ h1{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,5vw,3rem);color
 .footer{text-align:center;padding:32px 20px;color:rgba(255,255,255,.25);font-size:12px;}
 .footer strong{color:#c4a057;}</style></head><body>
 <div class="hero">
-  <div class="badge">Voyage Vista Travels · Resort Gallery</div>
+  <div class="logo-wrap"><img src="${LOGO_B64}" alt="Voyage Vista Travels" class="logo-img"></div>
   <h1>${t.hotel||'Resort'} Photos</h1>
   <div class="sub">${t.destination||''}</div>
   <a href="/trips/${t.id}" class="back-btn">← Back to Trip Page</a>
@@ -200,27 +205,39 @@ function renderTripPage(t) {
   const photoCount = (t.photos||[]).length;
   const bg = getBg(t);
 
+  const statsHtml = `
+    <div class="hero-stats-strip">
+      <div class="hero-stats-left">
+        ${nights?`<div class="stat-pill"><span class="sp-num">${nights}</span><span class="sp-lbl">Nights</span></div>`:''}
+        ${t.guestCount?`<div class="stat-pill"><span class="sp-num">${t.guestCount}</span><span class="sp-lbl">Guests</span></div>`:''}
+        ${t.departDate?`<div class="stat-pill"><span class="sp-num">${fmt(t.departDate)}</span><span class="sp-lbl">Departure</span></div>`:''}
+      </div>
+      <div class="hero-stats-right">
+        ${countdownHtml(countdown)}
+      </div>
+    </div>`;
+
+  // Hero inner — logo at top, name/occasion in center, stats at bottom
   const heroInner = `
-    <div class="h-badge">✈ Voyage Vista Travels · ${t.theme||'Special Occasion'}</div>
-    <div class="conf">🎉 🌟 🎊 🌴 🎈</div>
-    <div class="h1">Happy <em>${t.occasion}</em>,<br>${t.guestName}!</div>
-    ${t.destination?`<div class="h-dest">📍 ${t.destination}</div>`:''}
-    ${t.tripDesc?`<div class="h-desc">${t.tripDesc}</div>`:''}
-    <div class="h-stats">
-      ${nights?`<div class="stat-box"><div class="s-num">${nights}</div><div class="s-lbl">Nights</div></div>`:''}
-      ${t.guestCount?`<div class="stat-box"><div class="s-num">${t.guestCount}</div><div class="s-lbl">Guests</div></div>`:''}
-      ${t.departDate?`<div class="stat-box"><div class="s-num">${fmt(t.departDate)}</div><div class="s-lbl">Departure</div></div>`:''}
+    <div class="hero-text">
+      <div class="hero-logo-wrap">
+        <img src="${LOGO_B64}" alt="Voyage Vista Travels" class="hero-logo">
+      </div>
+      <div class="conf">🎉 🌟 🎊 🌴 🎈</div>
+      <div class="h1">Happy <em>${t.occasion}</em>,<br>${t.guestName}!</div>
+      ${t.destination?`<div class="h-dest">📍 ${t.destination}</div>`:''}
+      ${t.tripDesc?`<div class="h-desc">${t.tripDesc}</div>`:''}
     </div>
-    ${countdownHtml(countdown)}`;
+    ${statsHtml}`;
 
   const heroSection = t.bannerPhoto
     ? `<div class="hero-banner">
-        <img class="hero-banner-img" src="${t.bannerPhoto}" alt="Trip banner">
-        <div class="hero-banner-overlay"></div>
-        <div class="hero-content">${heroInner}</div>
+         <img class="hero-banner-img" src="${t.bannerPhoto}" alt="Trip banner" loading="eager">
+         <div class="hero-banner-overlay"></div>
+         <div class="hero-content">${heroInner}</div>
        </div>`
     : `<div class="hero-color" style="background:${bg};">
-        <div class="hero-content">${heroInner}</div>
+         <div class="hero-content">${heroInner}</div>
        </div>`;
 
   const autoCarousel = photoCount > 0 ? `
@@ -245,7 +262,7 @@ function renderTripPage(t) {
     <a href="/trips/${t.id}/resort" class="resort-btn">🏨 View ${t.hotel||'Resort'} Photos <span class="r-count">${t.resortPhotos.length} photos</span></a>
   </section><hr class="div">` : '';
 
-  const resortHero = t.resortHeroPhoto ? `<div class="resort-img"><img src="${t.resortHeroPhoto}" alt="${t.hotel||'Resort'}"></div>` : '';
+  const resortHero = t.resortHeroPhoto ? `<div class="resort-img"><img src="${t.resortHeroPhoto}" alt="${t.hotel||'Resort'}" loading="lazy"></div>` : '';
 
   const logistics = (t.flight||t.hotel) ? `
   <section class="sec"><div class="sec-label">Booking Details</div>
@@ -295,11 +312,9 @@ function renderTripPage(t) {
   <section class="sec"><div class="sec-label">Weather in ${t.weatherSnapshot.dest||t.destination||''}</div>
   <div class="weather-card">
     <div class="w-icon">${t.weatherSnapshot.icon||'🌤️'}</div>
-    <div>
-      <div class="w-temp">${t.weatherSnapshot.tempC}°C / ${t.weatherSnapshot.tempF}°F</div>
-      <div class="w-desc">${t.weatherSnapshot.desc}</div>
-      <div class="w-extra">Feels like ${t.weatherSnapshot.feels}°C · Humidity ${t.weatherSnapshot.humidity}%</div>
-    </div>
+    <div><div class="w-temp">${t.weatherSnapshot.tempC}°C / ${t.weatherSnapshot.tempF}°F</div>
+    <div class="w-desc">${t.weatherSnapshot.desc}</div>
+    <div class="w-extra">Feels like ${t.weatherSnapshot.feels}°C · Humidity ${t.weatherSnapshot.humidity}%</div></div>
   </div></section><hr class="div">` : '';
 
   const packCats = t.packingList&&t.packingList.length ? t.packingList.reduce((a,i)=>{(a[i.category||'General']=a[i.category||'General']||[]).push(i.item);return a;},{}) : null;
@@ -351,88 +366,90 @@ function renderTripPage(t) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>${t.guestName}'s ${t.occasion} – Voyage Vista Travels</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'DM Sans',sans-serif;background:#f5f0e8;color:#2c2c2c;line-height:1.6;}
 
-/* ── HERO BANNER (photo version) ── */
+/* ── HERO BANNER (with photo) ── */
 .hero-banner{
-  position:relative;
-  width:100%;
-  min-height:100vh;
-  overflow:hidden;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  position:relative;width:100%;min-height:92vh;
+  display:flex;align-items:stretch;overflow:hidden;
 }
 .hero-banner-img{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  object-position:center top;
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  object-fit:cover;object-position:center center;z-index:0;
 }
 .hero-banner-overlay{
-  position:absolute;
-  inset:0;
-  background:linear-gradient(
-    to bottom,
-    rgba(0,0,0,0.20) 0%,
-    rgba(0,0,0,0.50) 50%,
-    rgba(0,0,0,0.72) 100%
-  );
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  background:linear-gradient(to bottom,rgba(0,0,0,0.18) 0%,rgba(0,0,0,0.45) 55%,rgba(0,0,0,0.72) 100%);
+  z-index:1;
 }
 
 /* ── HERO COLOR (no photo) ── */
 .hero-color{
-  position:relative;
-  width:100%;
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
+  position:relative;width:100%;min-height:92vh;
+  display:flex;align-items:stretch;overflow:hidden;
 }
 .hero-color::before{
-  content:'';
-  position:absolute;inset:0;
-  background:radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.18),transparent 60%);
-  pointer-events:none;
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.15),transparent 60%);
+  pointer-events:none;z-index:0;
 }
 
 /* ── HERO CONTENT (shared) ── */
 .hero-content{
-  position:relative;
-  z-index:2;
-  width:100%;
-  max-width:760px;
-  margin:0 auto;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  text-align:center;
-  padding:80px 24px 60px;
+  position:relative;z-index:2;width:100%;
+  display:flex;flex-direction:column;justify-content:space-between;padding:0;
 }
-.h-badge{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#fff;border:1px solid rgba(255,255,255,.5);border-radius:20px;padding:6px 20px;margin-bottom:18px;background:rgba(255,255,255,.15);}
-.conf{font-size:1.5rem;letter-spacing:5px;margin-bottom:12px;opacity:.9;}
-.h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2.4rem,7vw,5.2rem);color:#fff;font-weight:600;line-height:1.1;margin-bottom:10px;text-shadow:0 2px 24px rgba(0,0,0,.3);}
+
+/* ── LOGO ── */
+.hero-logo-wrap{margin-bottom:16px;}
+.hero-logo{height:52px;width:auto;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.3));}
+
+/* ── HERO TEXT ── */
+.hero-text{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;padding:48px 24px 28px;
+}
+.conf{font-size:1.3rem;letter-spacing:4px;margin-bottom:10px;opacity:.88;}
+.h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,6vw,4.8rem);color:#fff;font-weight:600;line-height:1.1;margin-bottom:10px;text-shadow:0 2px 20px rgba(0,0,0,.35);}
 .h1 em{font-style:italic;}
-.h-dest{font-size:1rem;color:rgba(255,255,255,.88);margin-bottom:10px;}
-.h-desc{font-size:.92rem;color:rgba(255,255,255,.72);max-width:500px;margin:0 auto 24px;line-height:1.75;}
-.h-stats{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:28px;}
-.stat-box{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:12px;padding:12px 22px;backdrop-filter:blur(8px);}
-.s-num{font-family:'Cormorant Garamond',serif;font-size:1.7rem;color:#fff;font-weight:600;}
-.s-lbl{font-size:10px;color:rgba(255,255,255,.7);letter-spacing:.08em;text-transform:uppercase;margin-top:2px;}
-.cd-wrap{display:inline-block;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.45);border-radius:22px;padding:22px 48px;backdrop-filter:blur(8px);}
-.cd-sp{font-size:1.4rem;letter-spacing:5px;margin-bottom:6px;animation:sp 2s ease-in-out infinite;}
-@keyframes sp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.7;transform:scale(1.06)}}
-.cd-num{font-family:'Cormorant Garamond',serif;font-size:clamp(4.5rem,13vw,9rem);color:#fff;font-weight:600;line-height:1;text-shadow:0 0 60px rgba(255,255,255,.55);animation:cdp 3s ease-in-out infinite;}
-@keyframes cdp{0%,100%{text-shadow:0 0 60px rgba(255,255,255,.4)}50%{text-shadow:0 0 100px rgba(255,255,255,.95)}}
-.cd-lbl{font-size:.88rem;color:rgba(255,255,255,.82);margin-top:5px;letter-spacing:.05em;text-transform:uppercase;}
+.h-dest{font-size:1rem;color:rgba(255,255,255,.88);margin-bottom:8px;}
+.h-desc{font-size:.9rem;color:rgba(255,255,255,.7);max-width:480px;margin:0 auto;line-height:1.75;}
+
+/* ── STATS STRIP ── */
+.hero-stats-strip{
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:12px;padding:16px 28px 22px;
+  background:linear-gradient(to top,rgba(0,0,0,0.55),transparent);
+}
+.hero-stats-left{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.stat-pill{
+  display:flex;flex-direction:column;align-items:center;
+  background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);
+  border-radius:10px;padding:8px 16px;backdrop-filter:blur(6px);
+}
+.sp-num{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:#fff;font-weight:600;line-height:1.1;}
+.sp-lbl{font-size:9px;color:rgba(255,255,255,.65);letter-spacing:.08em;text-transform:uppercase;margin-top:2px;}
+.hero-stats-right{flex-shrink:0;}
+
+/* ── COUNTDOWN PILL ── */
+.cd-pill{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.4);
+  border-radius:50px;padding:10px 20px;color:#fff;font-size:13px;
+  letter-spacing:.04em;backdrop-filter:blur(8px);white-space:nowrap;
+}
+.cd-n{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:600;color:#fff;line-height:1;}
+@media(max-width:600px){
+  .hero-stats-strip{flex-direction:column;align-items:flex-start;padding:14px 18px 18px;}
+  .cd-pill{font-size:12px;}.cd-n{font-size:1.5rem;}
+}
 
 /* ── SECTIONS ── */
 .sec{padding:36px 20px;max-width:760px;margin:0 auto;}
@@ -514,7 +531,8 @@ body{font-family:'DM Sans',sans-serif;background:#f5f0e8;color:#2c2c2c;line-heig
 .lb-prev,.lb-next{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.1);border:none;color:#fff;font-size:28px;padding:12px 18px;cursor:pointer;border-radius:6px;}
 .lb-prev{left:12px;}.lb-next{right:12px;}
 .lb-prev:hover,.lb-next:hover{background:rgba(255,255,255,.2);}
-.footer{background:#0d1b2a;text-align:center;padding:32px 20px 24px;color:rgba(255,255,255,.3);font-size:12px;margin-top:40px;}
+.footer{background:#0d1b2a;text-align:center;padding:28px 20px 20px;color:rgba(255,255,255,.3);font-size:12px;margin-top:40px;}
+.footer-logo{height:36px;width:auto;margin-bottom:10px;opacity:.7;}
 .footer strong{color:#c4a057;}
 </style>
 </head>
@@ -525,6 +543,7 @@ ${heroSection}
 ${autoCarousel}${resortBtn}${logistics}${itin}${docSection}${msgSec}${weatherSec}${packSec}${currSec}${bookSec}${contactSec}
 ${socialLinks}
 <footer class="footer">
+  <div><img src="${LOGO_B64}" alt="Voyage Vista Travels" class="footer-logo"></div>
   <strong>Voyage Vista Travels</strong> · Nepean, ON · (343) 961-3506 · Hello@voyagevista.ca<br>
   Affiliated with Nexion Travel Group-Canada · TICO Reg: 1549342
 </footer>
