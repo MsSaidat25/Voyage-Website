@@ -54,16 +54,25 @@ app.get('/api/trips/:slug', async (req, res) => {
 
 app.post('/api/trips', async (req, res) => {
   try {
+    app.post('/api/trips', async (req, res) => {
+  try {
     const trip = req.body;
     if (!trip.guestName || !trip.occasion) return res.status(400).json({ error: 'Guest name and occasion required' });
     const slug = trip.id || generateSlug(trip.guestName, trip.occasion);
     trip.id = slug;
-    const { error } = await supabase.from('trips').upsert({
-      id: slug, guest_name: trip.guestName, occasion: trip.occasion,
-      destination: trip.destination || null, depart_date: trip.departDate || null,
-      return_date: trip.returnDate || null, guest_count: trip.guestCount || null,
-      theme: trip.theme || null, trip_data: trip
-    }, { onConflict: 'id' });
+    // Uses RPC with 60s statement timeout — fixes default 8s Supabase timeout
+    // on large photo payloads
+    const { error } = await supabase.rpc('upsert_trip_data', {
+      p_id:          slug,
+      p_guest_name:  trip.guestName,
+      p_occasion:    trip.occasion,
+      p_destination: trip.destination  || null,
+      p_depart_date: trip.departDate   || null,
+      p_return_date: trip.returnDate   || null,
+      p_guest_count: trip.guestCount   || null,
+      p_theme:       trip.theme        || null,
+      p_trip_data:   trip
+    });
     if (error) throw error;
     res.json({ success: true, slug });
   } catch(e) { res.status(500).json({ error: 'Failed to save: ' + e.message }); }
