@@ -603,7 +603,45 @@ function publishTrip(){
     }).catch(()=>toast('Publish failed'));
 }
 
-function deleteTrip(){if(!T.id||!confirm('Delete this trip?'))return;fetch('/api/trips/'+T.id,{method:'DELETE'}).then(()=>{toast('Deleted');newTrip();loadSB();});}
+function deleteTrip(){
+  if(!T.id){toast('No trip selected');return;}
+  if(!confirm('Delete "'+T.guestName+' — '+T.occasion+'"? This cannot be undone.'))return;
+  var slug=T.id;
+  document.getElementById('saveBtn').textContent='Deleting...';
+  fetch('/api/trips/'+slug,{method:'DELETE'})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.success){
+        // Reset state completely before refreshing sidebar
+        T={days:[],photos:[],packingList:[],bookingFormFields:[],bgColor:'sunset',resortLinks:[]};
+        showBook=false;isDirty=false;
+        clearFields();
+        renderDays();renderPacking();renderBookFields();
+        if(typeof renderResortLinks==='function')renderResortLinks();
+        renderPhotoStrip('photos','photoStrip');
+        document.getElementById('tripLabel').textContent='New Trip Page';
+        document.getElementById('saveBtn').textContent='Save';
+        document.getElementById('previewUrl').textContent='Save trip to get link';
+        document.getElementById('previewFrame').srcdoc='<div style="display:flex;align-items:center;justify-content:center;height:100%;font-family:sans-serif;color:#aaa;font-size:14px;text-align:center;padding:40px;">Trip deleted. Start a new trip or select one from the sidebar.</div>';
+        document.getElementById('bookTog').classList.remove('on');
+        document.getElementById('bookFields').style.opacity='.4';
+        document.getElementById('bookFields').style.pointerEvents='none';
+        showSinglePreview(null,'bnPreview','bnImg','bnPlaceholder');
+        showSinglePreview(null,'rhPreview','rhImg','rhPlaceholder');
+        document.getElementById('photosCount').textContent='';
+        // Single loadSB call after everything is reset
+        loadSB();
+        toast('✅ Trip deleted successfully');
+      } else {
+        document.getElementById('saveBtn').textContent='Save';
+        toast('Delete failed: '+(d.error||'unknown error'));
+      }
+    })
+    .catch(function(){
+      document.getElementById('saveBtn').textContent='Save';
+      toast('Delete failed — check your connection');
+    });
+}
 
 function selectColor(name,el){T.bgColor=name;document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('selected'));if(el)el.classList.add('selected');markDirty();}
 function selectCustomColor(hex){T.bgColor=hex;document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('selected'));markDirty();}
