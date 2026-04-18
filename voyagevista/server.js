@@ -559,3 +559,509 @@ app.listen(PORT, () => {
     setInterval(() => { fetch(process.env.RENDER_EXTERNAL_URL + '/api/health').catch(()=>{}); }, 14 * 60 * 1000);
   }
 });
+// ═══════════════════════════════════════════════════════════════
+// PAGE BUILDER — new routes added BELOW existing routes
+// Nothing above this line is changed
+// ═══════════════════════════════════════════════════════════════
+
+// Serve builder admin UI
+app.get('/trips/builder', (req, res) => {
+  const fs = require('fs');
+  const f = path.join(ROOT, 'trips', 'builder.html');
+  fs.existsSync(f) ? res.sendFile(f) : res.status(404).send('Builder not found');
+});
+
+// List all builder trips
+app.get('/api/trips/builder', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('trips')
+      .select('id, guest_name, occasion, destination, depart_date, theme, created_at')
+      .eq('use_builder', true)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    res.json({ trips: (data||[]).map(t => ({
+      id: t.id, guestName: t.guest_name, occasion: t.occasion,
+      destination: t.destination, departDate: t.depart_date,
+      theme: t.theme, createdAt: t.created_at
+    }))});
+  } catch(e) { res.status(500).json({ error: 'Failed to load builder trips' }); }
+});
+
+// Get single builder trip
+app.get('/api/trips/builder/:slug', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('trips')
+      .select('trip_data, page_components')
+      .eq('id', req.params.slug)
+      .eq('use_builder', true)
+      .single();
+    if (error || !data) return res.status(404).json({ error: 'Page not found' });
+    const merged = { ...(data.trip_data || {}), components: data.page_components || [] };
+    res.json(merged);
+  } catch(e) { res.status(500).json({ error: 'Failed to load builder trip' }); }
+});
+
+// Save builder trip
+app.post('/api/trips/builder', async (req, res) => {
+  try {
+    const page = req.body;
+    if (!page.guestName || !page.occasion)
+      return res.status(400).json({ error: 'Guest name and occasion required' });
+    const slug = page.id || generateSlug(page.guestName, page.occasion);
+    page.id = slug;
+    const components = page.components || [];
+    const meta = { ...page };
+    delete meta.components;
+
+    const { error } = await supabase.rpc('upsert_builder_trip', {
+      p_id:          slug,
+      p_guest_name:  page.guestName,
+      p_occasion:    page.occasion,
+      p_destination: page.destination  || null,
+      p_depart_date: page.departDate   || null,
+      p_theme:       page.theme        || null,
+      p_components:  components
+    });
+    if (error) throw error;
+    res.json({ success: true, slug });
+  } catch(e) { res.status(500).json({ error: 'Failed to save: ' + e.message }); }
+});
+
+// Delete builder trip
+app.delete('/api/trips/builder/:slug', async (req, res) => {
+  try {
+    const { error } = await supabase.from('trips').delete()
+      .eq('id', req.params.slug).eq('use_builder', true);
+    if (error) throw error;
+    res.json({ success: true });
+  } catch(e) { res.status(500).json({ error: 'Failed to delete' }); }
+});
+
+// ── BUILDER PAGE RENDERER ───────────────────────────────────────
+app.get('/trips/v2/:slug', async (req, res) => {
+  try {
+    const { data } = await supabase
+      .from('trips')
+      .select('trip_data, page_components')
+      .eq('id', req.params.slug)
+      .eq('use_builder', true)
+      .single();
+    if (!data) return res.status(404).send(notFoundPage());
+    const page = { ...(data.trip_data || {}), components: data.page_components || [] };
+    res.send(renderBuilderPage(page));
+  } catch(e) { res.status(404).send(notFoundPage()); }
+});
+
+// ── COMPONENT RENDERERS ─────────────────────────────────────────
+const THEME_BG_BUILDER = {
+  'Birthday Celebration': 'linear-gradient(135deg,#C2185B,#d194b8)',
+  'Luxury Escape':        'linear-gradient(135deg,#2A334A,#3d4e6e)',
+  'Girls Getaway':        'linear-gradient(135deg,#AD1457,#d194b8)',
+  'Family Celebration':   'linear-gradient(135deg,#E65100,#FF6B35)',
+  'Romantic Escape':      'linear-gradient(135deg,#6A1B3A,#d194b8)',
+  'Adventure Trip':       'linear-gradient(135deg,#1B5E20,#2E7D32)',
+  'Group Tour':           'linear-gradient(135deg,#0D47A1,#1565C0)',
+  'Cruise':               'linear-gradient(135deg,#006064,#00838F)',
+};
+
+function renderBuilderPage(page) {
+  const comps = page.components || [];
+  const countdown = page.departDate
+    ? Math.ceil((new Date(page.departDate + ' 12:00:00') - new Date()) / 86400000)
+    : null;
+  const themeBg = THEME_BG_BUILDER[page.theme] || THEME_BG_BUILDER['Birthday Celebration'];
+
+  const renderedComps = comps.map(c => renderBuilderComp(c, page, countdown, themeBg)).join('\n');
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>${page.guestName}'s ${page.occasion} – Voyage Vista Travels</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Poppins',sans-serif;background:#fff;color:#2A334A;line-height:1.6;}
+:root{--pink:#d194b8;--navy:#2A334A;}
+
+/* NAVBAR */
+.vv-navbar{background:var(--navy);display:flex;align-items:center;justify-content:space-between;padding:14px 32px;position:sticky;top:0;z-index:100;}
+.vv-nav-logo{height:36px;width:auto;filter:drop-shadow(0 1px 4px rgba(0,0,0,.3));}
+.vv-nav-cta{background:var(--pink);color:#fff;border:none;border-radius:4px;padding:8px 18px;font-size:13px;font-family:'Poppins',sans-serif;cursor:pointer;text-decoration:none;}
+
+/* HERO */
+.vv-hero{position:relative;min-height:90vh;display:flex;flex-direction:column;overflow:hidden;}
+.vv-hero-bg{position:absolute;inset:0;object-fit:cover;width:100%;height:100%;z-index:0;}
+.vv-hero-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(to bottom,rgba(42,51,74,.3) 0%,rgba(42,51,74,.65) 100%);}
+.vv-hero-content{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:40px 32px 28px;}
+.vv-hero-location{display:inline-block;background:var(--pink);color:#fff;border-radius:4px;padding:5px 14px;font-size:12px;font-weight:400;margin-bottom:12px;}
+.vv-hero-h1{font-size:clamp(2rem,6vw,4.5rem);font-weight:200;color:#fff;line-height:1.15;margin-bottom:6px;}
+.vv-hero-sub{font-size:clamp(.9rem,2vw,1.3rem);font-weight:300;color:rgba(255,255,255,.8);margin-bottom:20px;}
+.vv-hero-pills{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;}
+.vv-hero-pill{background:rgba(255,255,255,.12);border:.5px solid rgba(255,255,255,.3);border-radius:4px;padding:6px 14px;font-size:12px;color:#fff;font-weight:300;}
+.vv-hero-btns{display:flex;gap:10px;flex-wrap:wrap;}
+.vv-hero-btn-pink{background:var(--pink);color:#fff;border:none;border-radius:4px;padding:10px 22px;font-size:13px;font-family:'Poppins',sans-serif;text-decoration:none;cursor:pointer;}
+.vv-hero-btn-outline{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5);border-radius:4px;padding:10px 22px;font-size:13px;font-family:'Poppins',sans-serif;text-decoration:none;cursor:pointer;}
+
+/* COUNTDOWN */
+.vv-cd-wrap{display:inline-flex;flex-direction:column;align-items:center;background:rgba(209,148,184,.2);border:1.5px solid rgba(209,148,184,.5);border-radius:12px;padding:14px 32px;margin-bottom:20px;backdrop-filter:blur(6px);}
+.vv-cd-em{font-size:1.2rem;letter-spacing:5px;margin-bottom:4px;animation:vvsp 2s ease-in-out infinite;}
+@keyframes vvsp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.7;transform:scale(1.07)}}
+.vv-cd-num{font-size:clamp(3rem,8vw,6rem);font-weight:200;color:#fff;line-height:1;}
+.vv-cd-lbl{font-size:9px;color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:.1em;margin-top:3px;}
+.vv-cd-em2{font-size:1.2rem;letter-spacing:5px;margin-top:6px;animation:vvsp 2s ease-in-out infinite .5s;}
+
+/* ASIDE */
+.vv-aside{display:grid;grid-template-columns:1fr 1fr;gap:0;min-height:360px;}
+.vv-aside.img-left{direction:rtl;}.vv-aside.img-left>*{direction:ltr;}
+.vv-aside-text{padding:48px 40px;display:flex;flex-direction:column;justify-content:center;background:#fff;}
+.vv-aside-img{overflow:hidden;}
+.vv-aside-img img{width:100%;height:100%;object-fit:cover;}
+@media(max-width:640px){.vv-aside{grid-template-columns:1fr;}.vv-aside.img-left{direction:ltr;}}
+
+/* TEXT BLOCK */
+.vv-text-block{padding:48px 32px;background:#fff;}
+.vv-text-block.center{text-align:center;}
+.vv-text-block.center .vv-tb-btns{justify-content:center;}
+
+/* IMAGE BANNER */
+.vv-banner{position:relative;min-height:340px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.vv-banner-bg{position:absolute;inset:0;object-fit:cover;width:100%;height:100%;}
+.vv-banner-overlay{position:absolute;inset:0;background:rgba(42,51,74,.55);}
+.vv-banner-content{position:relative;z-index:2;text-align:center;padding:40px 32px;}
+
+/* CAROUSEL */
+.vv-carousel{background:#fdf0f7;padding:40px 0;}
+.vv-car-inner{max-width:900px;margin:0 auto;padding:0 16px;}
+.vv-car-track-wrap{overflow:hidden;border-radius:8px;background:#f0e8f4;}
+.vv-car-track{display:flex;transition:transform .45s cubic-bezier(.25,.46,.45,.94);}
+.vv-car-slide{flex-shrink:0;width:100%;aspect-ratio:16/9;overflow:hidden;}
+.vv-car-slide img{width:100%;height:100%;object-fit:cover;}
+.vv-car-dots{display:flex;justify-content:center;gap:6px;padding:10px 0 4px;}
+.vv-car-dot{width:7px;height:7px;border-radius:50%;background:rgba(209,148,184,.3);cursor:pointer;border:none;transition:all .2s;}
+.vv-car-dot.on{background:var(--pink);width:20px;border-radius:3px;}
+.vv-car-arrows{display:flex;justify-content:center;gap:8px;margin-top:8px;}
+.vv-car-arr{width:36px;height:36px;border-radius:50%;background:#fff;border:1px solid rgba(209,148,184,.3);color:var(--navy);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+
+/* IMAGE GALLERY */
+.vv-gallery{padding:40px 32px;background:#fff;}
+.vv-gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px;margin-top:20px;}
+.vv-gallery-item{aspect-ratio:4/3;overflow:hidden;border-radius:6px;cursor:pointer;}
+.vv-gallery-item img{width:100%;height:100%;object-fit:cover;transition:transform .3s;}
+.vv-gallery-item:hover img{transform:scale(1.04);}
+
+/* BOOKING DETAILS */
+.vv-booking{background:#fff;padding:40px 32px;}
+.vv-card{background:#fdf0f7;border-radius:8px;padding:16px 18px;display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;}
+.vv-card-icon{width:36px;height:36px;background:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;border:.5px solid rgba(209,148,184,.3);}
+.vv-card-title{font-size:14px;font-weight:500;color:var(--navy);}
+.vv-card-sub{font-size:12px;font-weight:300;color:#888;margin-top:2px;}
+.vv-resort-img{width:100%;border-radius:8px;overflow:hidden;margin:10px 0;aspect-ratio:16/6;}
+.vv-resort-img img{width:100%;height:100%;object-fit:cover;}
+
+/* DOCUMENTS */
+.vv-docs{background:var(--navy);padding:40px 32px;}
+.vv-doc-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;}
+@media(max-width:500px){.vv-doc-grid{grid-template-columns:1fr;}}
+.vv-doc-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 20px;border-radius:6px;font-size:13px;font-weight:400;text-decoration:none;font-family:'Poppins',sans-serif;}
+.vv-doc-outline{border:1px solid var(--pink);color:var(--pink);background:transparent;}
+.vv-doc-outline:hover{background:rgba(209,148,184,.1);}
+.vv-doc-filled{background:var(--pink);color:#fff;border:1px solid var(--pink);}
+.vv-doc-filled:hover{opacity:.9;}
+.vv-booking-note{background:rgba(255,255,255,.06);border-left:3px solid var(--pink);border-radius:0 6px 6px 0;padding:8px 12px;font-size:12px;color:rgba(255,255,255,.55);margin-top:8px;}
+
+/* MESSAGE */
+.vv-message{background:var(--navy);padding:48px 32px;text-align:center;}
+.vv-msg-text{font-size:1rem;font-weight:300;color:rgba(255,255,255,.8);font-style:italic;line-height:1.9;max-width:600px;margin:0 auto 16px;}
+.vv-msg-from{font-size:12px;color:var(--pink);font-weight:400;}
+
+/* CONTACT */
+.vv-contact{background:var(--pink-light,#fdf0f7);padding:40px 32px;text-align:center;}
+.vv-contact-phone{font-size:1.8rem;font-weight:200;color:var(--navy);text-decoration:none;display:block;margin-bottom:4px;}
+.vv-contact-email{font-size:13px;color:#888;font-weight:300;text-decoration:none;}
+
+/* FOOTER */
+.vv-footer{background:var(--navy);padding:32px;text-align:center;}
+.vv-footer-logo{height:36px;width:auto;margin-bottom:12px;opacity:.75;}
+.vv-footer-brand{font-size:14px;font-weight:300;color:rgba(255,255,255,.6);}
+.vv-footer-copy{font-size:11px;font-weight:300;color:rgba(255,255,255,.3);margin-top:6px;}
+.vv-social-bar{display:flex;justify-content:center;gap:10px;margin:12px 0;}
+.vv-social-link{width:38px;height:38px;border-radius:6px;background:rgba(255,255,255,.08);border:.5px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.5);text-decoration:none;transition:all .2s;}
+.vv-social-link:hover{border-color:var(--pink);color:var(--pink);}
+
+/* SHARED */
+.vv-pink-heading{font-size:clamp(1.4rem,4vw,2.5rem);font-weight:200;color:var(--pink);line-height:1.2;margin-bottom:6px;}
+.vv-navy-heading{font-size:clamp(1.3rem,3.5vw,2.2rem);font-weight:200;color:var(--navy);line-height:1.2;margin-bottom:6px;}
+.vv-white-heading{font-size:clamp(1.3rem,3.5vw,2.2rem);font-weight:200;color:#fff;line-height:1.2;margin-bottom:6px;}
+.vv-subheading{font-size:.8rem;font-weight:500;color:#888;letter-spacing:.05em;text-transform:uppercase;margin-bottom:12px;}
+.vv-subheading-pink{font-size:.8rem;font-weight:500;color:var(--pink);letter-spacing:.05em;text-transform:uppercase;margin-bottom:12px;}
+.vv-subheading-white{font-size:.8rem;font-weight:500;color:rgba(255,255,255,.6);letter-spacing:.05em;text-transform:uppercase;margin-bottom:12px;}
+.vv-body{font-size:.9rem;font-weight:300;color:#555;line-height:1.85;margin-bottom:16px;}
+.vv-body-white{font-size:.9rem;font-weight:300;color:rgba(255,255,255,.75);line-height:1.85;margin-bottom:16px;}
+.vv-btn-pink{display:inline-block;background:var(--pink);color:#fff;border-radius:4px;padding:10px 22px;font-size:13px;font-weight:400;font-family:'Poppins',sans-serif;text-decoration:none;border:none;cursor:pointer;}
+.vv-btn-outline{display:inline-block;background:transparent;color:var(--pink);border:1px solid var(--pink);border-radius:4px;padding:10px 22px;font-size:13px;font-weight:400;font-family:'Poppins',sans-serif;text-decoration:none;}
+.vv-btn-outline-white{display:inline-block;background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5);border-radius:4px;padding:10px 22px;font-size:13px;font-weight:300;font-family:'Poppins',sans-serif;text-decoration:none;}
+.vv-tb-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;}
+.vv-weather{background:#e8f4fd;border-radius:8px;padding:16px 20px;display:flex;align-items:center;gap:16px;margin-top:12px;}
+.vv-pack-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-top:12px;}
+.vv-pack-cat{background:var(--pink-light,#fdf0f7);border-radius:8px;padding:14px;}
+.vv-pack-ttl{font-size:10px;font-weight:500;text-transform:uppercase;color:var(--pink);margin-bottom:8px;}
+.vv-pack-item{font-size:12px;font-weight:300;color:#555;padding:3px 0;border-bottom:.5px solid rgba(209,148,184,.2);}
+.vv-curr-card{background:var(--navy);border-radius:8px;padding:20px;margin-top:12px;}
+.vv-curr-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:.5px solid rgba(255,255,255,.06);}
+.vv-curr-lbl{font-size:12px;font-weight:300;color:rgba(255,255,255,.5);}
+.vv-curr-val{font-size:12px;font-weight:400;color:var(--pink);}
+.vv-section-container{max-width:900px;margin:0 auto;padding:0 32px;}
+.lb{position:fixed;inset:0;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;z-index:999;opacity:0;pointer-events:none;transition:opacity .25s;}
+.lb.open{opacity:1;pointer-events:all;}
+.lb img{max-width:90vw;max-height:88vh;border-radius:8px;object-fit:contain;}
+.lb-close{position:absolute;top:16px;right:20px;font-size:28px;color:rgba(255,255,255,.7);cursor:pointer;background:none;border:none;}
+.lb-prev,.lb-next{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.1);border:none;color:#fff;font-size:28px;padding:12px 18px;cursor:pointer;border-radius:6px;}
+.lb-prev{left:12px;}.lb-next{right:12px;}
+</style>
+</head>
+<body>
+${renderedComps}
+<div class="lb" id="lb"><button class="lb-close" onclick="closeLB()">✕</button><button class="lb-prev" onclick="navLB(-1)">‹</button><img id="lbImg"><button class="lb-next" onclick="navLB(1)">›</button></div>
+<script>
+var __lbImgs=[],__lbIdx=0;
+function openLB(imgs,i){__lbImgs=imgs;__lbIdx=i;document.getElementById('lbImg').src=imgs[i];document.getElementById('lb').classList.add('open');}
+function closeLB(){document.getElementById('lb').classList.remove('open');}
+function navLB(d){__lbIdx=(__lbIdx+d+__lbImgs.length)%__lbImgs.length;document.getElementById('lbImg').src=__lbImgs[__lbIdx];}
+document.getElementById('lb').addEventListener('click',function(e){if(e.target===this)closeLB();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeLB();if(e.key==='ArrowRight')navLB(1);if(e.key==='ArrowLeft')navLB(-1);});
+// carousels init
+document.querySelectorAll('[data-carousel]').forEach(function(el){
+  var id=el.dataset.carousel,idx=0;
+  var track=document.getElementById('car-track-'+id);
+  var dots=document.querySelectorAll('[data-dot-'+id+']');
+  var total=track?track.children.length:0;
+  function go(i){idx=Math.max(0,Math.min(i,total-1));if(track)track.style.transform='translateX(-'+idx+'00%)';dots.forEach(function(d,j){d.classList.toggle('on',j===idx);});}
+  document.getElementById('car-prev-'+id)?.addEventListener('click',function(){go(idx-1);});
+  document.getElementById('car-next-'+id)?.addEventListener('click',function(){go(idx+1);});
+  dots.forEach(function(d,i){d.addEventListener('click',function(){go(i);});});
+  if(total>1)setInterval(function(){go((idx+1)%total);},4000);
+});
+<\/script>
+</body></html>`;
+}
+
+function renderBuilderComp(comp, page, countdown, themeBg) {
+  const d = comp.data || {};
+  const fmt = dt => dt ? new Date(dt+'T12:00:00').toLocaleDateString('en-CA',{month:'long',day:'numeric',year:'numeric'}) : '';
+  const nights = (page.departDate && page.returnDate)
+    ? Math.max(0, Math.ceil((new Date(page.returnDate)-new Date(page.departDate))/86400000)) : null;
+
+  switch(comp.type) {
+    case 'navbar': return `
+<nav class="vv-navbar">
+  <img src="${LOGO_B64}" alt="Voyage Vista Travels" class="vv-nav-logo">
+  <a href="mailto:${d.ctaEmail||'Hello@voyagevista.ca'}" class="vv-nav-cta">${d.ctaText||'Contact Us'}</a>
+</nav>`;
+
+    case 'hero': {
+      const bgStyle = d.backgroundPhoto
+        ? `<img class="vv-hero-bg" src="${d.backgroundPhoto}" alt="Hero"><div class="vv-hero-overlay"></div>`
+        : `<div class="vv-hero-overlay" style="background:${themeBg};position:absolute;inset:0;z-index:1;"></div>`;
+      const countdownBlock = d.showCountdown !== false && countdown !== null ? `
+        <div class="vv-cd-wrap">
+          <div class="vv-cd-em">✨ 🎉 ✨</div>
+          <div class="vv-cd-num">${countdown > 0 ? countdown : countdown === 0 ? 'Today!' : "You're There!"}</div>
+          <div class="vv-cd-lbl">${countdown > 0 ? 'days until your adventure begins!' : countdown === 0 ? 'Adventure starts now!' : 'Enjoy every moment!'}</div>
+          <div class="vv-cd-em2">🌟 🎊 🌟</div>
+        </div>` : '';
+      const btnsHtml = (d.buttons||[]).map(b => b.url
+        ? `<a href="${b.url}" class="vv-hero-btn-outline" target="_blank">${b.text}</a>`
+        : `<span class="vv-hero-btn-outline">${b.text}</span>`
+      ).join('');
+      return `
+<div class="vv-hero">
+  ${bgStyle}
+  <div class="vv-hero-content">
+    ${d.location ? `<div class="vv-hero-location">📍 ${d.location}</div>` : ''}
+    ${d.heading ? `<div class="vv-hero-h1">${d.heading}</div>` : ''}
+    ${d.subheading ? `<div class="vv-hero-sub">${d.subheading}</div>` : ''}
+    ${d.description ? `<div style="font-size:.85rem;font-weight:300;color:rgba(255,255,255,.75);max-width:540px;margin-bottom:18px;">${d.description}</div>` : ''}
+    ${d.showCountdown !== false ? countdownBlock : ''}
+    ${(page.departDate||nights||page.guestCount) ? `<div class="vv-hero-pills">
+      ${nights ? `<div class="vv-hero-pill">${nights} Nights</div>` : ''}
+      ${page.guestCount ? `<div class="vv-hero-pill">${page.guestCount} Guests</div>` : ''}
+      ${page.departDate ? `<div class="vv-hero-pill">${fmt(page.departDate)}</div>` : ''}
+    </div>` : ''}
+    ${btnsHtml ? `<div class="vv-hero-btns">${btnsHtml}</div>` : ''}
+  </div>
+</div>`;
+    }
+
+    case 'aside': return `
+<div class="vv-aside${d.imagePosition==='left'?' img-left':''}">
+  <div class="vv-aside-text">
+    ${d.heading ? `<div class="vv-pink-heading">${d.heading}</div>` : ''}
+    ${d.subheading ? `<div class="vv-subheading">${d.subheading}</div>` : ''}
+    ${d.description ? `<div class="vv-body">${d.description.replace(/\n/g,'<br>')}</div>` : ''}
+  </div>
+  <div class="vv-aside-img">
+    ${d.image ? `<img src="${d.image}" alt="${d.heading||''}">` : `<div style="background:#f5dcea;width:100%;height:100%;min-height:280px;display:flex;align-items:center;justify-content:center;color:#d194b8;font-size:2rem;">🌴</div>`}
+  </div>
+</div>`;
+
+    case 'textBlock': return `
+<div class="vv-text-block${d.alignment==='center'?' center':''}">
+  <div class="vv-section-container">
+    ${d.heading ? `<div class="vv-navy-heading">${d.heading}</div>` : ''}
+    ${d.subheading ? `<div class="vv-subheading">${d.subheading}</div>` : ''}
+    ${d.description ? `<div class="vv-body">${d.description.replace(/\n/g,'<br>')}</div>` : ''}
+    ${d.buttonText && d.buttonUrl ? `<div class="vv-tb-btns"><a href="${d.buttonUrl}" class="vv-btn-outline" target="_blank">${d.buttonText}</a></div>` : ''}
+  </div>
+</div>`;
+
+    case 'imageBanner': return `
+<div class="vv-banner">
+  ${d.photo ? `<img class="vv-banner-bg" src="${d.photo}" alt="${d.heading||''}">` : ''}
+  <div class="vv-banner-overlay"></div>
+  <div class="vv-banner-content">
+    ${d.heading ? `<div class="vv-white-heading">${d.heading}</div>` : ''}
+    ${d.description ? `<div class="vv-body-white">${d.description}</div>` : ''}
+    ${d.buttonText && d.buttonUrl ? `<a href="${d.buttonUrl}" class="vv-btn-outline-white" target="_blank">${d.buttonText}</a>` : ''}
+  </div>
+</div>`;
+
+    case 'carousel': {
+      const imgs = d.images || [];
+      if (!imgs.length) return `<div style="background:#fdf0f7;padding:32px;text-align:center;color:#d194b8;">No carousel images yet.</div>`;
+      const cid = 'c' + comp.id.replace(/\W/g,'');
+      return `
+<div class="vv-carousel" data-carousel="${cid}">
+  <div class="vv-car-inner">
+    ${d.heading ? `<div class="vv-pink-heading" style="margin-bottom:8px;">${d.heading}</div>` : ''}
+    ${d.subheading ? `<div class="vv-subheading-pink">${d.subheading}</div>` : ''}
+    <div class="vv-car-track-wrap">
+      <div class="vv-car-track" id="car-track-${cid}">
+        ${imgs.map(p=>`<div class="vv-car-slide"><img src="${p}" loading="lazy"></div>`).join('')}
+      </div>
+    </div>
+    <div class="vv-car-dots">${imgs.map((_,i)=>`<button class="vv-car-dot${i===0?' on':''}" data-dot-${cid}></button>`).join('')}</div>
+    <div class="vv-car-arrows">
+      <button class="vv-car-arr" id="car-prev-${cid}">‹</button>
+      <button class="vv-car-arr" id="car-next-${cid}">›</button>
+    </div>
+  </div>
+</div>`;
+    }
+
+    case 'imageGallery': {
+      const imgs = d.images || [];
+      const imgArr = JSON.stringify(imgs);
+      return `
+<div class="vv-gallery">
+  <div class="vv-section-container">
+    ${d.heading ? `<div class="vv-navy-heading">${d.heading}</div>` : ''}
+    <div class="vv-gallery-grid">
+      ${imgs.map((p,i)=>`<div class="vv-gallery-item" onclick="openLB(${imgArr},${i})"><img src="${p}" loading="lazy"></div>`).join('')}
+    </div>
+  </div>
+</div>`;
+    }
+
+    case 'countdown': {
+      if (countdown === null) return '';
+      const num = countdown > 0 ? countdown : countdown === 0 ? 'Today!' : "You're There!";
+      const lbl = countdown > 0 ? 'days until your adventure begins!' : countdown === 0 ? 'Adventure starts now!' : 'Enjoy every moment!';
+      return `
+<div style="background:${themeBg};padding:48px 32px;text-align:center;">
+  <div class="vv-cd-wrap" style="display:inline-flex;">
+    <div class="vv-cd-em">✨ 🎉 ✨</div>
+    <div class="vv-cd-num">${num}</div>
+    <div class="vv-cd-lbl">${lbl}</div>
+    <div class="vv-cd-em2">🌟 🎊 🌟</div>
+  </div>
+</div>`;
+    }
+
+    case 'bookingDetails': return `
+<div class="vv-booking">
+  <div class="vv-section-container">
+    <div class="vv-subheading-pink">Booking Details</div>
+    ${d.hotel ? `<div class="vv-card"><div class="vv-card-icon">🏨</div><div><div class="vv-card-title">${d.hotel}</div><div class="vv-card-sub">${d.hotelAddr||''}${d.checkin?' · '+d.checkin:''}</div></div></div>` : ''}
+    ${d.hotelPhoto ? `<div class="vv-resort-img"><img src="${d.hotelPhoto}" alt="${d.hotel||'Resort'}"></div>` : ''}
+    ${d.flight ? `<div class="vv-card"><div class="vv-card-icon">✈</div><div><div class="vv-card-title">${d.flight}</div><div class="vv-card-sub">${d.flightTime||''}${d.bookingRef?' · '+d.bookingRef:''}</div></div></div>` : ''}
+  </div>
+</div>`;
+
+    case 'documents': return `
+<div class="vv-docs">
+  <div class="vv-section-container">
+    <div class="vv-subheading-white">Documents & Links</div>
+    <div class="vv-doc-grid">
+      ${d.itineraryLink ? `<div><a href="${d.itineraryLink}" target="_blank" class="vv-doc-btn vv-doc-outline">⬇ ${d.itineraryLabel||'Download Itinerary'}</a></div>` : ''}
+      ${d.bookingUrl ? `<div><a href="${d.bookingUrl}" target="_blank" class="vv-doc-btn vv-doc-filled">→ ${d.bookingLabel||'Book Now'}</a>${d.bookingNote?`<div class="vv-booking-note">💡 ${d.bookingNote}</div>`:''}</div>` : ''}
+    </div>
+  </div>
+</div>`;
+
+    case 'message': return d.text ? `
+<div class="vv-message">
+  <div class="vv-section-container">
+    <div class="vv-msg-text">"${d.text}"</div>
+    <div class="vv-msg-from">— ${d.signedFrom||'Voyage Vista Travels'}</div>
+  </div>
+</div>` : '';
+
+    case 'contact': return `
+<div class="vv-contact">
+  <div class="vv-subheading" style="color:var(--pink);">Your travel advisor is available 24/7</div>
+  ${d.phone ? `<a href="tel:${d.phone.replace(/\D/g,'')}" class="vv-contact-phone">${d.phone}</a>` : ''}
+  ${d.email ? `<a href="mailto:${d.email}" class="vv-contact-email">${d.email}</a>` : ''}
+</div>`;
+
+    case 'footer': {
+      const waNum = (d.socialWA||'').replace(/\D/g,'');
+      return `
+<footer class="vv-footer">
+  <div><img src="${LOGO_B64}" alt="Voyage Vista Travels" class="vv-footer-logo"></div>
+  ${(d.socialIG||d.socialFB||waNum) ? `<div class="vv-social-bar">
+    ${d.socialIG ? `<a href="${d.socialIG}" class="vv-social-link" target="_blank" title="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>` : ''}
+    ${d.socialFB ? `<a href="${d.socialFB}" class="vv-social-link" target="_blank" title="Facebook"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>` : ''}
+    ${waNum ? `<a href="https://wa.me/${waNum}" class="vv-social-link" target="_blank" title="WhatsApp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></a>` : ''}
+  </div>` : ''}
+  <div class="vv-footer-brand">Voyage Vista Travels</div>
+  <div class="vv-footer-copy">Nepean, ON · (343) 961-3506 · Hello@voyagevista.ca<br>Affiliated with Nexion Travel Group-Canada · TICO Reg: 1549342</div>
+  <div class="vv-footer-copy" style="margin-top:8px;">© ${new Date().getFullYear()} Voyage Vista Travels</div>
+</footer>`;
+    }
+
+    case 'weather': return ''; // rendered dynamically client-side
+
+    case 'packingList': {
+      const cats = (d.items||[]).reduce((a,i)=>{(a[i.category||'Other']=a[i.category||'Other']||[]).push(i.item);return a;},{});
+      if (!Object.keys(cats).length) return '';
+      return `
+<div style="background:#fff;padding:40px 32px;">
+  <div class="vv-section-container">
+    <div class="vv-subheading-pink">Packing List</div>
+    <div class="vv-pack-grid">
+      ${Object.entries(cats).map(([cat,items])=>`<div class="vv-pack-cat"><div class="vv-pack-ttl">${cat}</div>${items.map(i=>`<div class="vv-pack-item">✓ ${i}</div>`).join('')}</div>`).join('')}
+    </div>
+  </div>
+</div>`;
+    }
+
+    case 'currency': return (d.localCurrency||d.tips) ? `
+<div style="background:#fdf0f7;padding:40px 32px;">
+  <div class="vv-section-container">
+    <div class="vv-subheading-pink">Currency & Money Tips</div>
+    <div class="vv-curr-card">
+      ${d.localCurrency ? `<div class="vv-curr-row"><span class="vv-curr-lbl">Local Currency</span><span class="vv-curr-val">${d.localCurrency}</span></div>` : ''}
+      ${d.exchangeRate ? `<div class="vv-curr-row"><span class="vv-curr-lbl">Exchange Rate</span><span class="vv-curr-val">${d.exchangeRate}</span></div>` : ''}
+      ${d.dailyBudget ? `<div class="vv-curr-row"><span class="vv-curr-lbl">Daily Budget</span><span class="vv-curr-val">${d.dailyBudget}</span></div>` : ''}
+      ${d.tips ? `<div style="font-size:12px;font-weight:300;color:rgba(255,255,255,.55);margin-top:12px;line-height:1.7;">${d.tips}</div>` : ''}
+    </div>
+  </div>
+</div>` : '';
+
+    default: return '';
+  }
+}
