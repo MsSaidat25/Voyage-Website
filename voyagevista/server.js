@@ -158,16 +158,17 @@ function getBg(t) {
 
 function countdownHtml(countdown) {
   if (countdown === null || countdown === undefined) return '';
-  let label = '', num = '';
-  if (countdown > 0)        { num = countdown; label = 'days to go'; }
-  else if (countdown === 0) { num = 'Today!';  label = 'Adventure starts now'; }
-  else                      { num = "You're There!"; label = 'Enjoy every moment'; }
+  let topEmoji = '✨ 🎉 ✨', botEmoji = '🌟 🎊 🌟', num = '', label = '';
+  if (countdown > 0)        { num = countdown; label = 'days until your adventure begins!'; }
+  else if (countdown === 0) { num = 'Today!'; label = 'Your adventure starts now!'; topEmoji = '🎉 🥂 🎉'; botEmoji = '🥳 🎊 🥳'; }
+  else                      { num = "You're There!"; label = 'Enjoy every moment!'; topEmoji = '🌴 ✈️ 🌴'; botEmoji = '🌊 🌞 🌊'; }
   return `<div class="cd-float">
+    <div class="cd-sp">${topEmoji}</div>
     <div class="cd-num-big">${num}</div>
     <div class="cd-lbl-big">${label}</div>
+    <div class="cd-sp">${botEmoji}</div>
   </div>`;
 }
-
 function renderResortPage(t) {
   const photos = t.resortPhotos || [];
   const bg = getBg(t) || NAMED_BG.navy;
