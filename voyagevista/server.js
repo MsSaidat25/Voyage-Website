@@ -552,13 +552,6 @@ if(form)form.addEventListener('submit',function(e){
 </body></html>`;
 }
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log('Voyage Vista Travels running on port ' + PORT);
-  if (process.env.RENDER_EXTERNAL_URL) {
-    setInterval(() => { fetch(process.env.RENDER_EXTERNAL_URL + '/api/health').catch(()=>{}); }, 14 * 60 * 1000);
-  }
-});
 // ═══════════════════════════════════════════════════════════════
 // PAGE BUILDER — new routes added BELOW existing routes
 // Nothing above this line is changed
@@ -1065,3 +1058,11 @@ function renderBuilderComp(comp, page, countdown, themeBg) {
     default: return '';
   }
 }
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log('Voyage Vista Travels running on port ' + PORT);
+  if (process.env.RENDER_EXTERNAL_URL) {
+    setInterval(() => { fetch(process.env.RENDER_EXTERNAL_URL + '/api/health').catch(()=>{}); }, 14 * 60 * 1000);
+  }
+});
