@@ -52,8 +52,6 @@ app.get('/api/trips/:slug', async (req, res) => {
   } catch(e) { res.status(500).json({ error: 'Failed to load trip' }); }
 });
 
-app.post('/api/trips', async (req, res) => {
-  try {
     app.post('/api/trips', async (req, res) => {
   try {
     const trip = req.body;
