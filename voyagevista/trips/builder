@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Page Builder — Voyage Vista Travels</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--pink:#d194b8;--navy:#2A334A;--pink-light:#fdf0f7;--pink-mid:#f5dcea;}
+body{font-family:'DM Sans',sans-serif;background:#f0ebe0;height:100vh;overflow:hidden;display:flex;flex-direction:column;}
+
+/* TOPBAR */
+.topbar{height:52px;background:var(--navy);display:flex;align-items:center;padding:0 16px;gap:10px;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.1);}
+.tl{font-family:'Poppins',sans-serif;font-size:13px;font-weight:300;color:#fff;margin-right:auto;letter-spacing:.03em;}
+.trip-sel{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:6px;color:#e8dcc8;font-size:12px;padding:5px 10px;font-family:'DM Sans',sans-serif;cursor:pointer;min-width:160px;}
+.tbtn{padding:7px 14px;border-radius:6px;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;}
+.save-btn{background:rgba(255,255,255,.12);color:#e8dcc8;border:1px solid rgba(255,255,255,.2);}
+.save-btn:hover{background:rgba(255,255,255,.2);}
+.preview-btn{background:rgba(209,148,184,.2);color:var(--pink);border:1px solid rgba(209,148,184,.4);}
+.preview-btn:hover{background:rgba(209,148,184,.3);}
+.publish-btn{background:var(--pink);color:#fff;font-weight:500;}
+.publish-btn:hover{opacity:.88;}
+.new-trip-btn{background:rgba(255,255,255,.08);color:#e8dcc8;border:1px solid rgba(255,255,255,.15);}
+
+/* WORKSPACE */
+.workspace{flex:1;display:flex;overflow:hidden;}
+
+/* LEFT PANEL — trip list */
+.left-panel{width:200px;background:var(--navy);flex-shrink:0;display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,.08);}
+.lp-hd{padding:12px 14px 6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);}
+.lp-list{flex:1;overflow-y:auto;}
+.lp-item{padding:10px 14px;cursor:pointer;border-left:3px solid transparent;}
+.lp-item:hover{background:rgba(255,255,255,.05);border-left-color:rgba(209,148,184,.3);}
+.lp-item.active{background:rgba(209,148,184,.1);border-left-color:var(--pink);}
+.lp-name{font-size:12px;font-weight:400;color:#e8dcc8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.lp-sub{font-size:10px;color:rgba(255,255,255,.3);margin-top:2px;}
+.lp-new{display:flex;align-items:center;gap:8px;padding:11px 14px;cursor:pointer;color:rgba(209,148,184,.7);font-size:12px;border-top:1px solid rgba(255,255,255,.06);}
+.lp-new:hover{color:var(--pink);}
+
+/* CENTER PANEL — canvas */
+.canvas-panel{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#f5f0e8;}
+.canvas-topbar{padding:10px 16px;background:#fff;border-bottom:1px solid #eee;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.canvas-label{font-size:11px;color:#aaa;text-transform:uppercase;letter-spacing:.08em;}
+.canvas-trip-name{font-size:13px;font-weight:500;color:var(--navy);flex:1;}
+.canvas-body{flex:1;overflow-y:auto;padding:16px;}
+.canvas-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;color:#aaa;gap:12px;text-align:center;}
+.canvas-empty svg{opacity:.3;}
+
+/* COMPONENT BLOCKS IN CANVAS */
+.comp-block{background:#fff;border-radius:10px;margin-bottom:8px;border:1.5px solid #f0ebe0;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:12px;padding:12px 14px;position:relative;}
+.comp-block:hover{border-color:var(--pink);box-shadow:0 2px 12px rgba(209,148,184,.15);}
+.comp-block.selected{border-color:var(--pink);background:var(--pink-light);}
+.comp-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.comp-info{flex:1;min-width:0;}
+.comp-type{font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:.06em;}
+.comp-name{font-size:13px;font-weight:500;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.comp-actions{display:flex;gap:4px;opacity:0;transition:opacity .2s;}
+.comp-block:hover .comp-actions{opacity:1;}
+.comp-action-btn{width:26px;height:26px;border:none;background:none;cursor:pointer;border-radius:5px;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:12px;}
+.comp-action-btn:hover{background:#f0ebe0;color:var(--navy);}
+.drag-handle{cursor:grab;color:#ddd;font-size:16px;flex-shrink:0;}
+.drag-handle:active{cursor:grabbing;}
+
+/* ADD BLOCK BUTTON */
+.add-block-btn{width:100%;padding:12px;border:1.5px dashed #ddd;border-radius:10px;background:none;color:#bbb;font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:4px;transition:all .2s;}
+.add-block-btn:hover{border-color:var(--pink);color:var(--pink);background:var(--pink-light);}
+
+/* RIGHT PANEL — editor or library */
+.right-panel{width:320px;flex-shrink:0;background:#fff;border-left:1px solid #eee;display:flex;flex-direction:column;}
+.rp-header{padding:14px 16px;border-bottom:1px solid #eee;display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.rp-title{font-size:13px;font-weight:500;color:var(--navy);flex:1;}
+.rp-back{padding:4px 10px;border:1px solid #ddd;border-radius:5px;background:none;font-size:11px;cursor:pointer;color:#888;}
+.rp-body{flex:1;overflow-y:auto;padding:14px;}
+
+/* FORM ELEMENTS */
+.fg{margin-bottom:14px;}
+.fg label{display:block;font-size:10px;color:#aaa;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;}
+.fg input,.fg textarea,.fg select{width:100%;padding:9px 10px;border:1px solid #e8e0d0;border-radius:7px;font-size:13px;font-family:'DM Sans',sans-serif;color:#2c2c2c;background:#faf7f2;outline:none;transition:border-color .2s;}
+.fg input:focus,.fg textarea:focus,.fg select:focus{border-color:var(--pink);background:#fff;}
+.fg textarea{resize:vertical;min-height:75px;}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.fg-hint{font-size:11px;color:#bbb;margin-top:3px;}
+
+/* PHOTO UPLOAD IN EDITOR */
+.photo-upload{border:1.5px dashed #ddd;border-radius:8px;padding:16px;text-align:center;cursor:pointer;position:relative;transition:all .2s;margin-bottom:4px;}
+.photo-upload:hover{border-color:var(--pink);background:var(--pink-light);}
+.photo-upload input{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.photo-upload p{font-size:12px;color:#bbb;margin-top:6px;}
+.photo-preview{width:100%;border-radius:8px;overflow:hidden;margin-top:8px;position:relative;}
+.photo-preview img{width:100%;max-height:140px;object-fit:cover;border-radius:8px;display:block;}
+.photo-rm{position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;border:none;cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;}
+
+/* PHOTO STRIP IN EDITOR */
+.photo-strip-sm{display:flex;gap:6px;overflow-x:auto;padding:4px 0 8px;scroll-snap-type:x mandatory;}
+.ph-sm{position:relative;flex-shrink:0;width:70px;height:55px;border-radius:6px;overflow:hidden;border:1.5px solid #eee;scroll-snap-align:start;}
+.ph-sm img{width:100%;height:100%;object-fit:cover;}
+.ph-sm-rm{position:absolute;top:2px;right:2px;width:16px;height:16px;border-radius:50%;background:rgba(220,50,50,.9);color:#fff;border:none;cursor:pointer;font-size:9px;display:flex;align-items:center;justify-content:center;}
+
+/* BUTTON LIST IN EDITOR */
+.btn-list-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid #ede5d4;border-radius:7px;margin-bottom:6px;background:#faf7f2;}
+.btn-list-item input{flex:1;border:none;background:transparent;font-size:12px;font-family:'DM Sans',sans-serif;outline:none;color:#2c2c2c;}
+.btn-list-rm{width:22px;height:22px;border:none;background:none;cursor:pointer;color:#ccc;font-size:12px;flex-shrink:0;}
+.btn-list-rm:hover{color:var(--pink);}
+.add-btn-row{display:flex;align-items:center;gap:6px;padding:6px 8px;border:1px dashed #ddd;border-radius:7px;cursor:pointer;color:#bbb;font-size:12px;background:none;width:100%;}
+.add-btn-row:hover{border-color:var(--pink);color:var(--pink);}
+
+/* COMPONENT LIBRARY */
+.lib-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.lib-item{border:1px solid #eee;border-radius:10px;padding:12px;cursor:pointer;text-align:center;transition:all .2s;}
+.lib-item:hover{border-color:var(--pink);background:var(--pink-light);}
+.lib-icon{font-size:24px;margin-bottom:6px;}
+.lib-name{font-size:11px;font-weight:500;color:var(--navy);}
+.lib-desc{font-size:10px;color:#aaa;margin-top:2px;}
+.lib-section-hd{font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:.08em;margin:14px 0 8px;padding-bottom:6px;border-bottom:1px solid #f0ebe0;}
+
+/* SECTION DIVIDER */
+.sdiv{border:none;border-top:1px solid #f0ebe0;margin:14px 0;}
+
+/* TRIP META MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:999;display:none;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:14px;padding:24px;width:460px;max-width:90vw;}
+.modal-hd{font-size:16px;font-weight:500;color:var(--navy);margin-bottom:16px;}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;}
+.modal-cancel{padding:8px 16px;border:1px solid #ddd;border-radius:7px;background:none;cursor:pointer;font-size:13px;}
+.modal-ok{padding:8px 20px;border:none;border-radius:7px;background:var(--pink);color:#fff;cursor:pointer;font-size:13px;font-weight:500;}
+
+/* TOAST */
+.toast{position:fixed;bottom:18px;right:18px;background:var(--navy);color:#e8c87a;padding:10px 18px;border-radius:8px;font-size:13px;border:1px solid rgba(209,148,184,.3);transform:translateY(60px);opacity:0;transition:all .3s;z-index:9999;}
+.toast.show{transform:translateY(0);opacity:1;}
+
+/* ICON COLORS */
+.ic-navbar{background:#e8f0fe;}.ic-hero{background:#fce8f3;}.ic-aside{background:#e8f5e9;}
+.ic-text{background:#fff8e1;}.ic-banner{background:#fce4ec;}.ic-carousel{background:#e8eaf6;}
+.ic-gallery{background:#e0f2f1;}.ic-countdown{background:#fff3e0;}.ic-itinerary{background:#f3e5f5;}
+.ic-booking{background:#e3f2fd;}.ic-docs{background:#f1f8e9;}.ic-message{background:#fce8f3;}
+.ic-footer{background:#eceff1;}.ic-contact{background:#e8f5e9;}.ic-weather{background:#e1f5fe;}
+.ic-packing{background:#fff8e1;}.ic-currency{background:#f9fbe7;}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tl">✈ Voyage Vista · Page Builder</div>
+  <div class="trip-sel" id="tripNameDisplay">New Page</div>
+  <button class="tbtn save-btn" id="saveBtn" onclick="savePage()">Save</button>
+  <button class="tbtn preview-btn" onclick="previewPage()">Preview ↗</button>
+  <button class="tbtn publish-btn" onclick="publishPage()">Publish</button>
+</div>
+
+<div class="workspace">
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+    <div class="lp-hd">Pages</div>
+    <div class="lp-list" id="lpList"><div style="padding:12px 14px;font-size:11px;color:rgba(255,255,255,.25);">No pages yet</div></div>
+    <div class="lp-new" onclick="newPage()">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      New Page
+    </div>
+  </div>
+
+  <!-- CENTER: CANVAS -->
+  <div class="canvas-panel">
+    <div class="canvas-topbar">
+      <div class="canvas-label">Canvas</div>
+      <div class="canvas-trip-name" id="canvasTripName">Select a page or create one →</div>
+      <div style="font-size:11px;color:#aaa;" id="compCount"></div>
+    </div>
+    <div class="canvas-body" id="canvasBody">
+      <div class="canvas-empty">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+        <div style="font-size:14px;">Select or create a page to start building</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel" id="rightPanel">
+    <div class="rp-header">
+      <div class="rp-title">Component Library</div>
+    </div>
+    <div class="rp-body" id="rpBody">
+      <div style="font-size:12px;color:#aaa;text-align:center;padding:24px 0;">Create or select a page first</div>
+    </div>
+  </div>
+</div>
+
+<!-- TRIP META MODAL -->
+<div class="modal-overlay" id="metaModal">
+  <div class="modal">
+    <div class="modal-hd" id="metaModalTitle">New Page</div>
+    <div class="frow">
+      <div class="fg"><label>Guest Name *</label><input id="mGuestName" placeholder="Saidat Animashaun"></div>
+      <div class="fg"><label>Occasion *</label><input id="mOccasion" placeholder="50th Birthday"></div>
+    </div>
+    <div class="fg"><label>Destination</label><input id="mDestination" placeholder="Cancun, Mexico"></div>
+    <div class="frow">
+      <div class="fg"><label>Departure Date</label><input type="date" id="mDepartDate"></div>
+      <div class="fg"><label>Theme</label>
+        <select id="mTheme">
+          <option>Birthday Celebration</option>
+          <option>Luxury Escape</option>
+          <option>Girls Getaway</option>
+          <option>Family Celebration</option>
+          <option>Romantic Escape</option>
+          <option>Adventure Trip</option>
+          <option>Group Tour</option>
+          <option>Cruise</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+      <button class="modal-ok" onclick="confirmMeta()">Create Page</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── STATE ────────────────────────────────────────────────────────
+var P = null; // current page object
+var pages = []; // all builder pages
+var selectedCompId = null;
+var dragSrcIdx = null;
+
+// Component definitions
+var COMP_DEFS = {
+  navbar:    { label:'Navbar',         icon:'🧭', ic:'ic-navbar',    desc:'Logo + Contact Us' },
+  hero:      { label:'Hero',           icon:'🖼',  ic:'ic-hero',     desc:'Title, photo, countdown' },
+  aside:     { label:'Text + Image',   icon:'📝',  ic:'ic-aside',    desc:'Heading, body, photo' },
+  textBlock: { label:'Text Block',     icon:'✍️',  ic:'ic-text',     desc:'Heading + body copy' },
+  imageBanner:{ label:'Image Banner',  icon:'🏔',  ic:'ic-banner',   desc:'Full-width photo + CTA' },
+  carousel:  { label:'Carousel',       icon:'🎠',  ic:'ic-carousel', desc:'Sliding photo gallery' },
+  imageGallery:{ label:'Image Gallery',icon:'🖼',  ic:'ic-gallery',  desc:'Photo grid' },
+  countdown: { label:'Countdown',      icon:'⏳',  ic:'ic-countdown',desc:'Days until departure' },
+  itinerary: { label:'Itinerary',      icon:'🗓',  ic:'ic-itinerary',desc:'Day-by-day schedule' },
+  bookingDetails:{ label:'Booking Details',icon:'🏨',ic:'ic-booking', desc:'Hotel + flight cards' },
+  documents: { label:'Documents',      icon:'📄',  ic:'ic-docs',     desc:'Itinerary & booking links' },
+  message:   { label:'Personal Message',icon:'💬', ic:'ic-message',  desc:'Quote from advisor' },
+  contact:   { label:'Contact Us',     icon:'📞',  ic:'ic-contact',  desc:'Phone + email + form' },
+  weather:   { label:'Weather',        icon:'🌤',  ic:'ic-weather',  desc:'Destination weather' },
+  packingList:{ label:'Packing List',  icon:'🧳',  ic:'ic-packing',  desc:'What to bring' },
+  currency:  { label:'Currency Tips',  icon:'💱',  ic:'ic-currency', desc:'Money & exchange rates' },
+  footer:    { label:'Footer',         icon:'⬛',  ic:'ic-footer',   desc:'Branding + socials' },
+};
+
+// Default data for each component type
+function defaultData(type) {
+  switch(type) {
+    case 'navbar': return { ctaText:'Contact Us', ctaEmail:'Hello@voyagevista.ca' };
+    case 'hero': return { heading:'', subheading:'', description:'', backgroundPhoto:null, location:'', showCountdown:true, showStats:true, buttons:[] };
+    case 'aside': return { heading:'', subheading:'', description:'', image:null, imagePosition:'right' };
+    case 'textBlock': return { heading:'', subheading:'', description:'', alignment:'left', buttonText:'', buttonUrl:'' };
+    case 'imageBanner': return { photo:null, heading:'', description:'', buttonText:'', buttonUrl:'' };
+    case 'carousel': return { heading:'', subheading:'', images:[] };
+    case 'imageGallery': return { heading:'', images:[] };
+    case 'countdown': return { style:'large' };
+    case 'itinerary': return { days:[] };
+    case 'bookingDetails': return { hotel:'', hotelAddr:'', checkin:'', hotelPhoto:null, flight:'', flightTime:'', bookingRef:'' };
+    case 'documents': return { itineraryLink:'', itineraryLabel:'Download Itinerary', bookingUrl:'', bookingLabel:'Book Now', bookingNote:'' };
+    case 'message': return { text:'', signedFrom:'Voyage Vista Travels' };
+    case 'contact': return { phone:'(343) 961-3506', email:'Hello@voyagevista.ca', showForm:false };
+    case 'weather': return {};
+    case 'packingList': return { items:[] };
+    case 'currency': return { localCurrency:'', exchangeRate:'', dailyBudget:'', tips:'' };
+    case 'footer': return { showSocials:true, socialIG:'', socialFB:'', socialWA:'' };
+    default: return {};
+  }
+}
+
+// ── INIT ─────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', function() { loadPages(); });
+
+function loadPages() {
+  fetch('/api/trips/builder')
+    .then(r => r.json())
+    .then(d => {
+      pages = d.trips || [];
+      renderSidebar();
+    })
+    .catch(() => {});
+}
+
+function renderSidebar() {
+  var el = document.getElementById('lpList');
+  if (!pages.length) { el.innerHTML = '<div style="padding:12px 14px;font-size:11px;color:rgba(255,255,255,.25);">No pages yet</div>'; return; }
+  el.innerHTML = pages.map(p => `<div class="lp-item${P&&P.id===p.id?' active':''}" onclick="loadPage('${p.id}')">
+    <div class="lp-name">${p.guestName||'Untitled'}</div>
+    <div class="lp-sub">${p.occasion||''}${p.destination?' · '+p.destination:''}</div>
+  </div>`).join('');
+}
+
+function loadPage(id) {
+  fetch('/api/trips/builder/'+id)
+    .then(r => r.json())
+    .then(data => {
+      P = data;
+      selectedCompId = null;
+      renderCanvas();
+      showLibrary();
+      renderSidebar();
+      document.getElementById('tripNameDisplay').textContent = (P.guestName||'Page') + "'s " + (P.occasion||'Trip');
+      document.getElementById('canvasTripName').textContent = (P.guestName||'Page') + "'s " + (P.occasion||'Trip');
+    })
+    .catch(() => toast('Failed to load page'));
+}
+
+// ── CANVAS ───────────────────────────────────────────────────────
+function renderCanvas() {
+  var body = document.getElementById('canvasBody');
+  var comps = (P && P.components) ? P.components : [];
+  document.getElementById('compCount').textContent = comps.length ? comps.length + ' blocks' : '';
+  if (!P) {
+    body.innerHTML = '<div class="canvas-empty"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg><div style="font-size:14px;">Select or create a page to start building</div></div>';
+    return;
+  }
+  var html = comps.map((c, i) => {
+    var def = COMP_DEFS[c.type] || { label: c.type, icon:'⬜', ic:'ic-text' };
+    var preview = getCompPreview(c);
+    return `<div class="comp-block${selectedCompId===c.id?' selected':''}" onclick="selectComp('${c.id}')" draggable="true" ondragstart="dragStart(event,${i})" ondragover="event.preventDefault()" ondrop="dragDrop(event,${i})">
+      <div class="drag-handle">⋮⋮</div>
+      <div class="comp-icon ${def.ic}">${def.icon}</div>
+      <div class="comp-info">
+        <div class="comp-type">${def.label}</div>
+        <div class="comp-name">${preview}</div>
+      </div>
+      <div class="comp-actions">
+        <button class="comp-action-btn" onclick="event.stopPropagation();moveComp(${i},-1)" title="Move up">↑</button>
+        <button class="comp-action-btn" onclick="event.stopPropagation();moveComp(${i},1)" title="Move down">↓</button>
+        <button class="comp-action-btn" onclick="event.stopPropagation();removeComp('${c.id}')" title="Delete" style="color:#e57373;">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+  html += `<button class="add-block-btn" onclick="showLibrary(true)">+ Add Block</button>`;
+  body.innerHTML = html;
+}
+
+function getCompPreview(c) {
+  var d = c.data || {};
+  switch(c.type) {
+    case 'navbar': return 'Logo + ' + (d.ctaText||'Contact Us');
+    case 'hero': return d.heading || 'Heading not set';
+    case 'aside': return d.heading || 'Text + Image block';
+    case 'textBlock': return d.heading || 'Text block';
+    case 'imageBanner': return d.heading || 'Image banner';
+    case 'carousel': return (d.heading||'Carousel') + ' · ' + (d.images||[]).length + ' photos';
+    case 'imageGallery': return 'Gallery · ' + (d.images||[]).length + ' photos';
+    case 'countdown': return 'Days until departure';
+    case 'itinerary': return 'Day-by-day · ' + (d.days||[]).length + ' days';
+    case 'bookingDetails': return d.hotel || 'Hotel + Flight';
+    case 'documents': return 'Itinerary + Booking links';
+    case 'message': return d.text ? ('"' + d.text.slice(0,40) + '..."') : 'Personal message';
+    case 'contact': return d.phone || 'Contact info';
+    case 'weather': return 'Weather snapshot';
+    case 'packingList': return (d.items||[]).length + ' packing items';
+    case 'currency': return d.localCurrency || 'Currency tips';
+    case 'footer': return 'Page footer';
+    default: return c.type;
+  }
+}
+
+function selectComp(id) {
+  selectedCompId = id;
+  renderCanvas();
+  var comp = P.components.find(c => c.id === id);
+  if (comp) showEditor(comp);
+}
+
+function moveComp(idx, dir) {
+  var comps = P.components;
+  var newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= comps.length) return;
+  var tmp = comps[idx]; comps[idx] = comps[newIdx]; comps[newIdx] = tmp;
+  markDirty(); renderCanvas();
+}
+
+function removeComp(id) {
+  if (!confirm('Remove this block?')) return;
+  P.components = P.components.filter(c => c.id !== id);
+  if (selectedCompId === id) { selectedCompId = null; showLibrary(); }
+  markDirty(); renderCanvas();
+}
+
+// drag reorder
+function dragStart(e, i) { dragSrcIdx = i; }
+function dragDrop(e, i) {
+  if (dragSrcIdx === null || dragSrcIdx === i) return;
+  var comps = P.components;
+  var item = comps.splice(dragSrcIdx, 1)[0];
+  comps.splice(i, 0, item);
+  dragSrcIdx = null;
+  markDirty(); renderCanvas();
+}
+
+// ── LIBRARY ──────────────────────────────────────────────────────
+function showLibrary(forceOpen) {
+  var rp = document.getElementById('rightPanel');
+  var rpHd = rp.querySelector('.rp-header');
+  var rpBody = document.getElementById('rpBody');
+  rpHd.innerHTML = '<div class="rp-title">Component Library</div>';
+  if (!P) { rpBody.innerHTML = '<div style="font-size:12px;color:#aaa;text-align:center;padding:24px 0;">Create or select a page first</div>'; return; }
+
+  var groups = [
+    { label:'Layout', types:['navbar','hero','aside','textBlock','imageBanner','footer'] },
+    { label:'Media', types:['carousel','imageGallery'] },
+    { label:'Trip Info', types:['countdown','itinerary','bookingDetails','documents','message','contact','weather','packingList','currency'] },
+  ];
+
+  var html = '';
+  groups.forEach(g => {
+    html += `<div class="lib-section-hd">${g.label}</div><div class="lib-grid">`;
+    g.types.forEach(t => {
+      var def = COMP_DEFS[t];
+      html += `<div class="lib-item" onclick="addComp('${t}')">
+        <div class="lib-icon">${def.icon}</div>
+        <div class="lib-name">${def.label}</div>
+        <div class="lib-desc">${def.desc}</div>
+      </div>`;
+    });
+    html += '</div>';
+  });
+  rpBody.innerHTML = html;
+}
+
+function addComp(type) {
+  if (!P) return;
+  var comp = { id: 'c_' + Date.now(), type: type, data: defaultData(type) };
+  P.components.push(comp);
+  markDirty();
+  renderCanvas();
+  selectComp(comp.id);
+  // scroll canvas to bottom
+  var cb = document.getElementById('canvasBody');
+  cb.scrollTop = cb.scrollHeight;
+}
+
+// ── EDITOR ───────────────────────────────────────────────────────
+function showEditor(comp) {
+  var rp = document.getElementById('rightPanel');
+  var rpHd = rp.querySelector('.rp-header');
+  var rpBody = document.getElementById('rpBody');
+  var def = COMP_DEFS[comp.type] || { label: comp.type };
+  rpHd.innerHTML = `<button class="rp-back" onclick="showLibrary()">← Library</button><div class="rp-title">${def.icon||''} ${def.label}</div>`;
+  rpBody.innerHTML = renderEditor(comp);
+}
+
+function renderEditor(comp) {
+  var d = comp.data || {};
+  var id = comp.id;
+  switch(comp.type) {
+    case 'navbar': return `
+      <div class="fg"><label>CTA Button Text</label><input value="${esc(d.ctaText||'Contact Us')}" oninput="update('${id}','ctaText',this.value)"></div>
+      <div class="fg"><label>CTA Email</label><input value="${esc(d.ctaEmail||'Hello@voyagevista.ca')}" oninput="update('${id}','ctaEmail',this.value)"></div>
+      <div class="sdiv"></div>
+      <p class="fg-hint">The Voyage Vista logo is always shown. The CTA button links to the email.</p>`;
+
+    case 'hero': return `
+      <div class="fg"><label>Heading</label><input value="${esc(d.heading||'')}" placeholder="Saidat's Dreamscape" oninput="update('${id}','heading',this.value)"></div>
+      <div class="fg"><label>Subheading</label><input value="${esc(d.subheading||'')}" placeholder="A Golden Journey of Elegance!" oninput="update('${id}','subheading',this.value)"></div>
+      <div class="fg"><label>Description</label><textarea placeholder="Add a description..." oninput="update('${id}','description',this.value)">${esc(d.description||'')}</textarea></div>
+      <div class="fg"><label>Location</label><input value="${esc(d.location||'')}" placeholder="Dreams Aventuras, Riviera Maya, Mexico" oninput="update('${id}','location',this.value)"></div>
+      <div class="fg"><label>Background Photo</label>
+        <div class="photo-upload" onclick="triggerPhoto('heroPhoto_${id}')">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <p>Click to upload hero photo</p>
+          <input type="file" id="heroPhoto_${id}" accept="image/*" onchange="uploadSingle(this,'${id}','backgroundPhoto')">
+        </div>
+        ${d.backgroundPhoto ? `<div class="photo-preview"><img src="${d.backgroundPhoto}"><button class="photo-rm" onclick="update('${id}','backgroundPhoto',null);rerenderEditor('${id}')">✕</button></div>` : ''}
+      </div>
+      <div class="fg"><label>Show countdown?</label><select onchange="update('${id}','showCountdown',this.value==='yes')"><option value="yes"${d.showCountdown!==false?' selected':''}>Yes</option><option value="no"${d.showCountdown===false?' selected':''}>No</option></select></div>
+      <div class="fg"><label>Buttons</label>${renderBtnList(id, d.buttons||[])}</div>`;
+
+    case 'aside': return `
+      <div class="fg"><label>Heading</label><input value="${esc(d.heading||'')}" placeholder="👑✨ Saidat's Dreamscape Awaits!" oninput="update('${id}','heading',this.value)"></div>
+      <div class="fg"><label>Subheading</label><input value="${esc(d.subheading||'')}" placeholder="Optional subheading" oninput="update('${id}','subheading',this.value)"></div>
+      <div class="fg"><label>Description</label><textarea placeholder="Body text..." oninput="update('${id}','description',this.value)">${esc(d.description||'')}</textarea></div>
+      <div class="fg"><label>Image</label>
+        <div class="photo-upload" onclick="triggerPhoto('asidePhoto_${id}')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <p>Click to upload image</p>
+          <input type="file" id="asidePhoto_${id}" accept="image/*" onchange="uploadSingle(this,'${id}','image')">
+        </div>
+        ${d.image ? `<div class="photo-preview"><img src="${d.image}"><button class="photo-rm" onclick="update('${id}','image',null);rerenderEditor('${id}')">✕</button></div>` : ''}
+      </div>
+      <div class="fg"><label>Image Position</label><select onchange="update('${id}','imagePosition',this.value)"><option value="right"${d.imagePosition!=='left'?' selected':''}>Right</option><option value="left"${d.imagePosition==='left'?' selected':''}>Left</option></select></div>`;
+
+    case 'textBlock': return `
+      <div class="fg"><label>Heading</label><input value="${esc(d.heading||'')}" placeholder="Ready to Relax?" oninput="update('${id}','heading',this.value)"></div>
+      <div class="fg"><label>Subheading</label><input value="${esc(d.subheading||'')}" placeholder="A dreamscape awaits..." oninput="update('${id}','subheading',this.value)"></div>
+      <div class="fg"><label>Description</label><textarea placeholder="Body copy..." oninput="update('${id}','description',this.value)">${esc(d.description||'')}</textarea></div>
+      <div class="fg"><label>Alignment</label><select onchange="update('${id}','alignment',this.value)"><option value="left"${d.alignment!=='center'?' selected':''}>Left</option><option value="center"${d.alignment==='center'?' selected':''}>Center</option></select></div>
+      <div class="sdiv"></div>
+      <div class="frow">
+        <div class="fg"><label>Button Text</label><input value="${esc(d.buttonText||'')}" placeholder="View Itinerary" oninput="update('${id}','buttonText',this.value)"></div>
+        <div class="fg"><label>Button URL</label><input value="${esc(d.buttonUrl||'')}" placeholder="https://..." oninput="update('${id}','buttonUrl',this.value)"></div>
+      </div>`;
+
+    case 'imageBanner': return `
+      <div class="fg"><label>Photo</label>
+        <div class="photo-upload" onclick="triggerPhoto('bannerPhoto_${id}')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <p>Full-width photo</p>
+          <input type="file" id="bannerPhoto_${id}" accept="image/*" onchange="uploadSingle(this,'${id}','photo')">
+        </div>
+        ${d.photo ? `<div class="photo-preview"><img src="${d.photo}"><button class="photo-rm" onclick="update('${id}','photo',null);rerenderEditor('${id}')">✕</button></div>` : ''}
+      </div>
+      <div class="fg"><label>Heading</label><input value="${esc(d.heading||'')}" placeholder="A Call to Action" oninput="update('${id}','heading',this.value)"></div>
+      <div class="fg"><label>Description</label><textarea placeholder="Short description..." oninput="update('${id}','description',this.value)">${esc(d.description||'')}</textarea></div>
+      <div class="frow">
+        <div class="fg"><label>Button Text</label><input value="${esc(d.buttonText||'')}" placeholder="Book Now!" oninput="update('${id}','buttonText',this.value)"></div>
+        <div class="fg"><label>Button URL</label><input value="${esc(d.buttonUrl||'')}" placeholder="https://..." oninput="update('${id}','buttonUrl',this.value)"></div>
+      </div>`;
+
+    case 'carousel': return `
+      <div class="fg"><label>Heading</label><input value="${esc(d.heading||'')}" placeholder="Fifty & Fabulous" oninput="update('${id}','heading',this.value)"></div>
+      <div class="fg"><label>Subheading</label><input value="${esc(d.subheading||'')}" oninput="update('${id}','subheading',this.value)"></div>
+      <div class="fg"><label>Photos</label>
+        <div class="photo-upload" onclick="triggerPhoto('carouselPhotos_${id}')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <p>Click to add photos</p>
+          <input type="file" id="carouselPhotos_${id}" accept="image/*" multiple onchange="uploadMulti(this,'${id}','images')">
+        </div>
+        <div class="photo-strip-sm" id="strip_${id}">${renderPhotoStrip(id, d.images||[], 'images')}</div>
+      </div>`;
+
+    case 'imageGallery': return `
+      <div class="fg"><label>Heading</label><input value="${esc(d.heading||'')}" placeholder="Gallery heading" oninput="update('${id}','heading',this.value)"></div>
+      <div class="fg"><label>Photos</label>
+        <div class="photo-upload" onclick="triggerPhoto('galleryPhotos_${id}')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <p>Click to add photos</p>
+          <input type="file" id="galleryPhotos_${id}" accept="image/*" multiple onchange="uploadMulti(this,'${id}','images')">
+        </div>
+        <div class="photo-strip-sm" id="strip_${id}">${renderPhotoStrip(id, d.images||[], 'images')}</div>
+      </div>`;
+
+    case 'countdown': return `
+      <div class="fg"><label>Style</label><select onchange="update('${id}','style',this.value)"><option value="large"${d.style!=='pill'?' selected':''}>Large glass card</option><option value="pill"${d.style==='pill'?' selected':''}>Small pill</option></select></div>
+      <p class="fg-hint">Date is taken from the trip's departure date. Set that in the page settings.</p>`;
+
+    case 'itinerary': return `<p class="fg-hint" style="margin-bottom:12px;">Days are managed in the trip settings panel. ${(d.days||[]).length} day(s) added.</p>
+      <button style="width:100%;padding:9px;border:1px dashed #ddd;border-radius:7px;background:none;cursor:pointer;font-size:12px;color:#888;" onclick="toast('Day editor coming soon — use the main admin for now')">+ Manage Days</button>`;
+
+    case 'bookingDetails': return `
+      <div class="fg"><label>Hotel Name</label><input value="${esc(d.hotel||'')}" placeholder="Dreams Aventuras Riviera Maya" oninput="update('${id}','hotel',this.value)"></div>
+      <div class="fg"><label>Hotel Address</label><input value="${esc(d.hotelAddr||'')}" placeholder="Riviera Maya, Mexico" oninput="update('${id}','hotelAddr',this.value)"></div>
+      <div class="fg"><label>Check-in / Check-out</label><input value="${esc(d.checkin||'')}" placeholder="Oct 7 — Oct 12" oninput="update('${id}','checkin',this.value)"></div>
+      <div class="fg"><label>Hotel Photo</label>
+        <div class="photo-upload" onclick="triggerPhoto('hotelPh_${id}')">
+          <p>Upload hotel photo</p>
+          <input type="file" id="hotelPh_${id}" accept="image/*" onchange="uploadSingle(this,'${id}','hotelPhoto')">
+        </div>
+        ${d.hotelPhoto ? `<div class="photo-preview"><img src="${d.hotelPhoto}"><button class="photo-rm" onclick="update('${id}','hotelPhoto',null);rerenderEditor('${id}')">✕</button></div>` : ''}
+      </div>
+      <div class="sdiv"></div>
+      <div class="fg"><label>Flight</label><input value="${esc(d.flight||'')}" placeholder="Air Canada AC874 — YOW → CUN" oninput="update('${id}','flight',this.value)"></div>
+      <div class="frow">
+        <div class="fg"><label>Departure Time</label><input value="${esc(d.flightTime||'')}" placeholder="Oct 7 at 8:45 AM" oninput="update('${id}','flightTime',this.value)"></div>
+        <div class="fg"><label>Booking Ref</label><input value="${esc(d.bookingRef||'')}" placeholder="CONF: VV-2026-001" oninput="update('${id}','bookingRef',this.value)"></div>
+      </div>`;
+
+    case 'documents': return `
+      <div class="fg"><label>📄 Itinerary Link</label><input value="${esc(d.itineraryLink||'')}" placeholder="https://drive.google.com/..." oninput="update('${id}','itineraryLink',this.value)"></div>
+      <div class="fg"><label>Itinerary Button Label</label><input value="${esc(d.itineraryLabel||'Download Itinerary')}" oninput="update('${id}','itineraryLabel',this.value)"></div>
+      <div class="sdiv"></div>
+      <div class="fg"><label>🔗 Booking URL</label><input value="${esc(d.bookingUrl||'')}" placeholder="https://booking.com/..." oninput="update('${id}','bookingUrl',this.value)"></div>
+      <div class="fg"><label>Booking Button Label</label><input value="${esc(d.bookingLabel||'Book Now')}" oninput="update('${id}','bookingLabel',this.value)"></div>
+      <div class="fg"><label>Booking Note</label><input value="${esc(d.bookingNote||'')}" placeholder="e.g. Use code VV2026" oninput="update('${id}','bookingNote',this.value)"></div>`;
+
+    case 'message': return `
+      <div class="fg"><label>Message</label><textarea placeholder="Write a personal message..." oninput="update('${id}','text',this.value)">${esc(d.text||'')}</textarea></div>
+      <div class="fg"><label>Signed From</label><input value="${esc(d.signedFrom||'Voyage Vista Travels')}" oninput="update('${id}','signedFrom',this.value)"></div>`;
+
+    case 'contact': return `
+      <div class="fg"><label>Phone</label><input value="${esc(d.phone||'(343) 961-3506')}" oninput="update('${id}','phone',this.value)"></div>
+      <div class="fg"><label>Email</label><input value="${esc(d.email||'Hello@voyagevista.ca')}" oninput="update('${id}','email',this.value)"></div>
+      <div class="fg"><label>Show booking form?</label><select onchange="update('${id}','showForm',this.value==='yes')"><option value="no"${!d.showForm?' selected':''}>No</option><option value="yes"${d.showForm?' selected':''}>Yes</option></select></div>`;
+
+    case 'weather': return `<p class="fg-hint">Auto-loads from destination. Set destination in page settings.</p>`;
+
+    case 'packingList': return `
+      <div class="fg"><label>Items</label>
+        <div id="packItems_${id}">${renderPackItems(id, d.items||[])}</div>
+        <button class="add-btn-row" onclick="addPackItem('${id}')"><span>+</span> Add item</button>
+      </div>`;
+
+    case 'currency': return `
+      <div class="fg"><label>Local Currency</label><input value="${esc(d.localCurrency||'')}" placeholder="USD" oninput="update('${id}','localCurrency',this.value)"></div>
+      <div class="frow">
+        <div class="fg"><label>Exchange Rate</label><input value="${esc(d.exchangeRate||'')}" placeholder="1 CAD ≈ 0.74 USD" oninput="update('${id}','exchangeRate',this.value)"></div>
+        <div class="fg"><label>Daily Budget</label><input value="${esc(d.dailyBudget||'')}" placeholder="$50–100/day" oninput="update('${id}','dailyBudget',this.value)"></div>
+      </div>
+      <div class="fg"><label>Tips</label><textarea placeholder="Money tips..." oninput="update('${id}','tips',this.value)">${esc(d.tips||'')}</textarea></div>`;
+
+    case 'footer': return `
+      <div class="fg"><label>Instagram URL</label><input value="${esc(d.socialIG||'')}" oninput="update('${id}','socialIG',this.value)"></div>
+      <div class="fg"><label>Facebook URL</label><input value="${esc(d.socialFB||'')}" oninput="update('${id}','socialFB',this.value)"></div>
+      <div class="fg"><label>WhatsApp (digits)</label><input value="${esc(d.socialWA||'')}" placeholder="13439613506" oninput="update('${id}','socialWA',this.value)"></div>`;
+
+    default: return '<p class="fg-hint">No editor for this component type yet.</p>';
+  }
+}
+
+function renderBtnList(id, btns) {
+  var html = (btns||[]).map((b,i) => `<div class="btn-list-item">
+    <input value="${esc(b.text||'')}" placeholder="Button text" oninput="updateBtn('${id}',${i},'text',this.value)">
+    <input value="${esc(b.url||'')}" placeholder="https://..." oninput="updateBtn('${id}',${i},'url',this.value)" style="flex:1.5;">
+    <button class="btn-list-rm" onclick="removeBtn('${id}',${i})">✕</button>
+  </div>`).join('');
+  html += `<button class="add-btn-row" onclick="addBtn('${id}')"><span>+</span> Add button</button>`;
+  return html;
+}
+
+function renderPhotoStrip(id, photos, key) {
+  return photos.map((p,i) => `<div class="ph-sm"><img src="${p}"><button class="ph-sm-rm" onclick="removePhoto('${id}','${key}',${i})">✕</button></div>`).join('');
+}
+
+function renderPackItems(id, items) {
+  return items.map((item,i) => `<div class="btn-list-item">
+    <input value="${esc(item.item||'')}" placeholder="e.g. Passport" oninput="updatePackItem('${id}',${i},'item',this.value)">
+    <select oninput="updatePackItem('${id}',${i},'category',this.value)" style="width:110px;border:none;background:transparent;font-size:12px;font-family:'DM Sans',sans-serif;outline:none;">
+      ${['Clothing','Documents','Toiletries','Electronics','Medications','Other'].map(c => `<option${item.category===c?' selected':''}>${c}</option>`).join('')}
+    </select>
+    <button class="btn-list-rm" onclick="removePackItem('${id}',${i})">✕</button>
+  </div>`).join('');
+}
+
+// ── DATA UPDATES ─────────────────────────────────────────────────
+function getComp(id) { return P && P.components.find(c => c.id === id); }
+
+function update(id, key, val) {
+  var comp = getComp(id); if (!comp) return;
+  comp.data[key] = val;
+  markDirty();
+  // update canvas preview text
+  var block = document.querySelector(`.comp-block[onclick*="${id}"]`);
+  if (block) { var nm = block.querySelector('.comp-name'); if(nm) nm.textContent = getCompPreview(comp); }
+}
+
+function rerenderEditor(id) {
+  var comp = getComp(id); if (!comp) return;
+  document.getElementById('rpBody').innerHTML = renderEditor(comp);
+}
+
+function updateBtn(id, idx, key, val) {
+  var comp = getComp(id); if (!comp) return;
+  if (!comp.data.buttons) comp.data.buttons = [];
+  if (!comp.data.buttons[idx]) comp.data.buttons[idx] = {};
+  comp.data.buttons[idx][key] = val;
+  markDirty();
+}
+function addBtn(id) {
+  var comp = getComp(id); if (!comp) return;
+  if (!comp.data.buttons) comp.data.buttons = [];
+  comp.data.buttons.push({ text:'', url:'' });
+  markDirty(); rerenderEditor(id);
+}
+function removeBtn(id, idx) {
+  var comp = getComp(id); if (!comp) return;
+  comp.data.buttons.splice(idx, 1);
+  markDirty(); rerenderEditor(id);
+}
+
+function addPackItem(id) {
+  var comp = getComp(id); if (!comp) return;
+  if (!comp.data.items) comp.data.items = [];
+  comp.data.items.push({ item:'', category:'Clothing' });
+  markDirty();
+  document.getElementById('packItems_'+id).innerHTML = renderPackItems(id, comp.data.items);
+}
+function removePackItem(id, idx) {
+  var comp = getComp(id); if (!comp) return;
+  comp.data.items.splice(idx, 1);
+  markDirty();
+  document.getElementById('packItems_'+id).innerHTML = renderPackItems(id, comp.data.items);
+}
+function updatePackItem(id, idx, key, val) {
+  var comp = getComp(id); if (!comp) return;
+  comp.data.items[idx][key] = val;
+  markDirty();
+}
+
+function removePhoto(id, key, idx) {
+  var comp = getComp(id); if (!comp) return;
+  comp.data[key].splice(idx, 1);
+  markDirty();
+  document.getElementById('strip_'+id).innerHTML = renderPhotoStrip(id, comp.data[key], key);
+}
+
+// ── PHOTO COMPRESSION ────────────────────────────────────────────
+function compressImage(file, maxW, maxH, q) {
+  return new Promise(function(res) {
+    var r = new FileReader();
+    r.onload = function(e) {
+      var img = new Image();
+      img.onload = function() {
+        var w=img.width, h=img.height;
+        if(w>maxW||h>maxH){ var ratio=Math.min(maxW/w,maxH/h); w=Math.round(w*ratio); h=Math.round(h*ratio); }
+        var c=document.createElement('canvas'); c.width=w; c.height=h;
+        c.getContext('2d').drawImage(img,0,0,w,h);
+        res(c.toDataURL('image/jpeg',q||0.8));
+      };
+      img.src = e.target.result;
+    };
+    r.readAsDataURL(file);
+  });
+}
+
+function triggerPhoto(inputId) { document.getElementById(inputId)?.click(); }
+
+function uploadSingle(inp, compId, key) {
+  var f = inp.files[0]; if (!f) return;
+  compressImage(f, 1920, 900, 0.82).then(function(result) {
+    update(compId, key, result);
+    rerenderEditor(compId);
+  });
+}
+
+function uploadMulti(inp, compId, key) {
+  var comp = getComp(compId); if (!comp) return;
+  if (!comp.data[key]) comp.data[key] = [];
+  var files = Array.from(inp.files);
+  var idx = 0;
+  function next() {
+    if (idx >= files.length) {
+      markDirty();
+      document.getElementById('strip_'+compId).innerHTML = renderPhotoStrip(compId, comp.data[key], key);
+      return;
+    }
+    compressImage(files[idx++], 1200, 900, 0.75).then(function(r) { comp.data[key].push(r); next(); });
+  }
+  next();
+}
+
+// ── SAVE / PUBLISH ───────────────────────────────────────────────
+var dirty = false;
+function markDirty() { dirty = true; document.getElementById('saveBtn').textContent = 'Save *'; }
+
+function savePage() {
+  if (!P) { toast('Create a page first'); return; }
+  document.getElementById('saveBtn').textContent = 'Saving...';
+  fetch('/api/trips/builder', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(P)
+  }).then(r => r.json()).then(d => {
+    if (d.success) {
+      dirty = false;
+      P.id = d.slug;
+      document.getElementById('saveBtn').textContent = 'Saved ✓';
+      setTimeout(() => { document.getElementById('saveBtn').textContent = 'Save'; }, 2000);
+      loadPages();
+    } else {
+      document.getElementById('saveBtn').textContent = 'Save';
+      toast('Error: ' + (d.error || 'Save failed'));
+    }
+  }).catch(() => { document.getElementById('saveBtn').textContent = 'Save'; toast('Save failed'); });
+}
+
+function previewPage() {
+  if (!P || !P.id) { toast('Save first to preview'); return; }
+  window.open('/trips/v2/' + P.id, '_blank');
+}
+
+function publishPage() {
+  savePage();
+  setTimeout(() => {
+    if (P && P.id) {
+      toast('✅ Published! Opening...');
+      setTimeout(() => window.open('/trips/v2/' + P.id, '_blank'), 800);
+    }
+  }, 1500);
+}
+
+// ── NEW PAGE / META MODAL ─────────────────────────────────────────
+function newPage() {
+  document.getElementById('mGuestName').value = '';
+  document.getElementById('mOccasion').value = '';
+  document.getElementById('mDestination').value = '';
+  document.getElementById('mDepartDate').value = '';
+  document.getElementById('metaModalTitle').textContent = 'New Page';
+  document.getElementById('metaModal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('metaModal').classList.remove('open'); }
+
+function confirmMeta() {
+  var guestName = document.getElementById('mGuestName').value.trim();
+  var occasion = document.getElementById('mOccasion').value.trim();
+  if (!guestName || !occasion) { toast('Guest name and occasion are required'); return; }
+  P = {
+    guestName,
+    occasion,
+    destination: document.getElementById('mDestination').value.trim(),
+    departDate: document.getElementById('mDepartDate').value,
+    theme: document.getElementById('mTheme').value,
+    components: []
+  };
+  closeModal();
+  renderCanvas();
+  showLibrary();
+  document.getElementById('tripNameDisplay').textContent = guestName + "'s " + occasion;
+  document.getElementById('canvasTripName').textContent = guestName + "'s " + occasion;
+  markDirty();
+  toast('Page created — add blocks from the library →');
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function toast(msg) { var el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),3000); }
+</script>
+</body>
+</html>
