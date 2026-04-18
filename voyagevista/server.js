@@ -144,9 +144,6 @@ const NAMED_BG = {
 };
 
 function getBg(t) {
-  // If a banner photo is set, that takes priority
-  if (t.bannerPhoto) return null; // handled separately
-
   // If admin explicitly picked a named color swatch
   const c = t.bgColor;
   if (c && c !== 'sunset' && NAMED_BG[c]) return NAMED_BG[c];
