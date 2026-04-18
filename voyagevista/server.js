@@ -52,12 +52,13 @@ app.get('/api/trips/:slug', async (req, res) => {
   } catch(e) { res.status(500).json({ error: 'Failed to load trip' }); }
 });
 
-  app.post('/api/trips', async (req, res) => {
+app.post('/api/trips', async (req, res) => {
   try {
     const trip = req.body;
-    if (!trip.guestName || !trip.occasion) return res.status(400).json({ error: 'Guest name and occupation required' });
+    if (!trip.guestName || !trip.occasion) return res.status(400).json({ error: 'Guest name and occasion required' });
     const slug = trip.id || generateSlug(trip.guestName, trip.occasion);
     trip.id = slug;
+    // RPC function runs with 60s statement timeout — fixes default 8s Supabase timeout
     const { error } = await supabase.rpc('upsert_trip_data', {
       p_id:          slug,
       p_guest_name:  trip.guestName,
@@ -69,11 +70,6 @@ app.get('/api/trips/:slug', async (req, res) => {
       p_theme:       trip.theme        || null,
       p_trip_data:   trip
     });
-    if (error) throw error;
-    res.json({ success: true, slug });
-  } catch(e) { res.status(500).json({ error: 'Failed to save: ' + e.message }); }
-});
-
     if (error) throw error;
     res.json({ success: true, slug });
   } catch(e) { res.status(500).json({ error: 'Failed to save: ' + e.message }); }
@@ -127,7 +123,6 @@ function notFoundPage() {
   return `<!DOCTYPE html><html><head><title>Not Found</title><style>body{font-family:sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#0d1b2a;color:#e8dcc8;text-align:center;}h1{color:#c4a057;}a{color:#c4a057;}</style></head><body><div><h1>✈ Trip Not Found</h1><p style="color:rgba(255,255,255,0.5)">This page doesn't exist.</p><a href="/">Return to Voyage Vista Travels</a></div></body></html>`;
 }
 
-// ── THEME → BACKGROUND COLOR MAP ─────────────────────────
 const THEME_BG = {
   'Birthday Celebration': 'linear-gradient(135deg,#C2185B,#E91E8C,#FF6B9D)',
   'Luxury Escape':        'linear-gradient(135deg,#0d1b2a,#1a3550,#0d2a3a)',
@@ -151,8 +146,6 @@ const NAMED_BG = {
   navy:      'linear-gradient(135deg,#0d1b2a,#1a3550)',
 };
 
-// ── CHANGE 1: getBg no longer returns null for banner photos ──
-// Now always returns a colour so it can be used as a tint overlay
 function getBg(t) {
   const c = t.bgColor;
   if (c && c !== 'sunset' && NAMED_BG[c]) return NAMED_BG[c];
@@ -161,7 +154,6 @@ function getBg(t) {
   return NAMED_BG.sunset;
 }
 
-// ── CHANGE 3: Glassmorphism countdown with emojis + glow pulse ──
 function countdownHtml(countdown) {
   if (countdown === null || countdown === undefined) return '';
   let topEmoji = '✨ 🎉 ✨', botEmoji = '🌟 🎊 🌟', num = '', label = '';
@@ -240,7 +232,6 @@ function renderTripPage(t) {
     ? `<img class="hero-banner-img" src="${t.bannerPhoto}" alt="Trip banner" loading="eager">`
     : '';
 
-  // ── CHANGE 2: colour tint overlay when banner photo is present ──
   const tintOverlay = t.bannerPhoto
     ? `<div style="position:absolute;inset:0;z-index:2;opacity:0.38;mix-blend-mode:multiply;background:${bg};pointer-events:none;"></div>`
     : '';
@@ -379,116 +370,31 @@ function renderTripPage(t) {
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'DM Sans',sans-serif;background:#f5f0e8;color:#2c2c2c;line-height:1.6;}
-
-/* ── HERO SHARED ── */
-.hero-banner,.hero-color{
-  position:relative;width:100%;min-height:92vh;
-  display:flex;flex-direction:column;overflow:hidden;
-}
-.hero-banner-img{
-  position:absolute;inset:0;width:100%;height:100%;
-  object-fit:cover;object-position:center center;z-index:0;
-}
-/* dark gradient always sits above photo, below tint */
-.hero-banner::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(to bottom,rgba(0,0,0,0.35) 0%,rgba(0,0,0,0.25) 40%,rgba(0,0,0,0.60) 75%,rgba(0,0,0,0.78) 100%);
-  z-index:3;
-}
-
-/* ── TOP NAV ── */
-.hero-topbar{
-  position:relative;z-index:10;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:18px 28px 0;flex-shrink:0;
-}
+.hero-banner,.hero-color{position:relative;width:100%;min-height:92vh;display:flex;flex-direction:column;overflow:hidden;}
+.hero-banner-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;z-index:0;}
+.hero-banner::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.35) 0%,rgba(0,0,0,0.25) 40%,rgba(0,0,0,0.60) 75%,rgba(0,0,0,0.78) 100%);z-index:3;}
+.hero-topbar{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:18px 28px 0;flex-shrink:0;}
 .hero-logo{height:40px;width:auto;filter:drop-shadow(0 2px 8px rgba(0,0,0,.4));}
-.contact-btn{
-  display:inline-flex;align-items:center;gap:7px;
-  padding:9px 20px;
-  background:rgba(255,255,255,.15);
-  border:1.5px solid rgba(255,255,255,.45);
-  border-radius:50px;color:#fff;font-size:13px;font-weight:500;
-  font-family:'DM Sans',sans-serif;text-decoration:none;
-  backdrop-filter:blur(8px);transition:all .2s;white-space:nowrap;
-}
+.contact-btn{display:inline-flex;align-items:center;gap:7px;padding:9px 20px;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.45);border-radius:50px;color:#fff;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;text-decoration:none;backdrop-filter:blur(8px);transition:all .2s;white-space:nowrap;}
 .contact-btn:hover{background:rgba(255,255,255,.28);border-color:rgba(255,255,255,.7);}
-
-/* ── HERO TEXT CENTER ── */
-.hero-text{
-  position:relative;z-index:10;flex:1;
-  display:flex;flex-direction:column;align-items:center;
-  justify-content:center;text-align:center;padding:28px 24px 16px;
-}
-.h1{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(2.2rem,6.5vw,5rem);
-  color:#fff;font-weight:600;line-height:1.1;
-  margin-bottom:10px;text-shadow:0 2px 24px rgba(0,0,0,.35);
-}
+.hero-text{position:relative;z-index:10;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px 24px 16px;}
+.h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,6.5vw,5rem);color:#fff;font-weight:600;line-height:1.1;margin-bottom:10px;text-shadow:0 2px 24px rgba(0,0,0,.35);}
 .h1 em{font-style:italic;}
 .h-dest{font-size:1rem;color:rgba(255,255,255,.88);margin-bottom:8px;}
 .h-desc{font-size:.9rem;color:rgba(255,255,255,.7);max-width:500px;margin:0 auto;line-height:1.75;}
-
-/* ── BOTTOM STRIP ── */
-.hero-bottom{
-  position:relative;z-index:10;
-  display:flex;align-items:center;justify-content:space-between;
-  flex-wrap:wrap;gap:14px;padding:16px 28px 24px;
-  background:linear-gradient(to top,rgba(0,0,0,0.65),transparent);
-  flex-shrink:0;
-}
+.hero-bottom{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;padding:16px 28px 24px;background:linear-gradient(to top,rgba(0,0,0,0.65),transparent);flex-shrink:0;}
 .hero-stats-left{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-.stat-pill{
-  display:flex;flex-direction:column;align-items:center;
-  background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);
-  border-radius:10px;padding:8px 16px;backdrop-filter:blur(6px);
-}
+.stat-pill{display:flex;flex-direction:column;align-items:center;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:10px;padding:8px 16px;backdrop-filter:blur(6px);}
 .sp-num{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:#fff;font-weight:600;line-height:1.1;}
 .sp-lbl{font-size:9px;color:rgba(255,255,255,.65);letter-spacing:.08em;text-transform:uppercase;margin-top:2px;}
-
-/* ── CHANGE 4: GLASSMORPHISM COUNTDOWN ── */
-.cd-float{
-  display:inline-flex;flex-direction:column;align-items:center;
-  background:rgba(255,255,255,.18);
-  border:2px solid rgba(255,255,255,.45);
-  border-radius:24px;
-  padding:16px 44px;
-  backdrop-filter:blur(8px);
-  box-shadow:0 8px 32px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.3);
-}
-.cd-sp{
-  font-size:1.4rem;letter-spacing:6px;margin-bottom:4px;
-  animation:sp 2s ease-in-out infinite;
-}
+.cd-float{display:inline-flex;flex-direction:column;align-items:center;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.45);border-radius:24px;padding:16px 44px;backdrop-filter:blur(8px);box-shadow:0 8px 32px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.3);}
+.cd-sp{font-size:1.4rem;letter-spacing:6px;margin-bottom:4px;animation:sp 2s ease-in-out infinite;}
 .cd-sp:last-child{margin-bottom:0;margin-top:6px;}
-@keyframes sp{
-  0%,100%{opacity:1;transform:scale(1);}
-  50%{opacity:.7;transform:scale(1.08);}
-}
-.cd-num-big{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(3.5rem,9vw,7rem);
-  color:#fff;font-weight:600;line-height:1;
-  animation:cdglow 3s ease-in-out infinite;
-}
-@keyframes cdglow{
-  0%,100%{text-shadow:0 0 40px rgba(255,255,255,.45);}
-  50%{text-shadow:0 0 90px rgba(255,255,255,.95), 0 0 20px rgba(255,255,255,.6);}
-}
-.cd-lbl-big{
-  font-size:.78rem;color:rgba(255,255,255,.82);
-  text-transform:uppercase;letter-spacing:.1em;margin-top:4px;
-}
-@media(max-width:600px){
-  .hero-topbar{padding:14px 16px 0;}
-  .hero-bottom{flex-direction:column;align-items:flex-start;padding:14px 16px 18px;}
-  .cd-float{padding:12px 24px;}
-  .cd-num-big{font-size:clamp(2.8rem,10vw,4.5rem);}
-  .cd-sp{font-size:1.1rem;}
-}
-
-/* ── SECTIONS ── */
+@keyframes sp{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.7;transform:scale(1.08);}}
+.cd-num-big{font-family:'Cormorant Garamond',serif;font-size:clamp(3.5rem,9vw,7rem);color:#fff;font-weight:600;line-height:1;animation:cdglow 3s ease-in-out infinite;}
+@keyframes cdglow{0%,100%{text-shadow:0 0 40px rgba(255,255,255,.45);}50%{text-shadow:0 0 90px rgba(255,255,255,.95),0 0 20px rgba(255,255,255,.6);}}
+.cd-lbl-big{font-size:.78rem;color:rgba(255,255,255,.82);text-transform:uppercase;letter-spacing:.1em;margin-top:4px;}
+@media(max-width:600px){.hero-topbar{padding:14px 16px 0;}.hero-bottom{flex-direction:column;align-items:flex-start;padding:14px 16px 18px;}.cd-float{padding:12px 24px;}.cd-num-big{font-size:clamp(2.8rem,10vw,4.5rem);}.cd-sp{font-size:1.1rem;}}
 .sec{padding:36px 20px;max-width:760px;margin:0 auto;}
 .sec-label{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#c4a057;font-weight:500;margin-bottom:16px;}
 .doc-heading{font-size:15px;font-weight:600;color:#2c2c2c;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #f0ebe0;}
