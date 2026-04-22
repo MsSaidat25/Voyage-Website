@@ -46,7 +46,6 @@ app.get('/api/trips', async (req, res) => {
 });
 
 app.get('/api/trips/:slug', async (req, res) => {
-  app.get('/api/trips/:slug', async (req, res) => {
   if (req.params.slug === 'builder') {
     try {
       const { data, error } = await supabase.from('trips')
