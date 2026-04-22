@@ -110,6 +110,9 @@ app.get('/trips/:slug/resort', async (req, res) => {
   } catch(e) { res.status(404).send(notFoundPage()); }
 });
 
+app.get('/trips/builder', (req, res) => { const fs=require('fs'),f=path.join(ROOT,'trips','builder.html'); fs.existsSync(f)?res.sendFile(f):res.status(404).send('Builder not found'); });
+app.get('/trips/v2/:slug', async (req, res) => { try { const{data}=await supabase.from('trips').select('trip_data,page_components').eq('id',req.params.slug).eq('use_builder',true).single(); if(!data)return res.status(404).send(notFoundPage()); const page={...(data.trip_data||{}),components:data.page_components||[]}; res.send(renderBuilderPage(page)); } catch(e){res.status(404).send(notFoundPage());} });
+
 app.get('/trips/:slug', async (req, res) => {
   if (req.params.slug === 'admin') return res.redirect('/trips/admin');
   try {
@@ -557,13 +560,6 @@ if(form)form.addEventListener('submit',function(e){
 // Nothing above this line is changed
 // ═══════════════════════════════════════════════════════════════
 
-// Serve builder admin UI
-app.get('/trips/builder', (req, res) => {
-  const fs = require('fs');
-  const f = path.join(ROOT, 'trips', 'builder.html');
-  fs.existsSync(f) ? res.sendFile(f) : res.status(404).send('Builder not found');
-});
-
 // List all builder trips
 app.get('/api/trips/builder', async (req, res) => {
   try {
@@ -630,21 +626,6 @@ app.delete('/api/trips/builder/:slug', async (req, res) => {
     if (error) throw error;
     res.json({ success: true });
   } catch(e) { res.status(500).json({ error: 'Failed to delete' }); }
-});
-
-// ── BUILDER PAGE RENDERER ───────────────────────────────────────
-app.get('/trips/v2/:slug', async (req, res) => {
-  try {
-    const { data } = await supabase
-      .from('trips')
-      .select('trip_data, page_components')
-      .eq('id', req.params.slug)
-      .eq('use_builder', true)
-      .single();
-    if (!data) return res.status(404).send(notFoundPage());
-    const page = { ...(data.trip_data || {}), components: data.page_components || [] };
-    res.send(renderBuilderPage(page));
-  } catch(e) { res.status(404).send(notFoundPage()); }
 });
 
 // ── COMPONENT RENDERERS ─────────────────────────────────────────
