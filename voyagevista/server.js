@@ -34,6 +34,7 @@ app.get('/api/trips', async (req, res) => {
   try {
     const { data, error } = await supabase.from('trips')
       .select('id, guest_name, occasion, destination, depart_date, theme, created_at')
+       .or('use_builder.is.null,use_builder.eq.false')
       .order('created_at', { ascending: false });
     if (error) throw error;
     res.json({ trips: (data||[]).map(t => ({
@@ -45,6 +46,16 @@ app.get('/api/trips', async (req, res) => {
 });
 
 app.get('/api/trips/:slug', async (req, res) => {
+  app.get('/api/trips/:slug', async (req, res) => {
+  if (req.params.slug === 'builder') {
+    try {
+      const { data, error } = await supabase.from('trips')
+        .select('id, guest_name, occasion, destination, depart_date, theme, created_at')
+        .eq('use_builder', true).order('created_at', { ascending: false });
+      if (error) throw error;
+      return res.json({ trips: (data||[]).map(t => ({ id: t.id, guestName: t.guest_name, occasion: t.occasion, destination: t.destination, departDate: t.depart_date, theme: t.theme, createdAt: t.created_at }))});
+    } catch(e) { return res.status(500).json({ error: 'Failed to load builder trips' }); }
+  }
   try {
     const { data, error } = await supabase.from('trips').select('trip_data').eq('id', req.params.slug).single();
     if (error || !data) return res.status(404).json({ error: 'Trip not found' });
