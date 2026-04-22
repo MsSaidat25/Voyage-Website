@@ -222,7 +222,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0ebe0;color:#2c2c2c;height:10
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
           <p>Click to upload banner image</p>
           <span>Auto-compressed · Landscape recommended</span>
-          <input type="file" id="bannerInp" accept="image/*" onchange="handleSinglePhoto(this,'bannerPhoto','bnPreview','bnImg','bnPlaceholder',1920,600)" onclick="event.stopPropagation()">
+          <input type="file" id="bannerInp" accept="image/*" onchange="handleSinglePhoto(this,'bannerPhoto','bnPreview','bnImg','bnPlaceholder',1920,1080)" onclick="event.stopPropagation()">
         </div>
         <div class="img-preview" id="bnPreview" style="display:none;">
           <img id="bnImg"><button class="rm-btn" onclick="removePhoto('bannerPhoto','bnPreview','bnPlaceholder')">✕</button>
