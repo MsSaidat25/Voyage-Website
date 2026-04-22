@@ -246,7 +246,7 @@ function renderTripPage(t) {
     : '';
 
   const tintOverlay = t.bannerPhoto
-    ? `<div style="position:absolute;inset:0;z-index:2;opacity:0.38;mix-blend-mode:multiply;background:${bg};pointer-events:none;"></div>`
+    ? `<div style="position:absolute;inset:0;z-index:2;opacity:0.22;mix-blend-mode:multiply;background:${bg};pointer-events:none;"></div>`
     : '';
 
   const heroClass = t.bannerPhoto ? 'hero-banner' : 'hero-color';
