@@ -673,7 +673,7 @@ body{font-family:'Poppins',sans-serif;background:#fff;color:#2A334A;line-height:
 
 /* NAVBAR */
 .vv-navbar{background:var(--navy);display:flex;align-items:center;justify-content:space-between;padding:14px 32px;position:sticky;top:0;z-index:100;}
-.vv-nav-logo{height:36px;width:auto;filter:drop-shadow(0 1px 4px rgba(0,0,0,.3));}
+.vv-nav-logo{height:44px;width:auto;min-width:44px;flex-shrink:0;object-fit:contain;filter:drop-shadow(0 1px 4px rgba(0,0,0,.3));}
 .vv-nav-cta{background:var(--pink);color:#fff;border:none;border-radius:4px;padding:8px 18px;font-size:13px;font-family:'Poppins',sans-serif;cursor:pointer;text-decoration:none;}
 
 /* HERO */
@@ -769,7 +769,7 @@ body{font-family:'Poppins',sans-serif;background:#fff;color:#2A334A;line-height:
 
 /* FOOTER */
 .vv-footer{background:var(--navy);padding:32px;text-align:center;}
-.vv-footer-logo{height:36px;width:auto;margin-bottom:12px;opacity:.75;}
+.vv-footer-logo{height:48px;width:auto;min-width:48px;flex-shrink:0;object-fit:contain;margin-bottom:12px;opacity:.85;}
 .vv-footer-brand{font-size:14px;font-weight:300;color:rgba(255,255,255,.6);}
 .vv-footer-copy{font-size:11px;font-weight:300;color:rgba(255,255,255,.3);margin-top:6px;}
 .vv-social-bar{display:flex;justify-content:center;gap:10px;margin:12px 0;}
@@ -850,6 +850,7 @@ function renderBuilderComp(comp, page, countdown, themeBg) {
       const bgStyle = d.backgroundPhoto
         ? `<img class="vv-hero-bg" src="${d.backgroundPhoto}" alt="Hero"><div class="vv-hero-overlay"></div>`
         : `<div class="vv-hero-overlay" style="background:${themeBg};position:absolute;inset:0;z-index:1;"></div>`;
+      const hAlign = d.headingAlign || 'center';
       const countdownBlock = d.showCountdown !== false && countdown !== null ? `
         <div class="vv-cd-wrap">
           <div class="vv-cd-em">✨ 🎉 ✨</div>
@@ -861,21 +862,22 @@ function renderBuilderComp(comp, page, countdown, themeBg) {
         ? `<a href="${b.url}" class="vv-hero-btn-outline" target="_blank">${b.text}</a>`
         : `<span class="vv-hero-btn-outline">${b.text}</span>`
       ).join('');
+      const locationBtn = d.location ? `<a href="https://maps.google.com/?q=${encodeURIComponent(d.location)}" target="_blank" class="vv-hero-location-btn">📍 ${d.location}</a>` : '';
       return `
 <div class="vv-hero">
   ${bgStyle}
-  <div class="vv-hero-content">
-    ${d.location ? `<div class="vv-hero-location">📍 ${d.location}</div>` : ''}
-    ${d.heading ? `<div class="vv-hero-h1">${d.heading}</div>` : ''}
-    ${d.subheading ? `<div class="vv-hero-sub">${d.subheading}</div>` : ''}
-    ${d.description ? `<div style="font-size:.85rem;font-weight:300;color:rgba(255,255,255,.75);max-width:540px;margin-bottom:18px;">${d.description}</div>` : ''}
+  <div class="vv-hero-content" style="text-align:${hAlign};">
+    ${d.heading ? `<div class="vv-hero-h1" style="text-align:${hAlign};">${d.heading}</div>` : ''}
+    ${d.subheading ? `<div class="vv-hero-sub" style="text-align:${hAlign};">${d.subheading}</div>` : ''}
+    ${d.description ? `<div style="font-size:.85rem;font-weight:300;color:rgba(255,255,255,.75);max-width:540px;margin-bottom:18px;text-align:${hAlign};${hAlign==='center'?'margin-left:auto;margin-right:auto;':''}">${d.description}</div>` : ''}
     ${d.showCountdown !== false ? countdownBlock : ''}
-    ${(page.departDate||nights||page.guestCount) ? `<div class="vv-hero-pills">
+    ${locationBtn}
+    ${(page.departDate||nights||page.guestCount) ? `<div class="vv-hero-pills" style="justify-content:${hAlign==='center'?'center':hAlign==='right'?'flex-end':'flex-start'};">
       ${nights ? `<div class="vv-hero-pill">${nights} Nights</div>` : ''}
       ${page.guestCount ? `<div class="vv-hero-pill">${page.guestCount} Guests</div>` : ''}
       ${page.departDate ? `<div class="vv-hero-pill">${fmt(page.departDate)}</div>` : ''}
     </div>` : ''}
-    ${btnsHtml ? `<div class="vv-hero-btns">${btnsHtml}</div>` : ''}
+    ${btnsHtml ? `<div class="vv-hero-btns" style="justify-content:${hAlign==='center'?'center':hAlign==='right'?'flex-end':'flex-start'};">${btnsHtml}</div>` : ''}
   </div>
 </div>`;
     }
@@ -902,29 +904,37 @@ function renderBuilderComp(comp, page, countdown, themeBg) {
   </div>
 </div>`;
 
-    case 'imageBanner': return `
+    case 'imageBanner': {
+      const bannerBtns = (d.buttons||[]).map(b => b.url
+        ? `<a href="${b.url}" class="vv-btn-outline-white" target="_blank" style="margin:4px;">${b.text}</a>`
+        : `<span class="vv-btn-outline-white" style="margin:4px;">${b.text}</span>`
+      ).join('');
+      return `
 <div class="vv-banner">
   ${d.photo ? `<img class="vv-banner-bg" src="${d.photo}" alt="${d.heading||''}">` : ''}
   <div class="vv-banner-overlay"></div>
   <div class="vv-banner-content">
     ${d.heading ? `<div class="vv-white-heading">${d.heading}</div>` : ''}
     ${d.description ? `<div class="vv-body-white">${d.description}</div>` : ''}
-    ${d.buttonText && d.buttonUrl ? `<a href="${d.buttonUrl}" class="vv-btn-outline-white" target="_blank">${d.buttonText}</a>` : ''}
+    ${bannerBtns ? `<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:8px;">${bannerBtns}</div>` : ''}
   </div>
 </div>`;
+    }
 
     case 'carousel': {
       const imgs = d.images || [];
       if (!imgs.length) return `<div style="background:#fdf0f7;padding:32px;text-align:center;color:#d194b8;">No carousel images yet.</div>`;
       const cid = 'c' + comp.id.replace(/\W/g,'');
+      const cAlign = d.headingAlign || 'center';
+      const slideAspect = d.imageSize === 'tall' ? '3/4' : d.imageSize === 'square' ? '1/1' : d.imageSize === 'wide' ? '21/9' : '16/9';
       return `
 <div class="vv-carousel" data-carousel="${cid}">
   <div class="vv-car-inner">
-    ${d.heading ? `<div class="vv-pink-heading" style="margin-bottom:8px;">${d.heading}</div>` : ''}
-    ${d.subheading ? `<div class="vv-subheading-pink">${d.subheading}</div>` : ''}
+    ${d.heading ? `<div class="vv-pink-heading" style="margin-bottom:8px;text-align:${cAlign};">${d.heading}</div>` : ''}
+    ${d.subheading ? `<div class="vv-subheading-pink" style="text-align:${cAlign};">${d.subheading}</div>` : ''}
     <div class="vv-car-track-wrap">
       <div class="vv-car-track" id="car-track-${cid}">
-        ${imgs.map(p=>`<div class="vv-car-slide"><img src="${p}" loading="lazy"></div>`).join('')}
+        ${imgs.map(p=>`<div class="vv-car-slide" style="aspect-ratio:${slideAspect};"><img src="${p}" loading="lazy"></div>`).join('')}
       </div>
     </div>
     <div class="vv-car-dots">${imgs.map((_,i)=>`<button class="vv-car-dot${i===0?' on':''}" data-dot-${cid}></button>`).join('')}</div>
@@ -978,7 +988,6 @@ function renderBuilderComp(comp, page, countdown, themeBg) {
     case 'documents': return `
 <div class="vv-docs">
   <div class="vv-section-container">
-    <div class="vv-subheading-white">Documents & Links</div>
     <div class="vv-doc-grid">
       ${d.itineraryLink ? `<div><a href="${d.itineraryLink}" target="_blank" class="vv-doc-btn vv-doc-outline">⬇ ${d.itineraryLabel||'Download Itinerary'}</a></div>` : ''}
       ${d.bookingUrl ? `<div><a href="${d.bookingUrl}" target="_blank" class="vv-doc-btn vv-doc-filled">→ ${d.bookingLabel||'Book Now'}</a>${d.bookingNote?`<div class="vv-booking-note">💡 ${d.bookingNote}</div>`:''}</div>` : ''}
@@ -1017,16 +1026,52 @@ function renderBuilderComp(comp, page, countdown, themeBg) {
 </footer>`;
     }
 
-    case 'weather': return ''; // rendered dynamically client-side
+    case 'weather': {
+      if (!page.destination) return '';
+      const wdest = encodeURIComponent(page.destination);
+      return `
+<div class="vv-weather-wrap" style="background:#fff;padding:32px;">
+  <div class="vv-section-container">
+    <div class="vv-subheading-pink">Weather in ${page.destination}</div>
+    <div id="vv-weather-${comp.id}" class="vv-weather" style="min-height:80px;align-items:center;">
+      <div style="color:#aaa;font-size:13px;">Loading weather...</div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  fetch('https://wttr.in/${page.destination}?format=j1')
+    .then(r=>r.json())
+    .then(w=>{
+      var cur = w.current_condition[0];
+      var tempC = cur.temp_C, tempF = cur.temp_F;
+      var desc = cur.weatherDesc[0].value;
+      var feels = cur.FeelsLikeC, humidity = cur.humidity;
+      var code = parseInt(cur.weatherCode);
+      var icon = code<=113?'☀️':code<=176?'⛅':code<=260?'🌫️':code<=296?'🌦️':code<=374?'🌧️':code<=389?'⛈️':'🌨️';
+      document.getElementById('vv-weather-${comp.id}').innerHTML =
+        '<div style="font-size:3rem;margin-right:16px;">'+icon+'</div>'+
+        '<div><div style="font-size:1.4rem;font-weight:300;color:#2A334A;">'+tempC+'°C / '+tempF+'°F</div>'+
+        '<div style="font-size:13px;color:#555;margin-top:3px;">'+desc+'</div>'+
+        '<div style="font-size:12px;color:#888;margin-top:4px;">Feels like '+feels+'°C · Humidity '+humidity+'%</div></div>';
+    })
+    .catch(function(){
+      document.getElementById('vv-weather-${comp.id}').innerHTML = '<div style="color:#aaa;font-size:13px;">Weather unavailable</div>';
+    });
+})();
+<\/script>`;
+    }
 
     case 'packingList': {
       const cats = (d.items||[]).reduce((a,i)=>{(a[i.category||'Other']=a[i.category||'Other']||[]).push(i.item);return a;},{});
       if (!Object.keys(cats).length) return '';
+      const pAlign = d.headingAlign || 'left';
       return `
 <div style="background:#fff;padding:40px 32px;">
-  <div class="vv-section-container">
-    <div class="vv-subheading-pink">Packing List</div>
-    <div class="vv-pack-grid">
+  <div class="vv-section-container" style="text-align:${pAlign};">
+    ${d.heading ? `<div class="vv-navy-heading" style="text-align:${pAlign};margin-bottom:4px;">${d.heading}</div>` : ''}
+    ${d.subheading ? `<div class="vv-subheading" style="text-align:${pAlign};">${d.subheading}</div>` : ''}
+    <div class="vv-pack-grid" style="text-align:left;margin-top:${d.heading||d.subheading?'16px':'0'};">
       ${Object.entries(cats).map(([cat,items])=>`<div class="vv-pack-cat"><div class="vv-pack-ttl">${cat}</div>${items.map(i=>`<div class="vv-pack-item">✓ ${i}</div>`).join('')}</div>`).join('')}
     </div>
   </div>
@@ -1035,13 +1080,16 @@ function renderBuilderComp(comp, page, countdown, themeBg) {
 
     case 'currency': return (d.localCurrency||d.tips) ? `
 <div style="background:#fdf0f7;padding:40px 32px;">
-  <div class="vv-section-container">
-    <div class="vv-subheading-pink">Currency & Money Tips</div>
+  <div class="vv-section-container" style="text-align:${d.headingAlign||'left'};">
+    ${d.heading ? `<div class="vv-navy-heading" style="text-align:${d.headingAlign||'left'};">${d.heading}</div>` : ''}
+    ${d.subheading ? `<div class="vv-subheading" style="text-align:${d.headingAlign||'left'};">${d.subheading}</div>` : ''}
+    <div style="text-align:left;">
     <div class="vv-curr-card">
       ${d.localCurrency ? `<div class="vv-curr-row"><span class="vv-curr-lbl">Local Currency</span><span class="vv-curr-val">${d.localCurrency}</span></div>` : ''}
       ${d.exchangeRate ? `<div class="vv-curr-row"><span class="vv-curr-lbl">Exchange Rate</span><span class="vv-curr-val">${d.exchangeRate}</span></div>` : ''}
       ${d.dailyBudget ? `<div class="vv-curr-row"><span class="vv-curr-lbl">Daily Budget</span><span class="vv-curr-val">${d.dailyBudget}</span></div>` : ''}
       ${d.tips ? `<div style="font-size:12px;font-weight:300;color:rgba(255,255,255,.55);margin-top:12px;line-height:1.7;">${d.tips}</div>` : ''}
+    </div>
     </div>
   </div>
 </div>` : '';
