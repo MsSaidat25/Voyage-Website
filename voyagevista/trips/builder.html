@@ -251,11 +251,11 @@ var COMP_DEFS = {
 function defaultData(type) {
   switch(type) {
     case 'navbar': return { ctaText:'Contact Us', ctaEmail:'Hello@voyagevista.ca' };
-    case 'hero': return { heading:'', subheading:'', description:'', backgroundPhoto:null, location:'', showCountdown:true, showStats:true, buttons:[] };
+    case 'hero': return { heading:'', subheading:'', description:'', headingAlign:'center', backgroundPhoto:null, location:'', showCountdown:true, showStats:true, buttons:[] };
     case 'aside': return { heading:'', subheading:'', description:'', image:null, imagePosition:'right' };
     case 'textBlock': return { heading:'', subheading:'', description:'', alignment:'left', buttonText:'', buttonUrl:'' };
-    case 'imageBanner': return { photo:null, heading:'', description:'', buttonText:'', buttonUrl:'' };
-    case 'carousel': return { heading:'', subheading:'', images:[] };
+    case 'imageBanner': return { photo:null, heading:'', description:'', buttons:[] };
+    case 'carousel': return { heading:'', subheading:'', headingAlign:'center', imageSize:'landscape', images:[] };
     case 'imageGallery': return { heading:'', images:[] };
     case 'countdown': return { style:'large' };
     case 'itinerary': return { days:[] };
@@ -264,8 +264,8 @@ function defaultData(type) {
     case 'message': return { text:'', signedFrom:'Voyage Vista Travels' };
     case 'contact': return { phone:'(343) 961-3506', email:'Hello@voyagevista.ca', showForm:false };
     case 'weather': return {};
-    case 'packingList': return { items:[] };
-    case 'currency': return { localCurrency:'', exchangeRate:'', dailyBudget:'', tips:'' };
+    case 'packingList': return { heading:'', subheading:'', headingAlign:'left', items:[] };
+    case 'currency': return { heading:'', subheading:'', headingAlign:'left', localCurrency:'', exchangeRate:'', dailyBudget:'', tips:'' };
     case 'footer': return { showSocials:true, socialIG:'', socialFB:'', socialWA:'' };
     default: return {};
   }
@@ -470,6 +470,7 @@ function renderEditor(comp) {
         </div>
         ${d.backgroundPhoto ? `<div class="photo-preview"><img src="${d.backgroundPhoto}"><button class="photo-rm" onclick="update('${id}','backgroundPhoto',null);rerenderEditor('${id}')">✕</button></div>` : ''}
       </div>
+      <div class="fg"><label>Heading Alignment</label><select onchange="update('${id}','headingAlign',this.value)"><option value="left"${d.headingAlign==='left'?' selected':''}>Left</option><option value="center"${(d.headingAlign||'center')==='center'?' selected':''}>Centre</option><option value="right"${d.headingAlign==='right'?' selected':''}>Right</option></select></div>
       <div class="fg"><label>Show countdown?</label><select onchange="update('${id}','showCountdown',this.value==='yes')"><option value="yes"${d.showCountdown!==false?' selected':''}>Yes</option><option value="no"${d.showCountdown===false?' selected':''}>No</option></select></div>
       <div class="fg"><label>Buttons</label>${renderBtnList(id, d.buttons||[])}</div>`;
 
@@ -509,14 +510,14 @@ function renderEditor(comp) {
       </div>
       <div class="fg"><label>Heading</label><input value="${esc(d.heading||'')}" placeholder="A Call to Action" oninput="update('${id}','heading',this.value)"></div>
       <div class="fg"><label>Description</label><textarea placeholder="Short description..." oninput="update('${id}','description',this.value)">${esc(d.description||'')}</textarea></div>
-      <div class="frow">
-        <div class="fg"><label>Button Text</label><input value="${esc(d.buttonText||'')}" placeholder="Book Now!" oninput="update('${id}','buttonText',this.value)"></div>
-        <div class="fg"><label>Button URL</label><input value="${esc(d.buttonUrl||'')}" placeholder="https://..." oninput="update('${id}','buttonUrl',this.value)"></div>
-      </div>`;
+      <div class="fg"><label>Buttons</label>${renderBtnList(id, d.buttons||[])}</div>`;
 
     case 'carousel': return `
       <div class="fg"><label>Heading</label><input value="${esc(d.heading||'')}" placeholder="Fifty & Fabulous" oninput="update('${id}','heading',this.value)"></div>
       <div class="fg"><label>Subheading</label><input value="${esc(d.subheading||'')}" oninput="update('${id}','subheading',this.value)"></div>
+      <div class="fg"><label>Heading Alignment</label><select onchange="update('${id}','headingAlign',this.value)"><option value="left"${d.headingAlign==='left'?' selected':''}>Left</option><option value="center"${(d.headingAlign||'center')==='center'?' selected':''}>Centre</option><option value="right"${d.headingAlign==='right'?' selected':''}>Right</option></select></div>
+      <div class="fg"><label>Photo Size (aspect ratio)</label><select onchange="update('${id}','imageSize',this.value)"><option value="landscape"${(d.imageSize||'landscape')==='landscape'?' selected':''}>Landscape 16:9 (standard)</option><option value="wide"${d.imageSize==='wide'?' selected':''}>Cinematic 21:9 (wide)</option><option value="square"${d.imageSize==='square'?' selected':''}>Square 1:1</option><option value="tall"${d.imageSize==='tall'?' selected':''}>Portrait 3:4 (tall)</option></select></div>
+      <div class="fg-hint" style="margin-bottom:10px;">📷 Best quality: upload photos at 1200×675px (landscape), 1200×571px (cinematic), 900×900px (square), or 900×1200px (portrait). Files are compressed on upload.</div>
       <div class="fg"><label>Photos</label>
         <div class="photo-upload" onclick="triggerPhoto('carouselPhotos_${id}')">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
@@ -579,15 +580,28 @@ function renderEditor(comp) {
       <div class="fg"><label>Email</label><input value="${esc(d.email||'Hello@voyagevista.ca')}" oninput="update('${id}','email',this.value)"></div>
       <div class="fg"><label>Show booking form?</label><select onchange="update('${id}','showForm',this.value==='yes')"><option value="no"${!d.showForm?' selected':''}>No</option><option value="yes"${d.showForm?' selected':''}>Yes</option></select></div>`;
 
-    case 'weather': return `<p class="fg-hint">Auto-loads from destination. Set destination in page settings.</p>`;
+    case 'weather': return `
+      <div style="background:#e8f4fd;border-radius:8px;padding:14px;font-size:12px;color:#1a5276;line-height:1.7;">
+        🌤 Weather auto-loads from the trip destination you set when creating the page.<br>
+        <strong>Current destination:</strong> ${P&&P.destination ? P.destination : '(not set — edit page settings)'}<br><br>
+        Live data is fetched from wttr.in each time the guest views the page.
+      </div>`;
 
     case 'packingList': return `
+      <div class="fg"><label>Heading (optional)</label><input value="${esc(d.heading||'')}" placeholder="What to Pack" oninput="update('${id}','heading',this.value)"></div>
+      <div class="fg"><label>Subheading (optional)</label><input value="${esc(d.subheading||'')}" placeholder="Don't forget these essentials!" oninput="update('${id}','subheading',this.value)"></div>
+      <div class="fg"><label>Heading Alignment</label><select onchange="update('${id}','headingAlign',this.value)"><option value="left"${(d.headingAlign||'left')==='left'?' selected':''}>Left</option><option value="center"${d.headingAlign==='center'?' selected':''}>Centre</option><option value="right"${d.headingAlign==='right'?' selected':''}>Right</option></select></div>
+      <div class="sdiv"></div>
       <div class="fg"><label>Items</label>
         <div id="packItems_${id}">${renderPackItems(id, d.items||[])}</div>
         <button class="add-btn-row" onclick="addPackItem('${id}')"><span>+</span> Add item</button>
       </div>`;
 
     case 'currency': return `
+      <div class="fg"><label>Heading (optional)</label><input value="${esc(d.heading||'')}" placeholder="Currency & Money Tips" oninput="update('${id}','heading',this.value)"></div>
+      <div class="fg"><label>Subheading (optional)</label><input value="${esc(d.subheading||'')}" oninput="update('${id}','subheading',this.value)"></div>
+      <div class="fg"><label>Heading Alignment</label><select onchange="update('${id}','headingAlign',this.value)"><option value="left"${(d.headingAlign||'left')==='left'?' selected':''}>Left</option><option value="center"${d.headingAlign==='center'?' selected':''}>Centre</option><option value="right"${d.headingAlign==='right'?' selected':''}>Right</option></select></div>
+      <div class="sdiv"></div>
       <div class="fg"><label>Local Currency</label><input value="${esc(d.localCurrency||'')}" placeholder="USD" oninput="update('${id}','localCurrency',this.value)"></div>
       <div class="frow">
         <div class="fg"><label>Exchange Rate</label><input value="${esc(d.exchangeRate||'')}" placeholder="1 CAD ≈ 0.74 USD" oninput="update('${id}','exchangeRate',this.value)"></div>
